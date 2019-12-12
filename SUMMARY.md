@@ -50,7 +50,7 @@
       * [Tars 平台针对 PHP 修改说明](begin/untitled-3/untitled-9/untitled-7/untitled-1.md)
       * [tars2php 使用说明](begin/untitled-3/untitled-9/untitled-7/untitled-8.md)
     * [TarsJS](begin/untitled-3/untitled-9/tarsjs.md)
-* [案例（Use Cases）](begin/an-li.md)
+* [Use Cases](begin/an-li.md)
 * [Frequently Asked Questions](begin/frequently-asked-questions/README.md)
   * [安装常见问题](begin/frequently-asked-questions/untitled-4.md)
   * [TarsCPP 常见问题](begin/frequently-asked-questions/untitled-2.md)

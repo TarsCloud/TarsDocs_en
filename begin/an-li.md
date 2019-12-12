@@ -1,2 +1,2 @@
-# 案例（Use Cases）
+# Use Cases
 
