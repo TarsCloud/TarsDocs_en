@@ -1,0 +1,139 @@
+
+# Directory
+> * [Intro](#chapter-1)
+> * [Module description](#chapter-2)
+> * [Permission specification](#chapter-3)
+> * [Module call](#chapter-4)
+> * [Inspection problem](#chapter-5)
+> * [Web development](#chapter-6)
+
+# 1 <a id="chapter-1"></a>Intro
+
+The main functions of tars-web are as follows:
+- Deployment, release, expansion and configuration of services
+- Service monitoring, statistics viewing
+- Online expansion of nodes
+- View service log (click service name)
+- Privilege management
+
+Tars-web installation usually follows the one click installation script or is automatically installed in the docker container. For the source code installation, please refer to [tar source code installation](source.md)
+
+## 2 <a id="chapter-2"></a>Module description
+
+Tar web consists of two modules (services implemented by nodejs, implemented by koa framework):
+- tars-node-web: Core function interface, bind by default : 0.0.0.0:3000 
+- tars-user-system: User permission system, bound by default机: 0.0.0.0:3001
+
+After the system is installed, it is managed by PM2. You can view:
+
+```
+pm2 list
+```
+
+Common commands:
+- start module:
+```
+pm2 start tars-node-web
+pm2 start tars-user-system
+```
+
+- stop module
+```
+pm2 stop tars-node-web
+pm2 stop tars-user-system
+```
+
+- restart module
+```
+pm2 start tars-node-web
+pm2 start tars-user-system
+```
+
+Note that if you find that there is no PM2 command, the node environment traversal does not take effect. You can execute:
+```
+centos: source ~/.bashrc 
+ubunut: source /etc/profile
+```
+
+The environment variable of node is automatically installed when tars is installed. Note that the user is root.
+
+## 3 <a id="chapter-3"></a>Permission specification
+
+The tars-user-system is responsible for maintaining the permissions of tar web. There are three types of user permissions:
+- admin: admin user
+- operator: operator user
+- developer: Developer, unable to publish, modify configuration, restart and other write operations
+
+The granularity of permissions can be applied to application or service level
+
+For example, if you want to give the operation and maintenance user test, the app is test, and the service is helloserver permission:
+- In the user management interface, create user test with operator
+- In the permission management interface, add a new permission. Note that it is marked as Test.HelloServer
+
+If you want to users(test) own all  service permissions of app(Test) , mark it as: Test
+
+In the web management platform, you can click specific services -> Click permission management - > enter the user name in the input box of operation and maintenance, development, and multiple users are separated by ;
+
+
+## 4 <a id="chapter-4"></a>Module call
+
+Tars-node-web & Tars-user-system is deployed on the same machine by default, and they are all bound with 0.0.0.0 (that is, 127.0.0.1)
+
+Tars-node-web accesses tars-user-system through localhost (127.0.0.1). If 127.0.0.1 is not bound, it has no permission. At this time, you need to modify the configuration of tars-user-system module (demo/config/loginConf.js), modify ignoreips, and open the white list.
+
+
+Normally, you can access it through the machine's Internet IP, for example: http://xxx.xxx.xxx.xxx:3000 web management platform.
+
+If nginx proxy is hung in front of Web & demo, and the reverse proxy is accessed to different ports (a 3000, a 3001), different domain names need to be set to access. The login state of Web & demo is passed through cookies, so it needs to be deployed under the same root domain name.
+
+For example, the domain name of the web's nginx entry is http://user.tars.com, and the domain name of demo's nginx is http://auth.tars.com (note that the root domain name is tars.com), so you need to set the environment variable on the web server:
+
+```
+export USER_CENTER_HOST=http://auth.tars.com
+export COOKIE_DOMAIN=.tars.com
+```
+
+**Pay attention: COOKIE_DOMAIN has .**
+
+## 5 <a id="chapter-4"></a>Inspection problem
+
+If the tars web runs abnormally, for example, the page cannot be opened, you can check it in the following ways:
+
+- stop web
+```
+pm2 stop tars-node-web
+```
+
+- Enter the directory and start the service manually
+```
+cd /usr/local/app/web
+npm run dev
+```
+
+NPM run dev will output the error on the screen. If it is modified according to the error judgment, Ctrl + C will exit NPM run dev.
+
+After the bug is solved, restart the service with PM2:
+```
+pm2 start tars-node-web
+pm2 start tars-user-system
+```
+
+Two important web logs:
+- The logs in the running process of ARS node web module will be output in /usr/local/app/web/log/ directory for easy location
+- The logs in the running process of the tar user system module will be output in the directory /usr/local/app/web/demo/log, which is convenient to locate the problem.
+
+## 6 <a id="chapter-5"></a>Web development
+
+If you are a nodejs developer, you can also participate in the development of the web in the following ways:
+
+tars-node-web & tars-user-system are developed by nodejs + koa.
+
+The directory of tars-user-system is /usr/local/app/web/demo.
+
+The code architecture of the two modules is the same. We will explain it with tar node web:
+- app: backend source
+- bin: entry
+- client: The front-end page code, which is organized by webpack, before publish must be run: npm run build
+- config: config files
+- locale: Character set currently supported (Chinese / English)
+- app.js: koa entry

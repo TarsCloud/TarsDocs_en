@@ -6,11 +6,16 @@
 
 ## Begin
 
-* [INTRODUCTION](begin/introduction.md)
-* [Framework Installation](begin/installation/README.md)
-  * [Step by step Installation](begin/installation/step-by-step.md)
-  * [Script Installation](begin/installation/automatic-script.md)
-  * [Container](begin/installation/container.md)
+* [INTRODUCTION](rumen/jian-jie.md)
+* [Tars Deploy](rumen/an-zhuang/README.md)
+  * [Docker Install](rumen/an-zhuang/docker-huan-jing-an-zhuang.md)
+  * [Mysql Install](rumen/an-zhuang/mysql.md)
+  * [Tars Source Compiler & Deploy](rumen/an-zhuang/source.md)
+  * [Tars Deploy By Docker](rumen/an-zhuang/docker.md)
+  * [Tars Deploy In K8s](rumen/an-zhuang/k8s-docker-1.md)
+  * [TarsNode Deploy](rumen/an-zhuang/node.md)
+  * [Tars Upldate & Expand](rumen/an-zhuang/expand.md)
+  * [TarsWeb](rumen/an-zhuang/web.md)
 * [Development Environment Setup](begin/untitled-1/README.md)
   * [TarsGo](begin/untitled-1/tarsgo.md)
   * [TarsJava](begin/untitled-1/tarsjava.md)
