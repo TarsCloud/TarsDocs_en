@@ -1,4 +1,4 @@
-[点我查看中文版](https://github.com/TarsCloud/TarsDocs/README.md)
+[点我查看中文版](https://tarscloud.github.io/TarsDocs/)
 
 # Tars
 
