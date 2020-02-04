@@ -1,22 +1,23 @@
-# 性能数据
+# performance data
 
-我们测试机器的配置如下图所示，我们共有三台配置相同的机器，其中两台作为客户端，一台作为服务端：
+The configuration of our test machine is shown in the figure below. We have three machines with the same configuration, two of which are clients and one is server:：
 
 ![](../assets/tars_performance.png)
 
-机器配置如下
+The machine is configured as follows
 
-| 软件 | 软件要求 |
+| Software | Software requirements |
 | :--- | :--- |
-| 系统内核 | Linux 3.10.94 x86\_64 x86\_64 GNU/Linux |
-| cpu 信息 | 3.30Ghz cpu\*8 |
-| 内存信息 | 16GB |
-| 网卡 | 千兆网卡 |
-| 硬盘信息 | 7200rpm 机械硬盘 |
+| system kernel | Linux 3.10.94 x86\_64 x86\_64 GNU/Linux |
+| cpu info | 3.30Ghz cpu\*8 |
+| memory| 16GB |
+| Network | Gigabit Ethernet |
+| Hard disk | 7200rpm Mechanical hard disk |
 
-第一项测试我们测试机器的常规性能，我们在客户端机器上上部署了2个网络线程和5个业务线程，发送常规大小的业务数据测试 第二项测试我们测试tars的极限性能，我们分别在两台作为客户端的机器上上开了50个进程，每个进程下有16个线程，每个线程发送4字节大小的业务数据包，测试结果如下，
 
-| 语言种类 | 客户端机器数量 | 进程数量 | 线程数量 | 字节包大小（B） | TPS（w/s） | 平均耗时\(ms\) | cpu利用率 | 网卡入流量\(Mb/s\) | 出流量\(Mb/s\) | 网卡入包量\(/s\) | 出包量\(/s\) |
+In the first test, we tested the general performance of the machine. We deployed two network threads and five business threads on the client machine, and sent the business data of the normal size. In the second test, we tested the ultimate performance of the tars. We opened 50 processes on two machines as the client respectively. Each process has 16 threads, and each thread sends 4 bytes Small business data package, the test results are as follows:
+
+| Lang | Client Machines| Process num | Thread num | package size（B） | TPS（w/s） | Avg cost\(ms\) | cpu| In traffic\(Mb/s\) | Out traffic\(Mb/s\) | In packets\(/s\) | Out packets\(/s\) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | c++ | 1 | 1 | 1 | 4 | 0.7 | 0.13 | 3% | 8M　　　　　 | 　7M | 7214　　 | 　7220 |
 | c++ | 1 | 1 | 1 | 1024 | 0.52 | 0.17 | 3% | 53M　　　　 | 　50M | 5677 　 | 　5666 |
@@ -37,5 +38,5 @@
 | java | 2 | 5 | 10 | 1024 | 10.11 | 0.97 | 48% | 967.217M | 939.408M | 132,421 | 135,919 |
 | java | 2 | 50 | 16 | 4 | 38 | 4.27 | 82% | 438.999M | 329.996M | 413,046 | 426,961 |
 
-**测试结果仅供参考，实际结果会因为测试条件和测量方法的不同而产生影响。**
+**The test results are only for reference. The actual results will be affected by different test conditions and measurement methods**
 

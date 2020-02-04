@@ -1,43 +1,43 @@
-# 目录
-> * [介绍](#chapter-1)
-> * [依赖环境](#chapter-2)
-> * [环境构建](#chapter-3)
+# Directory
+> * [Intro](#chapter-1)
+> * [Dependent environment](#chapter-2)
+> * [Construction of development environment](#chapter-3)
 
-# 1 <a id="chapter-1"></a>介绍
+# 1 <a id="chapter-1"></a>Intro
 
-本节主要介绍Tars Cpp服务开发和编译时需要的开发环境, 以centos7来介绍.
+This section mainly introduces the development environment required for the development and compilation of the tars CPP service based on Centos7.
 
-**注意: 如果本机上之前源码编译部署过Tars, 那么Tars Cpp的开发环境就自动可以工作了**
+**Note: if Tars has been compiled and deployed on the machine before, the development environment of tars CPP will work automatically**
 
-# 2 <a id="chapter-1"></a>依赖环境
+# 2 <a id="chapter-2"></a>Dependent environment
 
-| 软件 | 软件要求 |
+| Software | Software requirements |
 | :--- | :--- |
-| linux内核版本: | 2.6.18及以上版本 |
-| gcc版本: | 4.8 及以上版本、glibc-devel |
-| bison工具版本: | 2.5及以上版本 |
-| flex工具版本: | 2.5及以上版本 |
-| cmake版本： | 2.8.8及以上版本 |
-| mysql版本： | 4.1.17及以上版本 |
+| linux kernel:   | >=2.6.18 |
+| gcc version:    | >=4.8、glibc-devel |
+| bison version:  | >=2.5|
+| flex version:   | >=2.5   |
+| cmake version： | >=2.8.8|
+| mysql version： | >=4.1.17|
 
 
-## 2.1. 编译包依赖下载安装介绍
+## 2.1. Download and install build package dependency
 
-源码编译过程需要安装:gcc, glibc, bison, flex, cmake
+Source compilation needs to be installed: gcc, glibc, bison, flex, cmake
 
-例如，在Centos7下，执行：
+for example，in Centos7:
 ```
 yum install glibc-devel gcc gcc-c++ bison flex cmake
 ```
 
-## 2.2. Mysql依赖库安装
+## 2.2. MySQL dependency library installation
 
-Tars代码编译需要依赖mysql头文件和静态库, 依赖路径如下:
+The compilation of tars code depends on MySQL header file and static library, and the path is as follows:
 
-- 头文件: /usr/local/mysql/include
-- 库路径: /usr/local/mysql/lib
+- Include: /usr/local/mysql/include
+- Lib: /usr/local/mysql/lib
 
-如果系统已经存在mysql头文件和静态库, 则可跳过次步骤, 否则建议: 
+If MySQL header file and static library already exist in the system, you can skip the next step, otherwise it is recommended to:
 
 ```
 rpm -ivh https://repo.mysql.com/mysql57-community-release-el7.rpm
@@ -45,9 +45,9 @@ yum install -y mysql-devel
 mkdir -p /usr/local/mysql && ln -s /usr/lib64/mysql /usr/local/mysql/lib && ln -s /usr/include/mysql /usr/local/mysql/include && echo "/usr/local/mysql/lib/" >> /etc/ld.so.conf && ldconfig 
 ```
 
-**注意:Tars默认使用mysql静态链接, 避免每台机器上都需要mysql动态库**
+**Note: Tars uses MySQL static link by default to avoid requiring MySQL dynamic library on each machine**
 
-# <a id="chapter-1"></a>环境构建
+# <a id="chapter-3"></a>Construction of development environment
 
 ```text
 git clone https://github.com/TarsCloud/TarsCpp.git --recursive
@@ -57,4 +57,4 @@ make
 make install
 ```
 
-至此, Tars Cpp的编译环境已经完成, 下一步可以实现Cpp的Tars服务了.
+At this point, the compilation environment of tars CPP has been completed, and the next step is to implement the tars service of CPP.

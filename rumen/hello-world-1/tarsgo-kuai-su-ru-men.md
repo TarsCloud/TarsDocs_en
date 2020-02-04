@@ -1,18 +1,22 @@
-# TarsGo 快速入门
+# Directory
+> * [Create service](#chapter-1)
+> * [Define interface file](#chapter-2)
+> * [Server development](#chapter-3)
+> * [Client development](#chapter-4)
+> * [HTTP Server development](#chapter-5)
 
-## 服务编写
+## <a id="chapter-1"></a> Create service
 
-### 创建服务
-
-运行create\_tars\_server.sh脚本，自动创建服务必须的文件, 执行过程中如果出现语法错误尝试使用`dos2unix create_tars_server.sh`进行转码。
+Run create\_tars\_server.sh，create go service, If there is a syntax error during execution, try use:
+`dos2unix create_tars_server.sh`
 
 ```text
 sh $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/create_tars_server.sh [App] [Server] [Servant]
-例如： 
+for example： 
 sh $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/create_tars_server.sh TestApp HelloGo SayHello
 ```
 
-命令执行后将生成代码至GOPATH中，并以`APP/Server`命名目录，生成代码中也有提示具体路径。
+After the command is executed, the code will be generated to gopath, and the directory will be named as `APP/Server`. The specific path will also be prompted in the generated code.
 
 ```text
 [root@1-1-1-1 ~]# sh $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/create_tars_server.sh TestApp HelloGo SayHello
@@ -28,15 +32,15 @@ sh $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/create_tars_server.sh Test
 >>>Now doing:vendor/vendor.json >>>>
 # runtime/internal/sys
 >>> Great！Done! You can jump in $GOPATH/src/TestApp/HelloGo
->>> 当编辑完成Tars文件后，使用如下自动生成go文件
+>>> After editing the tars file, use the following to automatically generate the go file
 >>>       $GOPATH/bin/tars2go *.tars
 ```
 
-### 定义接口文件
+## <a id="chapter-2"></a>C Define interface file
 
-接口文件定义请求方法以及参数字段类型等，有关接口定义文件说明参考tars\_tup.md
+The interface document defines the request method, parameter field type, etc. for reference to the description of the interface definition document: 参考 kai-fa/tars_protocol.md
 
-为了测试我们定义一个echoHello的接口，客户端请求参数是短字符串如 "tars"，服务响应"hello tars".
+n order to test our definition of an echoHello interface, the client request parameter is a short string such as "tars", and the service response is "Hello tars"
 
 ```text
 # cat $GOPATH/src/TestApp/HelloGo/SayHello.tars 
@@ -47,17 +51,17 @@ interface SayHello{
 };
 ```
 
-**注意**： 参数中**out**修饰关键字标识输出参数。
+**Note: the out modifier key in the parameter identifies the output parameter**
 
-### 服务端开发
+## <a id="chapter-3"></a>C Server development
 
-首先把tars协议文件转化为Golang语言形式
+First, the tars protocol file is transformed into the form of golang language.
 
 ```text
 $GOPATH/bin/tars2go SayHello.tars
 ```
 
-现在开始实现服务端的逻辑：客户端传来一个名字，服务端回应hello name。
+Now start to implement the logic of the server: the client sends a name, and the server responds to Hello name.
 
 ```text
 cat $GOPATH/src/TestApp/HelloGo/SayHelloImp.go
@@ -75,9 +79,9 @@ func (imp *SayHelloImp) EchoHello(name string, greeting *string) (int32, error) 
 }
 ```
 
-**注意**： 这里函数名要大写，Go语言方法导出规定。
+**Note: The function name should be capitalized, and the rules for exporting methods in go language should be followed**
 
-编译main函数，初始代码以及有tars框架实现了。
+Compile the main function, the initial code and the implementation of the tars framework.
 
 cat $GOPATH/src/TestApp/HelloGo/HelloGo.go
 
@@ -99,15 +103,15 @@ func main() { //Init servant
 }
 ```
 
-编译生成可执行文件，并打包发布包。
+Compile the build executable and package the release package.
 
 ```text
 cd $GOPATH/src/TestApp/HelloGo/ && make && make tar
 ```
 
-将生成可执行文件HelloGo和发布包HelloGo.tgz
+The executable HelloGo and distribution package HelloGo.tgz will be generated
 
-### 客户端开发
+## <a id="chapter-4"></a>C Client development
 
 ```text
 package main
@@ -119,7 +123,7 @@ import (
         "TestApp"
 )
 
-//只需初始化一次，全局的
+//Only need to initialize once, global
 var comm *tars.Communicator
 func main() {
         comm = tars.NewCommunicator()
@@ -145,14 +149,13 @@ func main() {
 }
 ```
 
-* TestApp依赖是tars2go生成的代码。
-* obj指定服务端地址端口，如果服务端未在主控注册，则需要知道服务端的地址和端口并在Obj中指定，在例子中，协议为TCP，服务端地址为本地地址，端口为3002。如果有多个服务端，则可以这样写`TestApp.HelloGo.SayHelloObj@tcp -h 127.0.0.1 -p 9985:tcp -h 192.168.1.1 -p 9983`这样请求可以分散到多个节点。
+* import/TestApp is generate by tars2go prev step
+* Obj specifies the address port of the server. If the server is not registered in the master, you need to know the address and port of the server and specify it in obj. In the example, the protocol is TCP, the address of the server is local address, and the port is 3002. If there are multiple servers, you can write 'TestApp.HelloGo.SayHelloObj@tcp -h 127.0.0.1 -p 9985:tcp -h 192.168.1.1 -p 9983' so that the request can be distributed to multiple nodes.
+* If the service has been registered with the master, you do not need to write the server address and port, but you need to specify the master address when initializing the communicator. 
+* comm is communicator，For communication with the server, it needs to be global
 
-  如果已经在主控注册了服务，则不需要写死服务端地址和端口，但在初始化通信器时需要指定主控的地址。
 
-* com通信器，用于与服务端通信。
-
-编译测试
+Compile:
 
 ```text
 # go build client.go
@@ -160,9 +163,9 @@ func main() {
 ret:  0 resp:  hello tars 
 ```
 
-### HTTP 服务开发
+## <a id="chapter-5"></a>C HTTP Server development
 
-tarsgo支持http服务，按照上面的步骤创建好服务，tarsgo中处理http请求是在GO原生中的封装，所以使用很简单。
+Tarsgo supports HTTP services. Follow the above steps to create a good service. The processing of HTTP requests in tarsgo is encapsulated in go native, so it is very easy to use.
 
 ```text
 package main
@@ -183,7 +186,8 @@ func main() {
 }
 ```
 
-另外还可以直接调用其他tars服务，调用方式和“客户端开发”提到一样。
+In addition, you can directly call other tar services in the same way as mentioned in "client development".
+
 
 
 

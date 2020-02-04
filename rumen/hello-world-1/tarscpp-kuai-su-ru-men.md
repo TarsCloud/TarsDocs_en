@@ -1,26 +1,32 @@
-# TarsCPP 快速入门
+# Directory
+> * [Create Server](#chapter-1)
+> * [Server Implement](#chapter-2)
+> * [Server Compiler](#chapter-3)
+> * [Extension](#chapter-4)
+> * [Rpc Call](#chapter-5)
+> * [Other](#chapter-6)
 
-## 创建服务
-
-### 运行tars脚本
+## 1 <a id="chapter-1"></a> Create Server
 
 ```text
 /usr/local/tars/cpp/script/create_tars_server.sh [App] [Server] [Servant]
 ```
 
-本例中执行：/usr/local/tars/cpp/script/create\_tars\_server.sh TestApp HelloServer Hello
+In this example: /usr/local/tars/cpp/script/create\_tars\_server.sh TestApp HelloServer Hello
 
-命令执行后，会在当前目录的TestApp/HelloServer/ 目录下，生成下面文件：
+After execute, It will create files in TestApp/HelloServer/:
 
 ```text
 HelloServer.h HelloServer.cpp Hello.tars HelloImp.h HelloImp.cpp makefile
 ```
 
-这些文件，已经包含了最基本的服务框架和默认测试接口实现。
+These files already contain the basic service framework and the default test interface implementation.
 
-### tars接口文件
+## 2 <a id="chapter-3"></a> Server Implement
 
-定义tars接口文件的语法和使用，参见tars\_tup.md。
+### tars protocol file
+
+Firstly, the protocol file is compiled with reference to [tars protocol language document](https://tarscloud.github.io/TarsDocs_en/kai-fa/tars_protocol.html) to specify the data structure and calling interface of the communication between the two sides
 
 如下：
 
@@ -39,11 +45,13 @@ interface Hello
 
 ```
 
-采用tars2cpp工具自动生成c++文件：/usr/local/tars/cpp/tools/tars2cpp hello.tars会生成hello.h文件，里面包含客户端和服务端的代码。
+use tars2cpp to create c++ source file: /usr/local/tars/cpp/tools/tars2cpp hello.tars
 
-### HelloImp是Servant的接口实现类
+It will create hello.h, It contains the code of client and server. 
 
-实现服务定义的tars件中的接口，如下：
+### Helloimp is the interface implementation class of servant
+
+Implement the interface in the tar file defined by the service, as follows:
 
 HelloImp.h
 
@@ -55,7 +63,7 @@ HelloImp.h
 #include "Hello.h"
 
 /**
- * HelloImp继承hello.h中定义的Hello对象
+ * HelloImp inherits the Hello Object defined in hello.h
  *
  */
 class HelloImp : public TestApp::Hello
@@ -67,17 +75,17 @@ public:
     virtual ~HelloImp() {}
 
     /**
-     * 初始化，Hello的虚拟函数，HelloImp初始化时调用
+     * Initialization, Hello's virtual function, called when HelloImp initializes
      */
     virtual void initialize();
 
     /**
-     * 析构，Hello的虚拟函数，服务析构HelloImp退出时调用
+     * Destruct, a virtual function of Hello, called when the service destruct HelloImp exits
      */
     virtual void destroy();
 
     /**
-     * 实现tars文件中定义的test接口
+     * Implement the test interface defined in the tars file
      */
     virtual int test(tars::TarsCurrentPtr current) { return 0;};
 
@@ -109,9 +117,7 @@ void HelloImp::destroy()
 }
 ```
 
-### HelloServer是服务的实现类
-
-如下:
+### HelloServer is the implementation class of the service
 
 HelloServer.h:
 
@@ -125,7 +131,7 @@ HelloServer.h:
 using namespace tars;
 
 /**
- * HelloServer继承框架的Application类
+ * HelloServer inherits the Application class of the framework
  **/
 class HelloServer : public Application
 {
@@ -136,12 +142,12 @@ public:
     virtual ~HelloServer() {};
 
     /**
-     * 服务的初始化接口
+     * Initialization interface of service
      **/
     virtual void initialize();
 
     /**
-     * 服务退出时的清理接口
+     * Clean up interface on service exit
      **/
     virtual void destroyApp();
 };
@@ -168,7 +174,7 @@ HelloServer::initialize()
 {
     //initialize application here:
 
-    //添加Servant接口实现类HelloImp与路由Obj绑定关系
+    //Add the service interface implementation class HelloImp and route Obj binding relationship
     addServant<HelloImp>(ServerConfig::Application + "." + ServerConfig::ServerName + ".HelloObj");
 }
 /////////////////////////////////////////////////////////////////
@@ -200,9 +206,11 @@ main(int argc, char* argv[])
 /////////////////////////////////////////////////////////////////
 ```
 
-## 服务编译
+**Each servant (obj) object corresponds to a business processing thread. Therefore, if it is a member variable of helloimp and only processed by the current helloimp object, it does not need to be locked**
 
-进入代码目录,首先做
+## <a id="chapter-3"></a> Server Compiler
+
+enter server directory:
 
 ```text
 make cleanall
@@ -210,11 +218,11 @@ make
 make tar
 ```
 
-## 扩展功能
+## <a id="chapter-4"></a> Extension 
 
-Tars框架提供了接口定义语言的功能，可以在tars文件中，增加一下接口和方法，扩展服务的功能。
+The tars framework provides the function of interface definition language. You can add interface and method to the tars file to extend the function of service.
 
-可以修改由create\_tars\_server.sh生成的tars文件，以下3个接口方法中，test是默认生成的，testHello是新增加的接口。
+You can modify Hello.tars，add function:
 
 ```text
 module TestApp
@@ -229,17 +237,17 @@ interface Hello
 }; 
 ```
 
-使用/usr/local/tars/cpp/tools/tars2cpp hello.tars,重新生成hello.h。
+Use `/usr/local/tars/cpp/tools/tars2cpp hello.tars` recreate hello.h
 
-修改HelloImp.h/HelloImp.cpp，实现新的接口代码。
+Modify HelloImp.h/HelloImp.cpp, Implement new interface code. 
 
-其中HelloImp.h中继承Hello类的testHello方法：
+In HelloImp.h, the testHello method inherits the Hello class:
 
 ```text
 virtual int testHello(const std::string &sReq, std::string &sRsp, tars::TarsCurrentPtr current);
 ```
 
-HelloImp.cpp实现testHello方法：
+HelloImp.cpp implement testHello function:
 
 ```text
 int HelloImp::testHello(const std::string &sReq, std::string &sRsp, tars::TarsCurrentPtr current)
@@ -250,23 +258,25 @@ int HelloImp::testHello(const std::string &sReq, std::string &sRsp, tars::TarsCu
 }
 ```
 
-重新make cleanall;make;make tar，会重新生成HelloServer.tgz发布包。
+make cleanall;make;make tar，create HelloServer.tgz package.
 
-## 客户端同步/异步调用服务
+## <a id="chapter-5"></a> Rpc Call
 
-在开发环境上，创建/home/tarsproto/\[APP\]/\[Server\]目录。
+On the development environment, create /home/tarsproto/\[APP\]/\[Server\] directory for tars protocol file release
 
-例如：/home/tarsproto/TestApp/HelloServer在刚才编写服务器的代码目录下，
+for example: /home/tarsproto/TestApp/HelloServer
 
-执行 make release 这时会在/home/tarsproto/TestApp/HelloServer目录下生成h、tars和mk文件。
+In the code directory of the server just written, execute `make release` 
 
-这样在有某个服务需要访问HelloServer时，就直接引用HelloServer服务make release的内容，不需要把HelloServer的tars拷贝过来（即代码目录下不需要存放HelloServer的tars文件）。
+Then h、tars and mk files will be generated in /home/tarsproto/TestApp/HelloServer
 
-建立客户端代码目录，如TestHelloClient/。
+In this way, when a service needs to access HelloServer, it directly refers to the content of HelloServer service make release, and does not need to copy the tars of HelloServer (that is, the tars file of HelloServer does not need to be stored in the code directory).
 
-编写main.cpp，创建实例并调用刚编写的接口函数进行测试。
+Create the client code directory, for example: TestHelloClient/
 
-同步方式：
+Write main.cpp, Create an instance and call the newly written interface function for testing.
+
+Synchronization mode:
 
 ```text
 #include <iostream>
@@ -317,7 +327,7 @@ int main(int argc,char ** argv)
 }
 ```
 
-异步方式
+Asynchronous mode:
 
 ```text
 #include <iostream>
@@ -386,7 +396,7 @@ int main(int argc,char ** argv)
 }
 ```
 
-编写makefile,里面包含刚才通过make release生成的/home/tarsproto/APP/Server目录下的mk文件，如下：
+Write the makefile, Write the makefile, which contains the mk file under the directory /home/tarsproto/APP/server just generated through make release, as follows:
 
 ```text
 #-----------------------------------------------------------------------
@@ -402,6 +412,11 @@ include /home/tarsproto/TestApp/HelloServer/HelloServer.mk
 include /usr/local/tars/cpp/makefile/makefile.tars
 #-----------------------------------------------------------------------
 ```
+Make the target file and upload it to the environment that can access the server for running test
 
-make出目标文件，上传到能访问服务器的环境中进行运行测试即
+## 6 <a id="chapter-6"></a> 其它 
 
+其他你可能需要知道的重点:
+- examples下有几个非常重要的调用例子:同步, 异步, 协程, 代理模式, push模式, HTTP服务支持等, 建议仔细读一读
+- 代码中的Communicator是管理客户端资源的, 建议做成全局, 如果不是独立的Client客户端, 而是在服务框架中, 直接获取框架提供好的Communicator, 参见ProxyServer
+- 上述Client例子中`comm.stringToProxy("TestApp.HelloServer.HelloObj@tcp -h 10.120.129.226 -p 20001" , prx);`  指定了HelloServer的ip:port, 实际情况下, 当你的服务部署在框架上, 需要调用另外一个服务时, 只需要: `comm.stringToProxy("TestApp.HelloServer.HelloObj")`即可, 框架会自动寻址后端的HelloServer服务, 并自动完成容灾切换

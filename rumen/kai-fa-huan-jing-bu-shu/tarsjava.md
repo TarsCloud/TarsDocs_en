@@ -1,17 +1,19 @@
-# 目录
-> * [环境依赖](#chapter-1)
-> * [构建工程](#chapter-1)
-> * [配置依赖](#chapter-1)
+# Directory
+> * [Environmental Dependency](#chapter-1)
+> * [Build Project](#chapter-1)
+> * [Config Dependency](#chapter-1)
 
-# <a id="chapter-1"></a>环境依赖
+# <a id="chapter-1"></a>Environmental Dependency
 
-JDK 1.8 版本及以上
+>= JDK 1.8 
 
-Maven 2.2.1 版本及以上
+>= Maven 2.2.1
 
-# <a id="chapter-2"></a>构建工程
+# <a id="chapter-2"></a>Build Project
 
-通过IDE或者maven创建一个maven web项目， 这里以eclipse为例，File -&gt; New -&gt; Project -&gt; Maven Project -&gt; maven-archetype-webapp，再输入groupId、artifactId，生成完成之后可以通过eclipse进行导入，目录结构如下
+Create a maven web project through ide or Maven. Take eclipse as an example，File -&gt; New -&gt; Project -&gt; Maven Project -&gt; maven-archetype-webapp
+
+Then enter the groupid and artifactid. After the generation, you can import them through eclipse. The directory structure is as follows:
 
 ```text
 ├── pom.xml
@@ -33,11 +35,11 @@ Maven 2.2.1 版本及以上
        └── resources
 ```
 
-# <a id="chapter-3"></a>依赖配置
+# <a id="chapter-3"></a>Config Dependency
 
-在构建项目中pom.xml中添加依赖jar包
+Add dependent jar package in pom.xml in the build project.
 
-* 框架依赖配置
+* Framework dependency configuration
 
 ```text
 <dependency>
@@ -48,7 +50,7 @@ Maven 2.2.1 版本及以上
 </dependency>
 ```
 
-* 插件依赖配置
+* Plugin dependency configuration
 
 ```text
 <plugin>

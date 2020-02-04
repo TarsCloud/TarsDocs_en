@@ -1,74 +1,78 @@
-# Hello World
+# Directory
+> * [Department of management](#chapter-1)
+> * [Service naming](#chapter-2)
+> * [Service deployment](#chapter-3)
+> * [Service publishing](#chapter-4)
 
-## 管理系
+## Department of management
 
-用户登录成功后，会进入Tars管理系统，如下图
+After successful login, the user will enter the tars management system, as shown in the following figure:
 
 ![](../../assets/tars_web_index.png)
 
-TARS管理系统的菜单树下，有以下功能：
+Under the menu tree of tars management system, there are the following functions:
 
-* 业务管理：包括已部署的服务，以及服务管理、发布管理、服务配置、服务监控、特性监控等；
-* 运维管理：包括服务部署、扩容、模版管理等；
+* Business management: including deployed services, as well as service management, release management, service configuration, service monitoring, feature monitoring, etc;
+* Operation and maintenance management: including service deployment, expansion, template management, etc;
 
-## 服务命名
+## Service naming
 
-使用Tars框架的服务，其的服务名称有三个部分：
+The service name of a service using the tars framework has three parts:
 
-* APP：应用名，标识一组服务的一个小集合，在Tars系统中，应用名必须唯一。例如：TestApp；
-* Server：服务名，提供服务的进程名称，Server名字根据业务服务功能命名，一般命名为：XXServer，例如HelloServer；
-* Servant：服务者，提供具体服务的接口或实例。例如:HelloImp；
+* APP：Application name, a small collection identifying a group of services. In the tars system, the application name must be unique。for example: TestApp；
+* Server：Service name, the name of the process providing the service. The server name is named according to the business service function, generally named as:XXServer，for example:HelloServer；
+* Servant：A server that provides an interface or instance of a specific service. for example:HelloObj
 
-说明：
+Explain:
 
-一个Server可以包含多个Servant，系统会使用服务的App + Server + Servant，进行组合，来定义服务在系统中的路由名称，称为路由Obj，其名称在整个系统中必须是唯一的，以便在对外服务时，能唯一标识自身。
+- A server can contain multiple servants, and the system will use the app + server + servant of the service to combine them to define the routing name of the service in the system, which is called routing obj. Its name must be unique in the whole system, so that it can uniquely identify itself when serving external services
+- Each servant corresponds to an independent port for external service.
+- Therefore, when defining app, we need to pay attention to the uniqueness of app。
 
-因此在定义APP时，需要注意APP的唯一性。
+For example: TestApp.HelloServer.HelloObj
 
-例如：TestApp.HelloServer.HelloObj。
+## Service deployment
 
-## 服务部署
+Service deployment can also be done after service development, but it is recommended to do it first。
 
-服务部署，其实也可以在服务开发后进行，不过建议先做。
-
-点击主菜单“运维管理”-&gt;“服务部署”，如下图：
+Click "operation" - & gt; "deployment" in the main menu, as shown below：
 
 ![](../../assets/tars_go_quickstart_bushu1.png)
 
-* “应用”指你的服务程序归在哪一个应用下，例如：“TestApp”。 
-* “服务名称”指你的服务程序的标识名字，例如：“HelloServer”。 
-* “服务类型”指你的服务程序用什么语言写的，例如：java的选择“tars\_java”。 
-* “模版“ 指你的服务程序在启动时，设置的配置文件的名称，默认用”tars.tarsjavadefault“即可。 
-* “节点“ 指服务部署的机器IP。 
-* “Set分组“ 指设置服务的Set分组信息，Set信息包括3部分：Set名、Set地区、Set组名。 
-* “OBJ名称“ 指Servant的名称。 -“OBJ绑定IP“ 指服务绑定的机器IP，一般与节点一样。 
-* “端口“ 指OBJ要绑定的端口。 
-* “端口类型“ 指使用TCP还是UDP。 
-* “协议“ 指应用层使用的通信协议，Tars框架默认使用tars协议。 
-* “线程数“ 指业务处理线程的数目。 
-* “最大连接数“ 指支持的最大连接数。 
-* “队列最大长度“ 指请求接收队列的大小。 
-* “队列超时时间“ 指请求接收队列的超时时间。
+* “APP” Which application does your service belong to ，例如：“TestApp”. 
+* “Server Name” Refers to the ID name of your service program，例如：“HelloServer”. 
+* “Server Type” What language is your service program written in，例如：java的选择“tars\_java”. 
+* “Template“ Refers to the name of the profile set by your service program when it starts.
+* “Node“ Refers to the machine IP of service deployment. 
+* “Set“ It refers to set grouping information of set service. Set information includes three parts: set name, set region and set group name. default not set.
+* “OBJ“ Servant Name, for example: HelloObj
+* “OBJ Bind IP“ It refers to the machine IP bound by the service, which is generally the same as the node.
+* “Port“ OBJ Servant bind the port 
+* “Port Type“ TCP or UDP
+* “Protocol“ It refers to the communication protocol used by the application layer, and the tars service uses the tars protocol by default
+* “Thread Num“ Refers to the number of business processing threads 
+* “Max Connections“ Max Connections of server
+* “queue length“ Refers to the size of the request receiving queue
+* “Queue timeout“ Refers to the timeout of the request receiving queue
 
-点击“提交“，成功后，菜单数下的TestApp应用将出现HelloServer名称，同时将在右侧看到你新增的服务程序信息，如下图：
+Click "submit". After success, the name of HelloServer will appear in the TestApp application under the menu number, and the information of your new service program will be seen on the right side, as shown below:
 
 ![](../../assets/tars_go_quickstart_service_inactive.png)
 
-在管理系统上的部署暂时先到这里，到此为止，只是使你的服务在管理系统上占了个位置，真实程序尚未发布。
+The deployment on the management system is here for the time being. So far, it only makes your service occupy a place on the management system. The real program has not been released.
 
-## 服务发布
+## Service publishing
 
-在管理系统的菜单树下，找到你部署的服务，点击进入服务页面。
+Under the menu tree of the management system, find the service you deployed and click to enter the service page.
 
-选择“发布管理”，选中要发布的节点，点击“发布选中节点”，点击“上传发布包”，选择已经编译好的发布包，如下图：
+Select publish management, select the node to publish, click publish selected node, click upload publish package, and select the compiled publish package, as shown in the following figure:
 
 ![](../../assets/tars_go_quickstart_release.png)
 
-上传好发布包后，点击“选择发布版本”下拉框就会出现你上传的服务程序，选择最上面的一个（最新上传的）。
+After uploading the release package, click the "select release version" drop-down box to display the service program you uploaded, and select the top one (the latest one uploaded).
 
-点击“发布”，服务开始发布，发布成功后，出现下面的界面，如下图：
+Click "publish" to publish the service. After successful publishing, the following interface appears, as shown below:
 
 ![](../../assets/tars_go_quickstart_service_ok.png)
 
-若失败的话，可能是命名问题，上传问题，以及其他环境问题。欢迎开启Issue进行讨论。
-
+If it fails, it could be naming issues, upload issues, and other environmental issues. Welcome to issue for discussion.

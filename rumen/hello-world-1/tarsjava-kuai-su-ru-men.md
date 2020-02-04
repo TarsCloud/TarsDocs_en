@@ -1,10 +1,14 @@
-# TarsJava 快速入门
+# Directory
+> * [Define interface file](#chapter-1)
+> * [Interface file compilation](#chapter-2)
+> * [Service interface implementation](#chapter-3)
+> * [Service exposure configuration](#chapter-4)
+> * [Service compilation and packaging](#chapter-5) 
+> * [RPC Call](#chapter-6)
 
-## 服务开发
+## 1 <a id="chapter-1"></a> Define interface file
 
-### 接口文件定义
-
-接口文件定义是通过Tars接口描述语言来定义，在src/main/resources目录下建立hello.tars文件，内容如下
+The definition of interface file is defined by the tars interface description language. Create the hello.tars file in the src/main/resources directory. The content is as follows:
 
 ```text
 module TestApp 
@@ -16,9 +20,9 @@ module TestApp
 };
 ```
 
-### 接口文件编译
+## 2 <a id="chapter-2"></a> Interface file compilation
 
-提供插件编译生成java代码，在tars-maven-plugin添加生成java文件配置
+Provide plugins to compile and generate java code, add and generate java file configuration in tars-maven-plugin:
 
 ```text
 <plugin>
@@ -27,26 +31,26 @@ module TestApp
 	<version>1.6.1</version>
 	<configuration>
 		<tars2JavaConfig>
-			<!-- tars文件位置 -->
+			<!-- tars file locate-->
 			<tarsFiles>
 				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
 			</tarsFiles>
-			<!-- 源文件编码 -->
+			<!-- source encoding-->
 			<tarsFileCharset>UTF-8</tarsFileCharset>
-			<!-- 生成服务端代码 -->
+			<!-- true:create server source code, false: create client source code-->
 			<servant>true</servant>
-			<!-- 生成源代码编码 -->
+			<!-- generated source file encoding-->
 			<charset>UTF-8</charset>
-			<!-- 生成的源代码目录 -->
+			<!-- generated source file locate -->
 			<srcPath>${basedir}/src/main/java</srcPath>
-			<!-- 生成源代码包前缀 -->
+			<!-- package prefix -->
 			<packagePrefixName>com.qq.tars.quickstart.server.</packagePrefixName>
 		</tars2JavaConfig>
 	</configuration>
 </plugin>
 ```
 
-在工程根目录下执行mvn tars:tars2java
+Execute mvn in the project root directory: tars:tars2java
 
 ```text
 @Servant
@@ -56,9 +60,9 @@ public interface HelloServant {
 }	
 ```
 
-### 服务接口实现
+## 3 <a id="chapter-3"></a> Service interface implementation
 
-新创建一个HelloServantImpl.java文件，实现HelloServant.java接口
+create HelloServantImpl.java, Implement HelloServant.java interface
 
 ```text
 public class HelloServantImpl implements HelloServant {
@@ -70,9 +74,9 @@ public class HelloServantImpl implements HelloServant {
 }
 ```
 
-### 服务暴露配置
+## 4 <a id="chapter-4"></a> Service exposure configuration
 
-在resources下创建一个servants.xml的配置文件，服务编写后需要进程启动时加载配置暴露服务，配置如下
+Create a services.xml configuration file under resources dir. After the service is written, it needs to load the configuration exposure service when the process starts. The configuration is as follows
 
 ```text
 <?xml version="1.0" encoding="UTF-8"?>
@@ -84,16 +88,16 @@ public class HelloServantImpl implements HelloServant {
 </servants>
 ```
 
-说明：除了此方法之外，还可以采用spring模式来配置服务，详情见tars\_java\_spring.md。
+**in addition to this method, you can also use spring mode to configure services**
 
-### 服务编译打包
+## 5 <a id="chapter-5"></a> Service compilation and packaging
 
-在工程根目录下执行 mvn package生成war包，后续可以管理系统进行发布。
+Execute mvn package in the project root directory to generate war package, which can be published by the management system later.
 
-### 客户端同步/异步调用服务
+## 6 <a id="chapter-6"></a> RPC Call 
 
-* 构建客户端工程项目
-* 添加依赖
+* Create client project
+* Add dependency
 
 ```text
 <dependency>
@@ -104,7 +108,7 @@ public class HelloServantImpl implements HelloServant {
 </dependency>    
 ```
 
-* 添加插件
+* Add plugins
 
   ```text
   <plugin>
@@ -113,19 +117,14 @@ public class HelloServantImpl implements HelloServant {
    	<version>1.6.1</version>
    	<configuration>
    		<tars2JavaConfig>
-   			<!-- tars文件位置 -->
    			<tarsFiles>
    				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
    			</tarsFiles>
-   			<!-- 源文件编码 -->
    			<tarsFileCharset>UTF-8</tarsFileCharset>
-   			<!-- 生成代码，PS：客户端调用，这里需要设置为false -->
+   			<!-- create source code，PS: Client call, must be false here -->
    			<servant>false</servant>
-   			<!-- 生成源代码编码 -->
    			<charset>UTF-8</charset>
-   			<!-- 生成的源代码目录 -->
    			<srcPath>${basedir}/src/main/java</srcPath>
-   			<!-- 生成源代码包前缀 -->
    			<packagePrefixName>com.qq.tars.quickstart.client.</packagePrefixName>
    		</tars2JavaConfig>
    	</configuration>
@@ -133,7 +132,7 @@ public class HelloServantImpl implements HelloServant {
   ```
 
 ```text
-- 根据服务tars接口文件生成代码
+- write code according to service tar interface file
 ​```java
 @Servant
 public interface HelloPrx {
@@ -148,28 +147,28 @@ public interface HelloPrx {
 }
 ```
 
-* 同步调用
+* Synchronous invocation
 
 ```text
 public static void main(String[] args) {
 	CommunicatorConfig cfg = new CommunicatorConfig();
-        //构建通信器
+        //create Communicator
         Communicator communicator = CommunicatorFactory.getInstance().getCommunicator(cfg);
-        //通过通信器，生成代理对象
+        //create proxy by Communicator
         HelloPrx proxy = communicator.stringToProxy(HelloPrx.class, "TestApp.HelloServer.HelloObj");
         String ret = proxy.hello(1000, "HelloWorld");
         System.out.println(ret);
 }
 ```
 
-* 异步调用
+* Asynchronous call
 
 ```text
 public static void main(String[] args) {
 	CommunicatorConfig cfg = new CommunicatorConfig();
-        //构建通信器
+        //create Communicator
         Communicator communicator = CommunicatorFactory.getInstance().getCommunicator(cfg);
-        //通过通信器，生成代理对象
+        //create proxy by Communicator
         HelloPrx proxy = communicator.stringToProxy(HelloPrx.class, "TestApp.HelloServer.HelloObj");
         proxy.async_hello(new HelloPrxCallback() {
         		
@@ -189,5 +188,6 @@ public static void main(String[] args) {
 }
 ```
 
+**Communicator manages the client's resources, preferably globally object**
 
 

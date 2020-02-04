@@ -1,13 +1,13 @@
-# 目录
-> * [环境准备](#chapter-1)
+# Directory
+> * [Environmental preparation](#chapter-1)
 
-# 1 <a id="chapter-1"></a>环境准备
+# 1 <a id="chapter-1"></a> Environmental preparation
 
-Golang环境准备，tarsgo要求golang版本在1.9.x及以上。
+Prepare for golang environment. Tarsgo requires golang version 1.9. X and above.
 
-安装tars： `go get github.com/TarsCloud/TarsGo/tars`
+Install tars： `go get github.com/TarsCloud/TarsGo/tars`
 
-编译tars协议转Golang工具：
+To compile the tars protocol and transfer it to the golang tool:
 
 ```text
 cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build . 
@@ -15,5 +15,6 @@ cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build .
 cp tars2go $GOPATH/bin
 ```
 
-检查下GOPATH路径下tars是否安装成功。
+Check whether the installation of Tars is successful under the path of GOPATH.
+
 
