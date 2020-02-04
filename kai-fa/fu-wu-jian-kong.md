@@ -1,52 +1,53 @@
-# 服务监控
+# Contents
+> * Overview
+> * Service monitoring principle
 
-## 概述
+# 1. Overview
 
-对于所有基于Tars框架实现的业务服务，Node都可以很好进行实时监控。一般的服务异常退出，僵死等现象，都会由Node主动监控起来，使服务运行的可靠性更高。
+For all business services based on the Tars(C++), Tars Node can provide real-time monitoring. The general service exits abnormally, and the phenomenon of zombie is actively monitored by the Tars Node, which makes the service run more reliable.
 
-## 服务监控原理
+# 2. Service monitoring principle
 
-### 服务监控原理概述
+## 2.1. Overview of service monitoring principles
 
-Node服务通过开启一个监控线程，负责定时（时间间隔可以配置）轮询监控Node所管理的所有服务的运行状态，并定时向主控上报服务的运行状态。如果某个服务满足相关触发条件，则采取相应的措施来管理服务，使服务的运行状态实时在Node的监控下。
+The Tars Node service will open a monitoring thread to be responsible for timing (interval time can be configured) to poll and monitor of the running status of all services managed by the Tars Node, and to report the running status of the service to the master. If a service meets the relevant trigger conditions, Tars Node takes corresponding measures to manage the service, so that the running status of the service is in real time under the monitoring of Tars Node.
 
-该监控线程主要包括以下几个关键因素：
+The above monitoring thread mainly includes the following key features:
 
-1.监控线程的频率（单位是秒）
+1.The frequency(in seconds) of monitoring thread going to poll the service.
 
-2.业务服务心跳上报的超时时间（单位是秒），如果某个节点下的服务业务处理过程比较耗时，可以考虑增加这个值。
+2.Timeout period (in seconds) for business service heartbeat reporting. If the process of processing a service under a node is time consuming, the user can consider increasing this value.
 
-3.Node向主控上报服务运行状态的频率（单位是秒）
+3.The frequency (in seconds) that the Tars Node reports the running status of the service to the master.
 
-4.Node向主控上报服务运行状态的方式，有两种方式：单个和批量，默认选择批量上报。如果该Node下的服务比较多，可以选择批量方式提高效率。
+4.Tars Node has two methods to report the running status of the service to the master: single report and batch report. The batch report mode is selected by default. If the Tars Node manages a large number of services, you can choose the batch method to improve efficiency.
 
-### 服务监控策略
+## 2.2. Service monitoring strategy
 
-监控线程在对服务的监控过程中，会涉及到几个重要的监控点的判断策略。
+The monitoring thread considers the judgment strategy of several important monitoring points in the process of monitoring the service.
 
-#### 判断服务进程不存在策略
+### 2.2.1. A strategy for judging that a service process does not exist
 
-目前我们检测服务进程是否存在的方法是通过linux系统的kill函数向指定进程id发送NULL信号来判断进程是否存在。
+At present, the method for detecting whether the service process exists by the Tars Node is to send a NULL signal to the process of the specified ID through the kill function of the Linux system to determine whether the process exists.
 
-#### 判断服务心跳超时策略
+### 2.2.2. A strategy for judging that service has heartbeat timeout
 
-服务的心跳超时时限是在Node中配置的，这个时限适用于该Node管理下的所有服务的心跳超时时限。
+The heartbeat timeout period of the service is configured in the Node. This configuration applies to the heartbeat timeout period of all services managed by the Tars Node.
 
-每个业务服务会每隔10秒上报一次心跳时间给Node，Node则在一定的监控频率下检测每个业务服务的心跳时间是否已经超时。
+Each business service reports a heartbeat time to the Tars Node every 10 seconds. The Tars Node checks whether the heartbeat time of each business service has timed out under a certain monitoring frequency.
 
-Node还会检测每个业务服务自身所有adapter的心跳时间是否超时。
+Tars Node also checks if the heartbeat time of all BindAdapters in each business service times out.
 
-#### 判断服务允许启动策略
+### 2.2.3. A strategy for judging that service is allowed to start
 
-考虑到各种故障以及容灾特性，Node只会对满足启动条件的服务进行发送启动命令。
+Considering various fault conditions and disaster tolerance characteristics, Tars Node will only send a start command to the service that meets the start condition.
 
-这里采用的策略是：
+The strategies involved here are:
 
-1.服务的当前状态处于过渡状态的不允许重启，即处于“Activating”，“Deactivating”，“Destroying”，“Loading”，“Patching”，“BatchPatching”等状态。
+1.A business service whose current state is in a transition state does not allow restarting, that is, a service in a state of "Activating", "Deactivating", "Destroying", "Loading", "Patching", "BatchPatching", and the like.
 
-2.有可能服务通过运维界面停止的，即人为停止该服务，此时服务的“内部工作状态”会被设置为false，在这种情况下，不允许Node监控线程去启动服务。
+2.The business service may be stopped through the O&M interface, that is, the service is manually stopped. At this time, the "internal working status" of the service is set to false. In this case, the Tars Node monitoring thread is not allowed to start the service.
 
-3.有些服务可能确实出现系统性问题，导致无法启动成功。为了防止频繁的去重启这些服务，Node监控程序采用了“服务重启惩罚时间”的策略：即服务每次重启都会被记录重启次数和重启时间点，在X秒内最多重启N次，如果重启超过N次后，服务还是启动失败，则以Y秒的频率去尝试重启服务。
+3.Some services may indeed have systemic problems that prevent them from starting successfully. In order to prevent frequent restarts of these services, the Tars Node adopts a"service restart penalty time" strategy for these services: that is, each time the service is restarted, the number of restarts and the restart time will be recorded, and the maximum restart time is N times in X seconds. After N times, the service still cannot be restarted, and then try to restart the service at a frequency of Y seconds.
 
-目前框架中的默认值是：60秒内最多启动10次，达到10次启动仍失败后,每隔600秒再重试一次。
-
+The default value in the current framework is: within 60 seconds, the service is started up to 10 times. And after 10 times of startup failure, it is retried every 600 seconds.

@@ -1,101 +1,104 @@
-# 目录
-> * [1.环境搭建](#main-chapter-1)
-> * [2.服务命名](#main-chapter-2)
-> * [3.Tars管理系统](#main-chapter-3)
-> * [4.服务部署](#main-chapter-4)
-> * [5.服务开发](#main-chapter-5)
-> * [6.服务发布](#main-chapter-6)
+# Contents
+> * [1.Environment construction](#main-chapter-1)
+> * [2.Service naming](#main-chapter-2)
+> * [3.Tars management system](#main-chapter-3)
+> * [4.Service deployment](#main-chapter-4)
+> * [5.Service development](#main-chapter-5)
+> * [6.Service release](#main-chapter-6)
 
-# 1. 环境搭建  <a id="main-chapter-1"></a>
+# 1. Environment construction  <a id="main-chapter-1"></a>
 
-Tars C++环境搭建参考tars_install.md
- 
-# 2. 服务命名  <a id="main-chapter-2"></a>
+How to set up the Tars C++ environment, please refer to the article tars_install.md.
 
-使用Tars框架的服务，其的服务名称有三个部分：
+# 2. Service naming  <a id="main-chapter-2"></a>
 
-APP：    应用名，标识一组服务的一个小集合，在Tars系统中，应用名必须唯一。例如：TestApp；
+The service name of the Tars framework consists of three parts:
 
-Server： 服务名，提供服务的进程名称，Server名字根据业务服务功能命名，一般命名为：XXServer，例如HelloServer；
+APP：    Application name. it identifies a small set of service. In the Tars system, the app name must be unique. For example: TestApp.
 
-Servant：服务者，提供具体服务的接口或实例。例如:HelloImp；
+Server： Service name. A process provides service. It's named according to the service function and generally named as XXServer. For example: HelloServer.
 
-说明：
+Servant：The name of provider. An interface or instance that provides a specific service. For example: HelloImp.
 
-一个Server可以包含多个Servant，系统会使用服务的App + Server + Servant，进行组合，来定义服务在系统中的路由名称，称为路由Obj，其名称在整个系统中必须是唯一的，以便在对外服务时，能唯一标识自身。
+Instructions:
 
-因此在定义APP时，需要注意APP的唯一性。
+A Server can contain multiple Servant, and the system will use App + Server + Servant combination to define the routing name of the service in the system, called routing object. This name must be unique in the whole system, so that would uniquely identify itself when it externally served.
 
-例如：TestApp.HelloServer.HelloObj。
+Therefore, when defining an App, you need pay attention to the uniqueness of the App.
 
-# 3. Tars管理系统  <a id="main-chapter-3"></a>
+For Example：TestApp.HelloServer.HelloObj.
 
-用户登录成功后，会进入Tars管理系统，如下图
+# 3. Tars management system  <a id="main-chapter-3"></a>
 
-![tars](images/tars_web_index.png)
+When you login successfully, you will enter the Tars management system, as shown below:
 
-TARS管理系统的菜单树下，有以下功能：
+![tars](./images/tars_web_index.png)
 
-- 业务管理：包括已部署的服务，以及服务管理、发布管理、服务配置、服务监控、特性监控等；
+Under the menu tree of the Tars management system, the following functions are available:
 
-- 运维管理：包括服务部署、扩容、模版管理等；
+- Business management: Includes deployed services, service management, release management, service configuration, service monitoring, feature monitoring, etc.
 
-# 4. 服务部署   <a id="main-chapter-4"></a>
+- Operation and maintenance: Includes service deployment, capacity expansion, template management, etc.
 
-服务部署，其实也可以在服务开发后进行，不过建议先做。
+# 4. Service deployment   <a id="main-chapter-4"></a>
 
-如下图：
+Service deployment can actually be done after service development, but it is recommended to do it first.
 
-![tars](images/tars_cpp_quickstart_bushu1.png)
+As shown below：
 
--	“应用”指你的服务程序归在哪一个应用下，例如：“TestApp”。
--	“服务名称”指你的服务程序的标识名字，例如：“HelloServer”。
--	“服务类型”指你的服务程序用什么语言写的，例如：c++的选择“tars_cpp”。
--	“模版“ 指你的服务程序在启动时，设置的配置文件的名称，默认用”tars.default“即可。
--	“节点“ 指服务部署的机器IP。
--	“Set分组“ 指设置服务的Set分组信息，Set信息包括3部分：Set名、Set地区、Set组名。
--	“OBJ名称“ 指Servant的名称。
--	“OBJ绑定IP“ 指服务绑定的机器IP，一般与节点一样。
--	“端口“ 指OBJ要绑定的端口。
--	“端口类型“ 指使用TCP还是UDP。
--	“协议“ 指应用层使用的通信协议，Tars框架默认使用tars协议。
--	“线程数“ 指业务处理线程的数目。
--	“最大连接数“ 指支持的最大连接数。
--	“队列最大长度“ 指请求接收队列的大小。
--	“队列超时时间“ 指请求接收队列的超时时间。
+![tars](./images/tars_cpp_quickstart_bushu1.png)
 
-点击“提交“，成功后，菜单数下的TestApp应用将出现HelloServer名称，同时将在右侧看到你新增的服务程序信息，如下图：
+-	"Application" refers to which application your service program belongs to, for example: "TestApp".
+-   "Service name" refers to the identification name of your service program, for example: "HelloServer".
+-	"Service type" refers to the language in which your service program is written, for example: C++ choice "tars_cpp".
+-   "Template" refers to the name of the configuration file that is set when your service program starts. By default, "tars.default" can be used.
+-	"Node" refers to the machine IP on which the service is deployed.
+-   "Set group" refers to the group information of the set service. The Set information includes 3 parts: Set name, Set area, Set group name.
+-   "OBJ name" refers to the name of the Servant
+-   "OBJ binding IP" refers to the IP that is bound to the service, generally the same as the node.
+-   "port" refers to the port to which OBJ is bounded.
+-   "Port type" refers to Tcp or Udp.
+-   "Protocol" refers to the communication protocol used by the application layer. The Tars framework uses the tars protocol by default.
+-   "Number of Threads" refers to the number of business processing threads.
+-   "Maximum number of connections" refers to the maximum number of connections supported.
+-   "Maximum queue length" refers to the size of the request receiving queue.
+-   "Queue timeout" refers to the timeout period for requesting receive queue.
 
-![tars](images/tars_cpp_quickstart_bushu2.png)
+Click "Submit", after success, the TestApp application under the menu will display the name of the HelloServer, and you will see the information of the new service program on the right side, as shown below.
 
-在管理系统上的部署暂时先到这里，到此为止，只是使你的服务在管理系统上占了个位置，真实程序尚未发布。
+![tars](./images/tars_cpp_quickstart_bushu2.png)
 
-# 5. 服务开发  <a id="main-chapter-5"></a>
+The deployment on the management system is temporarily completed, so far, it just makes your service occupy a position on the management system, the real program has not been released yet.
 
-## 5.1. 创建服务
+# 5. Service development  <a id="main-chapter-5"></a>
 
-### 5.1.1. 运行tars脚本
+## 5.1. Create service
+
+### 5.1.1. Run Tars script
+
 ``` shell
 /usr/local/tars/cpp/script/create_tars_server.sh [App] [Server] [Servant]
 ```
 
-本例中执行：/usr/local/tars/cpp/script/create_tars_server.sh TestApp HelloServer Hello
+Executed in this example：/usr/local/tars/cpp/script/create_tars_server.sh TestApp HelloServer Hello
 
-命令执行后，会在当前目录的TestApp/HelloServer/ 目录下，生成下面文件：
+After the command is executed, the following file will be generated in the "TestApp/HelloServer/" of the current directory.
+
 ``` shell
 HelloServer.h HelloServer.cpp Hello.tars HelloImp.h HelloImp.cpp makefile
 ```
-这些文件，已经包含了最基本的服务框架和默认测试接口实现。
 
-### 5.1.2. tars接口文件
+These files already contain the most basic service framework and default test interface implementation.
 
-定义tars接口文件的语法和使用，参见tars_tup.md。
+### 5.1.2. Tars interface file
 
-如下：
+For the syntax and usage of the tars interface file, see tars_tup.md.
+
+As follows：
 
 Hello.tars：
-``` cpp
 
+``` cpp
 module TestApp
 {
 
@@ -105,18 +108,23 @@ interface Hello
 };
 
 }; 
-
-
 ```
-采用tars2cpp工具自动生成c++文件：/usr/local/tars/cpp/tools/tars2cpp hello.tars会生成hello.h文件，里面包含客户端和服务端的代码。
 
-### 5.1.3. HelloImp是Servant的接口实现类
+Automatically generate C++ files using the tars2cpp tool：
 
-实现服务定义的tars件中的接口，如下：
+``` shell
+/usr/local/tars/cpp/tools/tars2cpp hello.tars
+``` 
+
+Running this command will generate a hello.h file containing the client and server code.
+
+### 5.1.3. HelloImp is the interface implementation class of Servant
+
+Implement the interface test in file Hello.tars, as follows:
 
 HelloImp.h
 
-```cpp
+``` cpp
 
 #ifndef _HelloImp_H_
 #define _HelloImp_H_
@@ -125,7 +133,7 @@ HelloImp.h
 #include "Hello.h"
 
 /**
- * HelloImp继承hello.h中定义的Hello对象
+ * HelloImp inherits the Hello object defined in hello.h
  *
  */
 class HelloImp : public TestApp::Hello
@@ -137,17 +145,17 @@ public:
     virtual ~HelloImp() {}
 
     /**
-     * 初始化，Hello的虚拟函数，HelloImp初始化时调用
+     * Initialization, Hello's virtual function, called when HelloImp is initialized
      */
     virtual void initialize();
 
     /**
-     * 析构，Hello的虚拟函数，服务析构HelloImp退出时调用
+     * Destructor, Hello's virtual function, called when HelloImp exits
      */
     virtual void destroy();
 
     /**
-     * 实现tars文件中定义的test接口
+     * Implement the test interface defined in the Tars file
      */
     virtual int test(tars::TarsCurrentPtr current) { return 0;};
 
@@ -156,9 +164,10 @@ public:
 #endif
 
 ```
+
 HelloImp.cpp:
 
-```cpp
+``` cpp
 
 #include "HelloImp.h"
 #include "servant/Application.h"
@@ -180,13 +189,14 @@ void HelloImp::destroy()
 }
 
 ```
-### 5.1.4. HelloServer是服务的实现类
 
-如下:
+### 5.1.4. HelloServer is the implementation class of the service
+
+As follows:
 
 HelloServer.h:
 
-```cpp
+``` cpp
 #ifndef _HelloServer_H_
 #define _HelloServer_H_
 
@@ -196,7 +206,7 @@ HelloServer.h:
 using namespace tars;
 
 /**
- * HelloServer继承框架的Application类
+ * HelloServer inherits from the Application class in the Tars framework
  **/
 class HelloServer : public Application
 {
@@ -207,12 +217,12 @@ public:
     virtual ~HelloServer() {};
 
     /**
-     * 服务的初始化接口
+     * Service initialization interface
      **/
     virtual void initialize();
 
     /**
-     * 服务退出时的清理接口
+     * Cleanup interface when the service exitsd
      **/
     virtual void destroyApp();
 };
@@ -223,7 +233,9 @@ extern HelloServer g_app;
 #endif
 
 ```
-HelloServer.cpp
+
+HelloServer.cpp:
+
 ```cpp
 #include "HelloServer.h"
 #include "HelloImp.h"
@@ -238,7 +250,7 @@ HelloServer::initialize()
 {
     //initialize application here:
 
-    //添加Servant接口实现类HelloImp与路由Obj绑定关系
+    //Add the binding relationship between the HelloImp and the route Obj.
     addServant<HelloImp>(ServerConfig::Application + "." + ServerConfig::ServerName + ".HelloObj");
 }
 /////////////////////////////////////////////////////////////////
@@ -270,21 +282,24 @@ main(int argc, char* argv[])
 /////////////////////////////////////////////////////////////////
 
 ```
-## 5.2. 服务编译
 
-进入代码目录,首先做
-```shell
+## 5.2. Compile
+
+Enter the code directory, first do:
+
+``` shell
 make cleanall
 make	
 make tar
 ``` 
-## 5.3. 扩展功能
 
-Tars框架提供了接口定义语言的功能，可以在tars文件中，增加一下接口和方法，扩展服务的功能。 
+## 5.3. Extensions
 
-可以修改由create_tars_server.sh生成的tars文件，以下3个接口方法中，test是默认生成的，testHello是新增加的接口。
-```cpp
+The Tars framework provides an interface definition language that can be used in tars files to add interfaces and methods to extend the functionality of the service.
 
+You can modify the tars file generated by create_tars_server.sh. In the following two interface methods, test is generated by default, and testHello is the newly added interface.
+
+``` cpp
 module TestApp
 {
 
@@ -295,19 +310,19 @@ interface Hello
 };
 
 }; 
-
 ```
 
-使用/usr/local/tars/cpp/tools/tars2cpp hello.tars,重新生成hello.h。 
+using /usr/local/tars/cpp/tools/tars2cpp hello.tars regenerate hello.h.
 
-修改HelloImp.h/HelloImp.cpp，实现新的接口代码。 
+Modify HelloImp.h/HelloImp.cpp to implement the new interface code.
 
-其中HelloImp.h中继承Hello类的testHello方法： 
-```cpp
+The testHello method that inherits the Hello class from HelloImp.h:
+
+``` cpp
 virtual int testHello(const std::string &sReq, std::string &sRsp, tars::TarsCurrentPtr current);
 ```
 
-HelloImp.cpp实现testHello方法：
+HelloImp.cpp implements the testHello method:
 
 ```cpp
 int HelloImp::testHello(const std::string &sReq, std::string &sRsp, tars::TarsCurrentPtr current)
@@ -317,23 +332,35 @@ int HelloImp::testHello(const std::string &sReq, std::string &sRsp, tars::TarsCu
     return 0;
 }
 ```
-重新make cleanall;make;make tar，会重新生成HelloServer.tgz发布包。
+Re-execute the following command to compile: 
 
-## 5.4. 客户端同步/异步调用服务
+``` shell
+make cleanall
+make
+make tar
+```
 
-在开发环境上，创建/home/tarsproto/[APP]/[Server]目录。 
+it will regenerate the HelloServer.tgz release package.
 
-例如：/home/tarsproto/TestApp/HelloServer在刚才编写服务器的代码目录下，
+## 5.4. Client synchronous/asynchronous call service
 
-执行 make release 这时会在/home/tarsproto/TestApp/HelloServer目录下生成h、tars和mk文件。
+On the development environment, create the /home/tarsproto/[APP]/[Server] directory.
 
-这样在有某个服务需要访问HelloServer时，就直接引用HelloServer服务make release的内容，不需要把HelloServer的tars拷贝过来（即代码目录下不需要存放HelloServer的tars文件）。
+For the example above：/home/tarsproto/TestApp/HelloServer.
 
-建立客户端代码目录，如TestHelloClient/。 
+Executing the command:
+``` shell
+make release 
+```
+it will generate .h, .tars and .mk files in the /home/tarsproto/TestApp/HelloServer directory.
 
-编写main.cpp，创建实例并调用刚编写的接口函数进行测试。 
+In this way, when a service needs to access the HelloServer, it directly references the above file, and does not need to copy the .tars file of the HelloServer (that is, the tars file of the HelloServer does not need to be stored in the code directory).
 
-同步方式：
+Create a client code directory, like TestHelloClient/
+
+Write file main.cpp, create an instance and call the interface function just written to test.
+
+Synchronously：
 
 ```cpp
 #include <iostream>
@@ -383,7 +410,9 @@ int main(int argc,char ** argv)
     return 0;
 }
 ```
-异步方式
+
+Asynchronous:
+
 ```cpp
 #include <iostream>
 #include "servant/Communicator.h"
@@ -450,7 +479,8 @@ int main(int argc,char ** argv)
     return 0;
 }
 ```
-编写makefile,里面包含刚才通过make release生成的/home/tarsproto/APP/Server目录下的mk文件，如下：
+
+Edit the makefile, which contains the mk file in the /home/tarsproto/[APP]/[Server] directory that was just generated by make release, as follows:
 
 ```makefile
 #-----------------------------------------------------------------------
@@ -466,21 +496,23 @@ include /home/tarsproto/TestApp/HelloServer/HelloServer.mk
 include /usr/local/tars/cpp/makefile/makefile.tars
 #-----------------------------------------------------------------------
 ```
-make出目标文件，上传到能访问服务器的环境中进行运行测试即可
 
-# 6. 服务发布  <a id="main-chapter-6"></a>
-在管理系统的菜单树下，找到你部署的服务，点击进入服务页面。 
+Make the target file, upload it to the environment where you can access the server and run the test.
 
-选择“发布管理”，选中要发布的节点，点击“发布选中节点”，点击“上传发布包”，选择已经编译好的发布包，如下图：
 
-![tars](images/tars_cpp_quickstart_upload.png)
+# 6. Service release  <a id="main-chapter-6"></a>
+In the menu tree of the management system, find the service you deployed, click to enter the service page.
 
- 上传好发布包后，点击“选择发布版本”下拉框就会出现你上传的服务程序，选择最上面的一个（最新上传的）。如下图：
+first Select "Publish Management", then select the node to be published, then click "Publish Selected Node", and finally click "Upload Release Package", select the compiled package. As shown below:
 
- ![tars](images/tars_cpp_quickstart_patch.png)
+![tars](./images/tars_cpp_quickstart_upload.png)
 
- 点击“发布”，服务开始发布，发布成功后，出现下面的界面，如下图：
+ After the upload is successful, click the "Select Release Version" drop-down box and the service program you uploaded will appear. Select the top one (latest uploaded). As shown below:
 
- ![tars](images/tars_cpp_quickstart_patchresult.png)
+ ![tars](./images/tars_cpp_quickstart_patch.png)
+
+ Click "Publish", the service starts to be released, after the release is successful, the following interface appears, as shown below:
+
+ ![tars](./images/tars_cpp_quickstart_patchresult.png)
  
-若失败的话，可能是命名问题，上传问题，以及其他环境问题。
+If it fails, it may be a naming problem, an upload problem, and other environmental issues.

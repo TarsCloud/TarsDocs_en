@@ -1,28 +1,38 @@
-# 模板配置
+# table of contents
+> * [1 Introducation of template configuration](#main-chapter-1)
+> * [2 Template configuration](#main-chapter-2)
+>>* [2.1 tars.default template](#chapter-1)
+>>* [2.2 tars.tarsconfig template](#chapter-2)
+>>* [2.3 tars.tarslog template](#chapter-3)
+>>* [2.4 tars.tarsnotify template](#chapter-4)
+>>* [2.5 tars.tarspatch template](#chapter-5)
+>>* [2.6 tars.tarsproperty template](#chapter-6)
+>>* [2.7 tars.tarsstat template](#chapter-7)
+>>* [2.8 tars.tarsquerystat template](#chapter-8)
+>>* [2.9 tars.tarsqueryproperty template](#chapter-9)
+>>* [2.10 tars.tarsjava.default template](#chapter-10)
 
-## 模版配置介绍
+# 1. Introducation of template configuration <a id="main-chapter-1"></a>
 
-每个Tars服务启动运行时，必须指定一个模版配置文件，在Tars web管理系统中部署的服务的模版配置由node进行组织生成，若不是在web管理系统上，则需要自己创建一个模版文件。
+A template configuration file must be designed when each Tars service starts running. The template configuration of the service deployed in the Tars web management system is organized by node. You need to create a template file by yourself if it is not on the web management system.
 
-框架的模版配置文件由父模版、主模版、私有模版配置来组织。
+The template configuration file for the Tars framework is organized by the parent template, main template and private template template configuration.
 
-父模版和主模版的配置信息，存放在db\_tars/t\_profile\_template数据表里，表结构如下
+The configuration file information of the parent template and main template is stored in the db_tars/t_profile_template data table. The table structure is as follows:
 
-![](../assets/tars_template_table1.png)
+![tars-template](../docs/images/tars_template_table1.png)
 
-私有模版信息，存放在db\_tars/t\_server\_conf数据表的profile字段里面。
+The private template information is stored in the profile field of the db_tars/t_server_conf data table.
+# 2. Template configuration  <a id="main-chapter-2"></a>
 
-## 模板配置
+Note that you need to modify the db.tars.com in the template to the machine that deploys the database.
 
-注意模版中有db.tars.com时，需要修改成部署数据库的机器ip
+## 2.1. tars.default template <a id="chapter-1"></a>
 
-### tars.default 模板
+Template name:tars.default(every service template inherit this template directly or indirectly)
 
-模版名称:tars.default\(所有服务的模版都直接或者间接继承这个模版\)
-
-内容:
-
-```text
+content:
+```xml
 <tars>
 	<application>
 		enableset=${enableset}
@@ -59,13 +69,12 @@
 </tars>
 ```
 
-### tars.tarsconfig模版
+## 2.2. tars.tarsconfig template <a id="chapter-2"></a>
 
-模版名称:tars.tarsconfig\(继承tars.default\)
+Template name:tars.tarsconfig(inherit tars.default)
 
-内容:
-
-```text
+content:
+```xml
 <tars>
 	<application>
 		enableset=${enableset}
@@ -108,13 +117,12 @@
 </tars>
 ```
 
-### tars.tarslog模版
+## 2.3. tars.tarslog template <a id="chapter-3"></a>
 
-模版名称:tars.tarslog\(继承tars.default\)
+Template name:tars.tarslog(inherit tars.default)
 
-内容:
-
-```text
+content:
+```xml
 <tars>
 	<application>
 		enableset=${enableset}
@@ -156,15 +164,14 @@
 		</format>
 	</log>
 </tars>
+
 ```
+## 2.4. tars.tarsnotify template <a id="chapter-4"></a>
 
-### tars.tarsnotify模版
+Template name:tars.tarsnotify(inherit tars.default)
 
-模版名称:tars.tarsnotify\(继承tars.default\)
-
-内容:
-
-```text
+content:
+```xml
 <tars>
 	sql=CREATE TABLE `${TABLE}` (   `id` int(11) NOT NULL AUTO_INCREMENT,  `application` varchar(128) DEFAULT '',  `server_name` varchar(128) DEFAULT NULL, `container_name` varchar(128) DEFAULT '' , `node_name` varchar(128) NOT NULL DEFAULT '',  `set_name` varchar(16) DEFAULT NULL,  `set_area` varchar(16) DEFAULT NULL,  `set_group` varchar(16) DEFAULT NULL,  `server_id` varchar(100) DEFAULT NULL,  `thread_id` varchar(20) DEFAULT NULL,  `command` varchar(50) DEFAULT NULL,  `result` text,  `notifytime` datetime DEFAULT NULL,  PRIMARY KEY (`id`),  KEY `index_name` (`server_name`),  KEY `servernoticetime_i_1` (`notifytime`),  KEY `indx_1_server_id` (`server_id`),  KEY `query_index` (`application`,`server_name`,`node_name`,`set_name`,`set_area`,`set_group`) ) ENGINE\=InnoDB DEFAULT CHARSET\=utf8
 	<application>
@@ -215,15 +222,14 @@
 		max_page_size=20
 	</hash>
 </tars>
+
 ```
+## 2.5. tars.tarspatch template <a id="chapter-5"></a>
 
-### tars.tarspatch模版
+Template name:tars.tarspatch(inherit tars.default)
 
-模版名称:tars.tarspatch\(继承tars.default\)
-
-内容:
-
-```text
+content:
+```xml
 <tars>
 	directory=/usr/local/app/patchs/tars
 	uploadDirectory=/usr/local/app/patchs/tars.upload
@@ -261,13 +267,12 @@
 </tars>
 ```
 
-### tars.tarsproperty模版
+## 2.6. tars.tarsproperty template <a id="chapter-6"></a>
 
-模版名称:tars.tarsproperty\(继承tars.default\)
+Template name:tars.tarsproperty(inherit tars.default)
 
-内容:
-
-```text
+content:
+```xml
 <tars>
 	sql=CREATE TABLE `${TABLE}` (`stattime` timestamp NOT NULL default CURRENT_TIMESTAMP,`f_date` date NOT NULL default '1970-01-01', `f_tflag` varchar(8) NOT NULL default '',`master_name` varchar(128) NOT NULL default '',`master_ip` varchar(16) default NULL,`property_name` varchar(100) default NULL,`set_name` varchar(15) NOT NULL default '',`set_area` varchar(15) NOT NULL default '',`set_id` varchar(15) NOT NULL default '',`policy` varchar(20) default NULL,`value` varchar(255) default NULL, KEY (`f_date`,`f_tflag`,`master_name`,`master_ip`,`property_name`,`policy`),KEY `IDX_MASTER_NAME` (`master_name`),KEY `IDX_MASTER_IP` (`master_ip`),KEY `IDX_TIME` (`stattime`)) ENGINE\=Innodb
 	<application>
@@ -341,15 +346,15 @@
 		sql=insert ignore into t_master_property select  master_name, property_name, policy from ${TABLE}  group by  master_name, property_name, policy;
 	</reapSql>
 </tars>
+
 ```
+ 
+## 2.7. tars.tarsstat template <a id="chapter-7"></a>
 
-### tars.tarsstat模版
+Template name:tars.tarsstat(inherit tars.default)
 
-模版名称:tars.tarsstat\(继承tars.default\)
-
-内容:
-
-```text
+content:
+```xml
 <tars>
 	sql=CREATE TABLE `${TABLE}`( `stattime` timestamp NOT NULL default CURRENT_TIMESTAMP,`f_date` date NOT NULL default '1970-01-01', `f_tflag` varchar(8) NOT NULL default '',`source_id` varchar(15) default NULL,`master_name` varchar(64) default NULL,`slave_name` varchar(64) default NULL,`interface_name` varchar(64) default NULL,`tars_version` varchar(16) NOT NULL default '',`master_ip` varchar(15) default NULL,`slave_ip` varchar(21) default NULL,`slave_port` int(10) default NULL,`return_value` int(11) default NULL,`succ_count` int(10) unsigned default NULL,`timeout_count` int(10) unsigned default NULL,`exce_count` int(10) unsigned default NULL,`interv_count` varchar(128) default NULL,`total_time` bigint(20) unsigned default NULL,`ave_time` int(10) unsigned default NULL,`maxrsp_time` int(10) unsigned default NULL,`minrsp_time` int(10) unsigned default NULL,PRIMARY KEY (`source_id`,`f_date`,`f_tflag`,`master_name`,`slave_name`,`interface_name`,`master_ip`,`slave_ip`,`slave_port`,`return_value`,`tars_version`),KEY `IDX_TIME` (`stattime`),KEY `IDC_MASTER` (`master_name`),KEY `IDX_INTERFACENAME` (`interface_name`),KEY `IDX_FLAGSLAVE` (`f_tflag`,`slave_name`), KEY `IDX_SLAVEIP` (`slave_ip`),KEY `IDX_SLAVE` (`slave_name`),KEY `IDX_RETVALUE` (`return_value`),KEY `IDX_MASTER_IP` (`master_ip`),KEY `IDX_F_DATE` (`f_date`)) ENGINE\=MyISAM DEFAULT CHARSET\=utf8
 	enWeighted=1
@@ -412,76 +417,74 @@
         </db1>
 	</multidb>
 </tars>
+
 ```
-
-### tars.tarsquerystat模版
-
-模版名称:tars.tarsquerystat\(继承tars.default\)
-
-```text
+## 2.8. tars.tarsquerystat template <a id="chapter-8"></a>
+Template name:tars.tarsquerystat(inherit tars.default)
+``` 
 <tars>
     <application>
-    #是否启用SET分组
+    #whether to enable SET grouping
     enableset=${enableset}
-    #SET分组的全名.(mtt.s.1)
+    #full name of the SET group.(mtt.s.1)
     setdivision=${setdivision}
     <client>
-        #地址
+        #address
         locator =${locator}
-        #同步调用超时时间,缺省3s(毫秒)
+        #synchronous call timeout, default 3s(milliseconds)
         sync-invoke-timeout = 3000
-        #异步超时时间,缺省5s(毫秒)
+        #asynchronous call timeout, default 5s(milliseconds)
         async-invoke-timeout =5000
-        #重新获取服务列表时间间隔(毫秒)
+        #the interval time to reacquire service list(milliseconds)
         refresh-endpoint-interval = 60000
-        #模块间调用服务[可选]
+        #call service between modules [optional]
         stat            = tars.tarsstat.StatObj
-        #属性上报服务[可选]
+        #the service of attribute escalation [optional]
         property                    = tars.tarsproperty.PropertyObj
-        #上报间隔时间,默认60s(毫秒)
+        #the interval time to report, default 60s(milliseconds)
         report-interval            = 60000
-        #stat采样比1:n 例如sample-rate为1000时 采样比为千分之一
+        #stat sampling ratio 1:n. For example, the sampling ratio is one thousandth when the sample-rate equal 1000
          sample-rate = 100000
-        #1分钟内stat最大采样条数
+        #the maximum number of samples in 1 minute
          max-sample-count = 50
 
-        #网络异步回调线程个数
+        #the thread number of network asynchronous callback
         asyncthread      = ${asyncthread}
-        #模块名称
+        #template name
         modulename      = ${modulename}
     </client>
         
-    #定义所有绑定的IP
+    #define all bound IPs
     <server>
-        #应用名称
+        #application name
         app      = ${app}
-        #服务名称
+        #service name
         server  = ${server}
-        #本地ip
-       localip  = ${localip}
+        #local ip
+        localip  = ${localip}
 
-        #本地管理套接字[可选]
+        #local management socket[optional]
         local  = ${local}
-        #服务的数据目录,可执行文件,配置文件等
+        #service data directory, executable file, configuration file, etc.
         basepath = ${basepath}
         #
         datapath = ${datapath}
-        #日志路径
+        #log path
         logpath  = ${logpath}
-        #日志大小
+        #log size
         logsize = 10M
-        #日志数量
+        #number of logs
         #   lognum = 10
-        #配置中心的地址[可选]
+        #configuration center address[optional]
         config  = tars.tarsconfig.ConfigObj
-        #信息中心的地址[可选]
+        #inofrmation centor address[optional]
         notify  = tars.tarsnotify.NotifyObj
-        #远程LogServer[可选]
+        #remote LogServer[optional]
         log = tars.tarslog.LogObj
-        #关闭服务时等待时间
-         deactivating-timeout = 3000
-        #滚动日志等级默认值
-   logLevel=DEBUG
+        #waiting time when closing the service
+        deactivating-timeout = 3000
+        #the default value of scroll log level
+        logLevel=DEBUG
     </server>          
     </application>
     <countdb>
@@ -499,74 +502,72 @@
 >
 ```
 
-### tars.tarsqueryproperty 模版
-
-模版名称:tars.tarsqueryproperty\(继承tars.default\)
-
-```text
+## 2.9.tars.tarsqueryproperty template <a id="chapter-9"></a>
+Template name:tars.tarsqueryproperty(inherit tars.default)
+``` 
 <tars>
     <application>
-    #是否启用SET分组
+    #whether to enable SET grouping
     enableset=${enableset}
-    #SET分组的全名.(mtt.s.1)
+    #full name of the SET group.(mtt.s.1)
     setdivision=${setdivision}
     <client>
-        #地址
+        #address
         locator =${locator}
-        #同步调用超时时间,缺省3s(毫秒)
+        #synchronous call timeout, default 3s(milliseconds)
         sync-invoke-timeout = 3000
-        #异步超时时间,缺省5s(毫秒)
+        #asynchronous call timeout, default 5s(milliseconds)
         async-invoke-timeout =5000
-        #重新获取服务列表时间间隔(毫秒)
+        #the interval time to reacquire service list(milliseconds)
         refresh-endpoint-interval = 60000
-        #模块间调用服务[可选]
+        #call service between modules [optional]
         stat            = tars.tarsstat.StatObj
-        #属性上报服务[可选]
+        #the service of attribute escalation [optional]
         property                    = tars.tarsproperty.PropertyObj
-        #上报间隔时间,默认60s(毫秒)
+        #the interval time to report, default 60s(milliseconds)
         report-interval            = 60000
-        #stat采样比1:n 例如sample-rate为1000时 采样比为千分之一
+        #stat sampling ratio 1:n. For example, the sampling ratio is one thousandth when the sample-rate equal 1000
          sample-rate = 100000
-        #1分钟内stat最大采样条数
+        #the maximum number of samples in 1 minute
          max-sample-count = 50
 
-        #网络异步回调线程个数
+        #the thread number of network asynchronous callback
         asyncthread      = ${asyncthread}
-        #模块名称
+        #template name
         modulename      = ${modulename}
     </client>
         
-    #定义所有绑定的IP
+    #define all bound IPs
     <server>
-        #应用名称
+        #application name
         app      = ${app}
-        #服务名称
+        #service name
         server  = ${server}
-        #本地ip
-       localip  = ${localip}
+        #local ip
+        localip  = ${localip}
 
-        #本地管理套接字[可选]
+        #local management socket[optional]
         local  = ${local}
-        #服务的数据目录,可执行文件,配置文件等
+        #service data directory, executable file, configuration file, etc.
         basepath = ${basepath}
         #
         datapath = ${datapath}
-        #日志路径
+        #log path
         logpath  = ${logpath}
-        #日志大小
+        #log size
         logsize = 10M
-        #日志数量
+        #number of logs
         #   lognum = 10
-        #配置中心的地址[可选]
+        #configuration center address[optional]
         config  = tars.tarsconfig.ConfigObj
-        #信息中心的地址[可选]
+        #inofrmation centor address[optional]
         notify  = tars.tarsnotify.NotifyObj
-        #远程LogServer[可选]
+        #remote LogServer[optional]
         log = tars.tarslog.LogObj
-        #关闭服务时等待时间
-         deactivating-timeout = 3000
-        #滚动日志等级默认值
-   logLevel=DEBUG
+        #waiting time when closing the service
+        deactivating-timeout = 3000
+        #the default value of scroll log level
+        logLevel=DEBUG
     </server>          
     </application>
     <countdb>
@@ -583,14 +584,12 @@
     </tars>
 >
 ```
+## 2.10. tars.tarsjava.default template <a id="chapter-10"></a>
 
-### tars.tarsjava.default模版
+Template name:.tars.tarsjava.default(inherit tars.default, every service template of tarsjava inherit this template directly or indirectly)
 
-模版名称:.tars.tarsjava.default\(继承tars.default，所有tarsjava服务的模版都直接或者间接继承这个模版\)
-
-内容:
-
-```text
+content:
+```xml
 <tars>
 	<application>
 		enableset=${enableset}
@@ -639,5 +638,5 @@
 		</server>
 	</application>
 </tars>
-```
 
+```
