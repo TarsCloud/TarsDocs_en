@@ -1,86 +1,189 @@
-# 统一通信协议 TarsTup
+# Directory
+> * [TARS Base Protocol](#main-chapter-1)
+> * [TUP Intro](#main-chapter-2)
+> * [TUP Protocol](#main-chapter-3)
+> * [TUP Interface](#main-chapter-4)
 
-## TUP概述
+## 1 <a id="main-chapter-1"></a> TARS Base Protocol
 
-### TUP是什么
+Before the introduction of TUP, first introduce the underlying protocol format of communication between the tars services. For details, see source: RequestF.tars & BaseF.tars
 
-TUP（Tars Uni-Protocol的简称），Tars统一协议，是基于Tars编码的命令字（Command）层协议的封装。
+```RequestF.tars
+module tars
+{
+    struct RequestPacket
+    {
+        1  require short        iVersion;
+        2  require byte         cPacketType  = 0;
+        3  require int          iMessageType = 0;
+        4  require int          iRequestId;
+        5  require string       sServantName = "";
+        6  require string       sFuncName    = "";
+        7  require vector<byte> sBuffer;
+        8  require int          iTimeout     = 0;
+        9  require map<string, string> context;
+        10 require map<string, string> status;
+    };
 
-### TUP能做什么
+    struct ResponsePacket
+    {
+        1 require short         iVersion;
+        2 require byte          cPacketType  = 0;
+        3 require int           iRequestId;
+        4 require int           iMessageType = 0;
+        5 require int           iRet         = 0;
+        6 require vector<byte>  sBuffer;
+        7 require map<string, string> status;
+        8 optional string        sResultDesc;
+        9 optional map<string, string> context;
+    };
+};
+```
 
-1.支持java、c++等语言
+```BaseF.tars
+module tars
+{
+    ////////////////////////////////////////////////////////////////
+    // version 
 
-2.支持对象的序列化和反序列化
+    const short TARSVERSION  = 0x01;
+    const short TUPVERSION  = 0x03;
 
-3.支持协议动态扩展
+    ////////////////////////////////////////////////////////////////
+    // message type
+    const byte TARSNORMAL  = 0x00;
+    const byte TARSONEWAY  = 0x01;
 
-4.提供put/get泛型接口，快速实现客户端/服务端的编解码
+    ////////////////////////////////////////////////////////////////
+    // TARS return value
+    const int TARSSERVERSUCCESS       = 0;       
+    const int TARSSERVERDECODEERR     = -1;      
+    const int TARSSERVERENCODEERR     = -2;      
+    const int TARSSERVERNOFUNCERR     = -3;      
+    const int TARSSERVERNOSERVANTERR  = -4;      
+    const int TARSSERVERRESETGRID     = -5;      
+    const int TARSSERVERQUEUETIMEOUT  = -6;      
+    const int TARSASYNCCALLTIMEOUT    = -7;      
+    const int TARSINVOKETIMEOUT       = -7;      
+    const int TARSPROXYCONNECTERR     = -8;      
+    const int TARSSERVEROVERLOAD      = -9;      
+    const int TARSADAPTERNULL         = -10;     
+    const int TARSINVOKEBYINVALIDESET = -11;     
+    const int TARSCLIENTDECODEERR     = -12;     
+    const int TARSSERVERUNKNOWNERR    = -99;     
 
-5.序列化的数据可用于网络传输或者持久化存储
+    /////////////////////////////////////////////////////////////////
+    // message type 
 
-6.支持直接调用Tars的服务端
+    const int TARSMESSAGETYPENULL     = 0x00;    
+    const int TARSMESSAGETYPEHASH     = 0x01;    
+    const int TARSMESSAGETYPEGRID     = 0x02;    
+    const int TARSMESSAGETYPEDYED     = 0x04;    
+    const int TARSMESSAGETYPESAMPLE   = 0x08;    
+    const int TARSMESSAGETYPEASYNC    = 0x10;    
+    //const int TARSMESSAGETYPELOADED = 0x20;    
+    //const int TARSMESSAGETYPESETED = 0x40;     
+    const int TARSMESSAGETYPESETNAME = 0x80;     
+    const int TARSMESSAGETYPETRACK   = 0x100;    
+    /////////////////////////////////////////////////////////////////
+}
+```
 
-### TUP不能做什么
+RequestPacket & ResponsePacket is the underlying protocol of the communication between two tars services. Simply speaking, if you do not use the communicator of the tars to communicate, you can pack your own packets to complete the communication with the tars services (of course, it will be quite difficult, and you need to be very familiar with the underlying protocol of the tars). Therefore, in order to facilitate the construction of TUP to solve this problem.
 
-1.只做协议封装，不包含网络层
+## 2 <a id="main-chapter-2"></a> TUP Intro
 
-2.不支持数据压缩（可在业务层处理）
+### What's TUP
 
-3.不支持加密协议（可在业务层处理）
+TUP（Tars Uni-Protocol's short name）.
 
-### 依赖和约束
+It is the encapsulation of command layer protocol based on tars coding.
 
-1.依赖Tars协议，TUP用到的结构体对象必须通过Tars定义后生成
+It was first used to make it convenient for clients of different languages to call the tars service. It only provides encoding and decoding, and network communication needs to be realized by yourself. Of course, if the tars provides clients of this language, there is no need to use the tup protocol to call the tars service.
 
-2.依赖各个语言的代码生成工具，如：tars2cpp/tars2java等
+In the formal use, we have this scenario for your reference:
+- The back-end service is implemented with the tars service
+- Implement a full asynchronous proxy of HTTP + tup protocol, that is, the entry is HTTP + tup, and the exit is the proxy of tars protocol
+- Android/IOS communicates with any tars service in the background through the tup protocol and the proxy service
 
-3.TarsUniPacket中封装的Tars相关的接口（如getTars.../setTars...），只有在调用Tars服务是需要用到
+**Of course, we will provide a mechanism in the future, which can use HTTP + JSON to complete the communication of the backend tars service**
 
-4.使用过程中，使用UniPacket完成请求与相应的数据传递，其中ServantName（服务对象名） 与FuncName（接口名）为必须设定的参数，否则编码失败
+### What can TUP do
 
-5.不建议get/put太多数据，如果有比较多数据，建议在tars文件中组成一个struct，然后put/get到UniPacket中，便于提高效率和减少网络包大小
+1.support java、c++ etc language
 
-6.UniPacket编码后的结果在包头包含了4个字节网络字节序的包长信息，长度包括包头，接收方收到包后需根据包头的内容，判断包长，确保包完整后，传入解码接口进行解码（无需去掉包头）
+2.Supports serialization and deserialization of objects
 
-7.Tars c++语言的string 类型接口不能含二进制数据，二进制数据用vector传输
+3.Support protocol dynamic expansion
 
-## TUP使用
+4.Provide put/get generic interface to quickly realize client/server coding and decoding
 
-### 类结构图
+5.You can use Tup to directly call the server of tars
+
+### What Tup can't do
+
+1.Protocol encapsulation only, excluding network layer
+
+2.Data compression is not supported (can be processed at the business layer)
+
+3.Encryption protocol is not supported (can be processed in the business layer)
+
+### Dependencies and constraints
+
+1.Depending on the tars protocol, the structure objects used in the tup must be generated after the tars definition
+
+2.Code generation tools that depend on various languages, such as：tars2cpp/tars2java etc
+
+3.Tars related interfaces (such as getTars... / setTars...) encapsulated in TarsUnipacket need to be used only when calling the tars service
+
+4.In the process of using, use UniPacket to complete the request and corresponding data transmission, where ServantName (service object name) and FuncName (interface name) are the parameters that must be set, otherwise the coding fails
+
+5.It is not recommended to get/put too much data. If there is more data, it is recommended to form a struct in the tars file, and then put/get it into UniPacket, so as to improve efficiency and reduce network packet size
+
+6.The result of UniPacket encoding contains the packet length information of four byte network byte order in the packet header, and the length includes the packet header. After receiving the packet, the receiver needs to judge the packet length according to the content of the packet header, and ensure that the packet is complete, the packet is sent to the decoding interface for decoding (without removing the packet header)
+
+7.It is recommended not to include binary data in the string type interface of tars C + + language. Binary data is transmitted by vector
+
+## 3 <a id="main-chapter-3"></a> TUP Protocol
+
+### Class Structure Diagram
 
 ![](../assets/tars_tupclass.png)
 
-### 类的使用
+### Class usage
 
-1.RequestPacket：请求包及回应包的基类，通过tars文件定义生成，和Tars服务的基础包一致，一般不直接使用。
+1.RequestPacket：The base classes of the request packet and response package are generated by the definition of the tars file (refer to RequestF.tars in the source code). They are consistent with the basic packages of the tars service, and are generally not used directly
 
-2.UniAttribute：属性类，用户可以通过对该类的对象进行操作，添加属性和获取属性，类提供了put/get泛型接口，并可实现编解码。编码序列化后的字节流可用于压缩、加密，网络传输或持久化存储，在需要的时候反序列化出原对象。
+2.UniAttribute: Attribute class, users can add attributes and get attributes by operating the objects of this class. The class provides a put/get generic interface and can realize encoding and decoding. The encoded and serialized byte stream can be used for compression, encryption, network transmission or persistent storage to deserialize the original object when necessary
 
-3.UniPacket：请求回应包类，继承于UniAttribute，可以添加请求的属性值，设置需要请求远程对象及方法名，编码后发送到服务端，服务端解码后可获取属性参数进行处理。服务端处理完请求后同样通过该类的对象返回结果，客户端解码获取处理结果。
+3.UniPacket: The request and response package class inherits from UniAttribute. It can add the attribute value of the request, set the remote object and method name to be requested, and send them to the server after encoding. The server can obtain the attribute parameters for processing after decoding. After the server finishes processing the request, it also returns the result through the object of this class, and the client decodes the result.
 
-4.TarsUniPacket：Tars请求回应包类，继承于UniPacket，调用Tars远程服务的时候使用，用户添加属性及设置相关属性后，进行编码，组成请求包通过网络发到Tars服务进行处理。Tars服务端收到TUP协议的请求，处理完后会以该类的对象组返回包返回给客户端。客户端收包后使用该类进行解码处理，获取结果。
+4.TarsUniPacket: The tars request and response package class inherits from UniPacket. It is used when calling the remote tars service. After the user adds and sets related properties, they encode them to form a request package that is sent to the tars service through the network for processing. After receiving the request of the tup protocol, the tars server will return the packet to the client with the object group of this class. After receiving the package, the client uses this class to decode and get the result.
 
-### 使用TUP协议调用Tars服务
+### Using the TUP protocol to call the tars service
 
-1.客户端调用时，使用TarsUniPacket对象进行请求包的参数设置及输入参数赋值，其中必须指定的请求参数信息包括：
+The following is an example of C + + version, similar to other languages.
+
+1.When the client calls, the TarsUniPacket object is used for parameter setting and input parameter assignment of the request package. The required request parameter information includes:
 
 ```text
-setRequestId();           设置消息id，递增
+setRequestId();           Set message ID, auto increasing(must not be 0)
 
-setServantName("");       设置远程对象名称
+setServantName("");       Set remote servant name
 
-setFuncName("");          设置远程接口名称
+setFuncName("");          Set remote interface name
 
-setTarsPacketType();       包类型版本，TUP协议默认为3
+setTarsPacketType();      Package type version, the default of tup protocol is 3
+
 ```
 
-针对特定远程接口的调用，只需通过put接口对输入参数进行赋值，属性名称为tars接口定义的参数名称，比如对于接口：
+For the call of a specific remote interface, only the input parameters need to be assigned through the put interface. The attribute name is the parameter name defined by the tar interface, for example, for the interface:
 
 ```text
 int testFunc(string inputString, int inputInt, out string outputString);
 ```
 
-输入参数赋值的方式是：
+The input parameters are assigned as follows:
 
 ```text
 TarsUniPacket<> req;
@@ -92,16 +195,21 @@ req.put<Int32>("inputInt", 12345);
 req.encode(buff);
 ```
 
-TarsUniPacket对象必须为tars定义的每个输入参数设置属性值，否则服务端处理请求时会返回缺少某个属性值的异常错误，输出参数也可以作为输入，但是不是必选。
+**Here `inputString` match the first parameter of testFunc**
 
-put接口的模板类型选用tars参数定义的对应的类型，但枚举类型例外，需换用Int32作为模板类型赋属性值。
+The TarsUniPacket object must set the property value for each input parameter defined by tars interface. Otherwise, the server will return an exception error that a property value is missing when processing the request. The output parameter can also be used as input, but it is not required.
 
-2、TUP返回包同样使用TarsUniPacket对象进行解码，解码后使用getTarsResultCode\(\)接口获取tars服务的处理结果，0为成功，非0为失败，失败的原因可以通过getTarsResultDesc\(\)接口获取错误描述。
+The template type of put interface uses the corresponding type defined by the tars parameter, but enumeration type is replaced by Int32 used as the template type to assign the attribute value.
 
-返回成功的结果包的各输出参数使用tars定义的输出参数名称作为属性名称去获取，接口的返回值使用空字符串的属性名去获取。
+2. The TUP return package also uses the TarsUniPacket object for decoding. After decoding, use the getTarsResultCode \ (\) interface to obtain the processing results of the tars service. 0 is success, and non-0 is failure. The reason for failure can be obtained through the getTarsResultDesc \ (\) interface.
 
-如上述接口获取返回结果的方式是：
+The output parameters of the returned successful result package are obtained by using the output parameter name defined by tars protocol file as the attribute name, and the return value of the interface is obtained by using the attribute name of an empty string.
 
+As shown in the above interface, the way to obtain the return result is:
+
+```
+int testFunc(string inputString, int inputInt, out string outputString);
+```
 ```text
 TarsUniPacket<> rsp;
 
@@ -109,8 +217,8 @@ rsp.decode(recvBuff, recvLen);
 
 if(rsp.getTarsResultCode() == 0)
 {
-    int ret = rsp.get<int32_t>("");						//获取返回值
-    string retString = rsp.get<string>("outputString"); //获取输出参数
+    int ret = rsp.get<int32_t>("");						//get return value, type is int
+    string retString = rsp.get<string>("outputString"); //get output parameter
 }
 else
 {
@@ -118,94 +226,90 @@ else
 }
 ```
 
-## TUP各版本接口介绍
+## 4 <a id="main-chapter-4"></a> TUP Interface Intro
 
 ### Linux c++
 
-#### 类接口
+#### Class
 
-UniAttribute类
+UniAttribute
 
-| 公共接口 | 功能描述 |
+| function | describe |
 | :--- | :--- |
-| template void put\(const string& name, const T& t\) | 添加属性值 |
-| template void get\(const string& name, T& t\) | 获取属性值 |
-| template T get\(const string& name\) | 获取属性值 |
-| template void getByDefault\(const string& name, T& t, const T& def\) | 获取属性值\(忽略异常，def为缺省值\) |
-| template T getByDefault\(const string& name, const T& def\) | 获取属性值\(忽略异常，def为缺省值\) |
-| void clear\(\) | 清除全部属性值 |
-| void encode\(string& buff\) | 将属性对象编码到字节流 |
-| void encode\(vector& buff\) | 将属性对象编码到字节流 |
-| void encode\(char\* buff, size\_t & len\) | 将属性对象编码到字节流 |
-| void decode\(const char\* buff, size\_t len\) | 将字节流解码 |
-| void decode\(const vector& buff\) | 将字节流解码 |
-| const map&lt;string, vector &gt;& getData\(\) const | 获取已有的属性 |
-| bool isEmpty\(\) | 判断属性集合是否为空 |
-| size\_t size\(\) | 获取属性集合大小 |
-| bool containsKey\(const string & key\) | 判断属性是否存在 |
+| template void put\(const string& name, const T& t\) | Add attribute value |
+| template void get\(const string& name, T& t\) | Get attribute value |
+| template T get\(const string& name\) | Add attribute value |
+| template void getByDefault\(const string& name, T& t, const T& def\) | Add attribute value\(if it is empty, then def is default value\) |
+| template T getByDefault\(const string& name, const T& def\) | Get attribute value\(if it is empty, then def is default value\) |
+| void clear\(\) | clear all attribute value |
+| void encode\(string& buff\) | encode to buffer |
+| void encode\(vector& buff\) | encode to buffer |
+| void encode\(char\* buff, size\_t & len\) | encode to buffer |
+| void decode\(const char\* buff, size\_t len\) | decode from buffer |
+| void decode\(const vector& buff\) | decode from buffer |
+| const map&lt;string, vector &gt;& getData\(\) const | get all attributes |
+| bool isEmpty\(\) | not attribute exists |
+| size\_t size\(\) | get attribute count |
+| bool containsKey\(const string & key\) | contain attribute |
 
-UniPacket类
+UniPacket
 
-| 公共接口 | 功能描述 |
+| function | describe |
 | :--- | :--- |
-| void setVersion\(short iVer\) | 设置协议版本号 |
-| UniPacket createResponse\(\) | 通过请求包生成回应包，生成过程会从请求包获取请求ID、对象名称、方法名等回填到回应包中 |
-| void encode\(string& buff\) | 将对象编码到字节流 |
-| void encode\(vector& buff\) | 将对象编码到字节流 |
-| void encode\(char\* buff, size\_t & len\) | 将对象编码到字节流 |
-| void decode\(const char\* buff, size\_t len\) | 将字节流解码，其中len传入buffer长度，输出解码结果的长度 |
-| tars::Short getVersion\(\) const | 获取协议版本号 |
-| tars::Int32 getRequestId\(\) const | 获取消息ID |
-| void setRequestId\(tars::Int32 value\) | 设置请求ID |
-| const std::string& getServantName\(\) const | 获取对象名称 |
-| void setServantName\(const std::string& value\) | 设置对象名称\(编码时对象名不能为空，否则编码失败\) |
-| const std::string& getFuncName\(\) const | 获取方法名 |
-| void setFuncName\(const std::string& value\) | 设置方法名\(编码时方法名不能为空，否则编码失败\) |
+| void setVersion\(short iVer\) | set protocol verison |
+| UniPacket createResponse\(\) | The response package is generated by the request package. The generation process will obtain the request ID, object name, method name, etc. from the request package and backfill them into the response package |
+| void encode\(string& buff\) | encode to buffer  |
+| void encode\(vector& buff\) | encode to buffer  |
+| void encode\(char\* buff, size\_t & len\) | encode to buffer  |
+| void decode\(const char\* buff, size\_t len\) | decode from buffer, len is input buffer length and output decoding result length |
+| tars::Short getVersion\(\) const | get protocol version |
+| tars::Int32 getRequestId\(\) const | get request ID |
+| void setRequestId\(tars::Int32 value\) | set request ID |
+| const std::string& getServantName\(\) const | get Servant Name |
+| void setServantName\(const std::string& value\) | set Servant Name\(can not be empty\) |
+| const std::string& getFuncName\(\) const | get function name|
+| void setFuncName\(const std::string& value\) | set function name\(can not be empty\) |
 
-TarsUniPacket类
 
-| 公共接口 | 功能描述 |
+UniPacket is inherit from UniAttribute. You can build your own services and use UniPacket to complete service communication. In that case, setServantName can be used as the main command of the protocol, setFuncName as the sub command of the protocol. The underlying package structure of UniPacket is RequestPackage
+
+
+TarsUniPacket
+
+| function | describe |
 | :--- | :--- |
-| void setTarsVersion\(tars::Short value\) | 设置协议版本 |
-| void setTarsPacketType\(tars::Char value\) | 设置调用类型 |
-| void setTarsMessageType\(tars::Int32 value\) | 设置消息类型 |
-| void setTarsTimeout\(tars::Int32 value\) | 设置超时时间 |
-| void setTarsBuffer\(const vectortars::Char& value\) | 设置参数编码内容 |
-| void setTarsContext\(const map&lt;std::string, std::string&gt;& value\) | 设置上下文 |
-| void setTarsStatus\(const map&lt;std::string, std::string&gt;& value\) | 设置特殊消息的状态值 |
-| tars::Short getTarsVersion\(\) const | 获取协议版本 |
-| tars::Char getTarsPacketType\(\) const | 获取调用类型 |
-| tars::Int32 getTarsMessageType\(\) const | 获取消息类型 |
-| tars::Int32 getTarsTimeout\(\) const | 获取超时时间 |
-| const vectortars::Char& getTarsBuffer\(\) const | 获取参数编码后内容 |
-| const map&lt;std::string, std::string&gt;& getTarsContext\(\) const | 获取上下文 |
-| const map&lt;std::string, std::string&gt;& getTarsStatus\(\) const | 获取特殊消息的状态值 |
-| tars::Int32 getTarsResultCode\(\) const | 获取Tars服务处理结果码，0为成功，非0为失败 |
-| string getTarsResultDesc\(\) const | 获取Tars服务处理结果描述 |
+| void setTarsVersion\(tars::Short value\) | set protocol verison, default is 3  |
+| void setTarsPacketType\(tars::Char value\) | set package type, see BaseF.tars |
+| void setTarsMessageType\(tars::Int32 value\) | set message type, set BaseF.tars |
+| void setTarsTimeout\(tars::Int32 value\) | set timeout time(millseconds) |
+| void setTarsBuffer\(const vector<tars::Char>& value\) | set buffer |
+| void setTarsContext\(const map&lt;std::string, std::string&gt;& value\) | set context |
+| void setTarsStatus\(const map&lt;std::string, std::string&gt;& value\) | set status info |
+| tars::Short getTarsVersion\(\) const | get protocol version |
+| tars::Char getTarsPacketType\(\) const | get package type |
+| tars::Int32 getTarsMessageType\(\) const | get message type |
+| tars::Int32 getTarsTimeout\(\) const | get timeout |
+| const vector<tars::Char>& getTarsBuffer\(\) const | get encode buffer |
+| const map&lt;std::string, std::string&gt;& getTarsContext\(\) const | get context |
+| const map&lt;std::string, std::string&gt;& getTarsStatus\(\) const | get status |
+| tars::Int32 getTarsResultCode\(\) const | Get the tars service processing result code, 0 for success, non-0 for failure |
+| string getTarsResultDesc\(\) const | Get the tars service processing result description |
 
-#### 使用注意
+TarsUniPacket inherits UniPacket. When you need to communicate with the TarsUniPacket service, you can use TarsUniPacket to complete service communication. The underlying package structure of TarsUniPacket is RequestPackage
 
-以上接口调用出错将抛出runtime\_error 异常。
+**An error in the above interface call will throw a runtime exeception**
 
-#### 使用例子
+#### Example
 
-参见cpp/test/testServant/testTup/下的示例程序
+see cpp/test/testServant/testTup
 
 ### Java
 
-#### 类接口
+almost same with c++.
 
-UniAttribute类
-
-UniPacket类
-
-TarsUniPacket类
-
-#### 使用注意
-
-1.目前TUP支持基本类型, TarsStruct，已经存放基本类型或TarsStruct的map和list。对数组只支持byte\[\]，放入别的类型会抛IllegalArgumentException异常；
-
-2.put和get方法调用出错将抛出ObjectCreateException 异常；
+#### Notice
+1. At present, TUP supports basic types, tarsstruct, and maps and lists for storing basic types or tarsstruct. Only byte\[\] is supported for arrays. Putting other types will throw IllegalArgumentException exception
+2. An ObjectCreateException exception will be thrown if the put and get method calls are wrong;
 
 
 

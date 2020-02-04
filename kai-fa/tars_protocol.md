@@ -1,4 +1,4 @@
-# Table of Contents
+# Directory
 > * [Tars Language](#main-chapter-2)
 > * [Tars Protocol](#main-chapter-3)
 
