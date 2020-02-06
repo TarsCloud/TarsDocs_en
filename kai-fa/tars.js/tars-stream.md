@@ -1,181 +1,175 @@
-# @tars/stream
 
-## 00 - 安装
+# 00-Installation
+> $ npm install @ tars/stream
 
-> $ npm install @tars/stream
+# 01-Basic introduction and usage of stream module
+The stream module is used as the Tars (tars / TUP) basic protocol codec library. This module can be used to encode and decode data streams based on the tars protocol description format, and can communicate with TARS servers and terminals that currently use the tars protocol.
 
-## 01 - stream模块基本介绍和使用方法
+The tars codec module workflow generally has the following three methods:
 
-stream模块用作Tars\(tars/TUP\)基础协议编解码库，使用该模块可以基于tars协议描述格式对数据流进行编解码，并能够与目前使用tars协议的TARS服务端以及终端进行无障碍通信。
+### The first is to use the tars file as the communication bridge between the caller and the server (the parties agree that the final agreement shall be based on the tars file).
+The tars file is the protocol description file that ends with ".tars".
 
-tars编解码模块工作流方式一般有如下三种：
+The tars file is generally developed by the back-end development. The front-end development needs to ask the back-end development for the confirmed tars file, and then convert it into a source code file suitable for NodeJS through tools.
 
-#### 第一种，以tars文件作为调用方和服务方的通信桥梁（双方约定最终协议以tars文件为准）。
-
-该tars文件也就是我们常说的以".tars"结尾的协议描述文件。
-
-该tars文件一般由后台开发制定，前台开发需向后台开发索求经评审确认的tars文件，然后经工具转换成适用于NodeJS的编解码源代码文件。
-
-```text
+```c ++
 module TRom
 {
-    struct User_t
-    {
-        0 optional int id = 0;
-        1 optional float score = 0;
-        2 optional string name = "";
-    };
+    struct User_t
+    {
+        0 optional int id = 0;
+        1 optional float score = 0;
+        2 optional string name = "";
+    };
 
-    struct Result_t
-    {
-        0 optional int id = 0;
-    };
+    struct Result_t
+    {
+        0 optional int id = 0;
+    };
 
-    interface NodeJsComm
-    {
-        int test();
+    interface NodeJsComm
+    {
+        int test ();
 
-        int getall(User_t stUser, out Result_t stResult);
+        int getall (User_t stUser, out Result_t stResult);
 
-        int getUsrName(string sUsrName, out string sValue1, out string sValue2);
+        int getUsrName (string sUsrName, out string sValue1, out string sValue2);
 
-        int secRequest(vector<byte> binRequest, out vector<byte> binResponse);
-    };
+        int secRequest (vector <byte> binRequest, out vector <byte> binResponse);
+    };
 };
 ```
-
-比如，我们将如上内容保存为“Protocol.tars”后，可以使用如下的命令生成不同的文件：
+For example, after we save the above as "Protocol.tars", we can use the following command to generate different files:
 
 > $ tars2node Protocol.tars
 
-上述命令将忽略interface描述段，只转换文件中定义的“常量”、“枚举值”、“结构体”等数据类型，供开发者当不使用Tars框架作为调用工具时的编解码库文件。生成的文件名称为“Protocol.js”。
+The above command will ignore the interface description section, and only convert the data types such as "constant", "enumeration value", and "structure" defined in the file, for developers to use the Tars framework as the codec library file when calling tools. The generated file name is "Protocol.js".
+
 
 > $ tars2node Protocol.tars --client
 
-上述命令不仅转换文件中定义的“常量”、“枚举值”、“结构体”等数据类型，同时将interface的描述段翻译成RPC调用框架。生成的文件名称为“ProtocolProxy.js”，该文件供调用方使用。开发者引入该文件之后，可以直接调用服务端的服务。具体的使用方法请参考“npm install rpc”模块的说明文档。
+The above command not only converts data types such as "constant", "enumeration value", "structure" defined in the file, but also translates the description section of the interface into the RPC call framework. The resulting file is called "ProtocolProxy.js" and is used by the caller. After the developer introduces this file, he can directly call the server-side service. For specific usage, please refer to the documentation of the "npm install rpc" module.
+
 
 > $ tars2node Protocol.tars --server
 
-上述命令不仅转换文件中定义的“常量”、“枚举值”、“结构体”等数据类型，同时将interface的描述段翻译成服务端的接口文件。生成的文件名称为“Protocol.js”以及“ProtocolImp.js”，开发者不要改动“Protocol.js”，只需要继续完善“ProtocolImp.js”，实现文件中具体的函数，即可作为Tars服务端提供服务。具体的使用方法请参考“npm install rpc”模块的说明文档。
+The above command not only converts data types such as "constant", "enumeration value", "structure" defined in the file, but also translates the description section of the interface into the server-side interface file. The generated file names are "Protocol.js" and "ProtocolImp.js". The developer should not modify "Protocol.js", but only need to continue to improve "ProtocolImp.js", and implement the specific functions in the file to serve as the Tars server. Provide services. For specific usage, please refer to the documentation of the "npm install rpc" module.
 
-#### 第二种，没有协议描述文件，需要我们自己手工书写编解码代码时。
 
-比如服务后台提供购买某件商品的功能，它需要“用户号码”、“用户昵称”、“商品编号”、“商品数量”等四个参数。 后台对这四个参数的编号（也就是tars中所指的tag）分别为0、1、2、3。
+### Second, there is no protocol description file, when we need to write codec code by ourselves.
+For example, the service background provides the function of purchasing a certain product, which requires four parameters, such as "user number", "user nickname", "item number" and "number of products".
+The background numbers of these four parameters (that is, the tags in tars) are 0, 1, 2, and 3, respectively.  
 
-```text
-//第一步，引入tars/TUP编解码库
-var Tars = require("@tars/stream");
+```javascript
+// First step, introduce tars / TUP codec library
+var Tars = require ("@tars/stream");
 
-//第二步，客户端按照服务端要求，对输入参数进行编码
-var ost = new Tars.OutputStream();
-ost.writeUInt32(0, 155069599);		//写入“用户号码”；在服务端“0”代表“用户号码”。
-ost.writeString(1, "KevinTian");	//写入“用户昵称”；在服务端“1”代表“用户昵称”。
-ost.writeUInt32(2, 1002121);		//写入“商品编号”；在服务端“2”代表“商品编号”。
-ost.writeUInt32(3, 10);				//写入“商品数量”；在服务端“3”代表“商品数量”。
+// The second step, the client encodes the input parameters according to the server's requirements
+var ost = new Tars.TarsOutputStream ();
+ost.writeUInt32 (0, 155069599); // write "user number"; "0" on the server side represents "user number".
+ost.writeString (1, "KevinTian"); // write "user nickname"; on the server side "1" stands for "user nickname".
+ost.writeUInt32 (2, 1002121); // Write “Product Number”; “2” on the server side stands for “Product Number”.
+ost.writeUInt32 (3, 10); // write "number of products"; "3" on the server side means "number of products".
 
-//第三步，客户端将打包后的二进制Buffer发送给服务端
-send ( ost.getBinBuffer().toNodeBuffer() ) to server
+// The third step, the client sends the packed binary buffer to the server
+send (ost.getBinBuffer (). toNodeBuffer ()) to server
 
-//第四步，服务端从客户端接收完整的请求二进制Buffer
-recv ( var requestBuffer = new Buffer() ) from client
+// Fourth step, the server receives the complete request binary buffer from the client
+recv (var requestBuffer = new Buffer ()) from client
 
-//第五步，将该请求进行解码反序列化
-var ist = new Tars.InputStream(new Tars.BinBuffer(requestBuffer));
+// Fifth step, decode and deserialize the request
+var ist = new Tars.TarsInputStream (new Tars.BinBuffer (requestBuffer));
 
-var uin  = ist.readUInt32(0, true);	//根据编号“0”读取“用户号码”。
-var name = ist.readString(1, true);	//根据编号“1”读取“用户昵称”。
-var gid  = ist.readUInt32(2, true);	//根据编号“2”读取“商品编号”。
-var num  = ist.readUInt32(3, true);	//根据编号“3”读取“商品数量”。
+var uin = ist.readUInt32 (0, true); // Read "user number" according to the number "0".
+var name = ist.readString (1, true); // Read "user nickname" according to the number "1".
+var gid = ist.readUInt32 (2, true); // Read the "item number" according to the number "2".
+var num = ist.readUInt32 (3, true); // Read the "number of products" according to the number "3".
 
-//第六步，根据相关传入参数进行相应的逻辑操作
+// The sixth step is to perform corresponding logical operations according to the relevant incoming parameters
+console.log ("name:", name);
+console.log ("num:", num);
+...
+```
+### Third, the server accepts data in the TUP protocol format.
+```js
+// First step, introduce tars / TUP codec library
+var Tars = require ("@tars/stream");
+
+// The second step, the client encodes the input parameters according to the server's requirements
+var tup_encode = new Tars.Tup ();
+tup_encode.writeUInt32 ("uin", 155069599); // The variable name of the server interface function "user number" is "uin".
+tup_encode.writeString ("name", "KevinTian"); // The variable name of the server interface function "user nickname" is "name".
+tup_encode.writeUInt32 ("gid", 1002121); // The variable name of the server interface function "item number" is "gid".
+tup_encode.writeUInt32 ("num", 10); // The variable name of the server-side interface function "number of products" is "uum".
+
+var BinBuffer = tup_encode.encode (true);
+
+// The third step, the client sends the packed binary buffer to the server
+send (BinBuffer.toNodeBuffer ()) to server
+
+// Fourth step, the server receives the complete request binary buffer from the client
+recv (var requestBuffer = new Buffer ()) from client
+
+// Fifth step, decode and deserialize the request
+var tup_decode = new Tars.Tup ();
+tup_decode.decode (new Tars.BinBuffer (requestBuffer));
+
+var uin = tup_decode.readUInt32 ("uin"); // The server reads the "user number" according to the variable name "uin".
+var name = tup_decode.readString ("name"); // The server reads the "user nickname" according to the variable name "name".
+var num = tup_decode.readUInt32 ("num"); // The server reads the "item number" according to the variable name "gid".
+var gid = tup_decode.readUInt32 ("gid"); // The server reads the "number of products" according to the variable name "num".
+
+// The sixth step is to perform corresponding logical operations according to the relevant incoming parameters
 console.log("name:", name);
 console.log("num :", num);
 ......
 ```
 
-#### 第三种，服务端接受TUP协议格式的数据。
+# 02 - Data types supported by stream and how to use them
+**Basic data types**
 
-```text
-//第一步，引入tars/TUP编解码库
+| Data type | Corresponding data types in c++|
+| ------------- | ------------- |
+| bool | bool |
+| signed integer | char(int8)、short(int16)、int(int32)、long long(int64) |
+| unsigned integer | unsigned char(uint8)、unsigned short(uint16)、unsigned int(uint32) |
+| number | float(32位)、double(64位) |
+| string | std::string |
+
+**Complex data type**
+
+| Data type | Corresponding data types in c++ |
+| ------------- | ------------- |
+| struct | struct（In the Tars framework, you need to use tars2node to generate classes in Javascript according to tars protocol files.）|
+| Binary buffer | vector&lt;char&gt;（Use the [stream].BinBuffer type in NodeJs to simulate）|
+| Array | vector&lt;DataType&gt;（Use the [stream].list (vproto) type in NodeJs to simulate）|
+| Dictionary | map&lt;KeyType, DataType&gt;（Use the [stream].Map (kproto, vproto) type in NodeJs to simulate）|
+
+**Special data types in NodeJs**
+
+**[1]：** Complex data types and basic data types, or a combination of complex data types and complex data types,can construct other advanced data types.
+
+**[2]：** Although Float and Double data types are supported in NodeJS, they are not recommended because there is a loss of precision in the values after serialization and deserialization, which in some cases can cause harm to the business logic.
+
+**[3]：** The 64-bit shaping we implement here is actually pseudo-64-bit, and its prototype in NodeJs is still Number.
+
+We know that Number types in Js are represented by the IEEE754 double-precision floating-point standard. IEEE754 specifies that the first significant digit defaults to 1, followed by 52 digits to represent the value.
+
+That is to say, the precision of the significant number provided by IEEE754 is 53 binary digits, which means that the Number value of NodeJs or the Int64 data type we implemented can only accurately represent integers whose absolute value is less than 2 to the power of 53.
+
+**[4]：** In Javascript, the String type is Unicode encoding, and we convert it to UTF8 encoding format when we encode and decode tars.
+
+The string received by the server is UTF8-encoded. If you need to process the string in a GBK-encoded way, the server needs to transcode (UTF8- > GBK) first.
+
+If the server uses GBK, to send a string before it is sent, it needs to be converted to UTF8 encoding.
+
+# 03 - Usage of basic types
+```javascript
+//stream module is required
 var Tars = require("@tars/stream");
 
-//第二步，客户端按照服务端要求，对输入参数进行编码
-var tup_encode = new Tars.Tup();
-tup_encode.writeUInt32("uin",  155069599);		//服务端接口函数“用户号码”的变量名称为“uin”。
-tup_encode.writeString("name", "KevinTian");	//服务端接口函数“用户昵称”的变量名称为“name”。
-tup_encode.writeUInt32("gid",  1002121);		//服务端接口函数“商品编号”的变量名称为“gid”。
-tup_encode.writeUInt32("num",  10);				//服务端接口函数“商品数量”的变量名称为“uum”。
-
-var BinBuffer = tup_encode.encode(true);
-
-//第三步，客户端将打包后的二进制Buffer发送给服务端
-send ( BinBuffer.toNodeBuffer() ) to server
-
-//第四步，服务端从客户端接收完整的请求二进制Buffer
-recv ( var requestBuffer = new Buffer() ) from client
-
-//第五步，将该请求进行解码反序列化
-var tup_decode = new Tars.Tup();
-tup_decode.decode(new Tars.BinBuffer(requestBuffer));
-
-var uin  = tup_decode.readUInt32("uin");		//服务端根据变量名“uin”读取“用户号码”。
-var name = tup_decode.readString("name");		//服务端根据变量名“name”读取“用户昵称”。
-var num  = tup_decode.readUInt32("num");		//服务端根据变量名“gid”读取“商品编号”。
-var gid  = tup_decode.readUInt32("gid");		//服务端根据变量名“num”读取“商品数量”。
-
-//第六步，根据相关传入参数进行相应的逻辑操作
-console.log("name:", name);
-console.log("num :", num);
-......
-```
-
-## 02 - stream支持的数据类型以及使用方法
-
-**基本数据类型**
-
-| 数据类型 | 对应C++语言的数据类型 |
-| :--- | :--- |
-| 布尔值 | bool |
-| 整型 | char\(int8\)、short\(int16\)、int\(int32\)、long long\(int64\) |
-| 整型 | unsigned char\(uint8\)、unsigned short\(uint16\)、unsigned int\(uint32\) |
-| 数值 | float\(32位\)、double\(64位\) |
-| 字符串 | std::string |
-
-**复杂数据类型**
-
-| 数据类型 | 对应C++语言的数据类型 |
-| :--- | :--- |
-| 结构体 | struct（在Tars框架中需要使用tars2node根据tars文件来生成Javascript中的类） |
-| 二进制Buffer | vector&lt;char&gt;（在NodeJs中使用\[stream\].BinBuffer类型来模拟） |
-| 数组 | vector&lt;DataType&gt;（在NodeJs中使用\[stream\].List\(vproto\)类型来模拟） |
-| 词典 | map&lt;KeyType, DataType&gt;（在NodeJs中使用\[stream\].Map\(kproto, vproto\)类型来模拟） |
-
-**关于NodeJs中数据类型的特别说明**
-
-**\[1\]：** “复杂数据类型”与“基本数据类型”，或者“复杂数据类型”与“复杂数据类型”组合使用可以组成其他高级数据类型。
-
-**\[2\]：** 虽然NodeJS中支持Float和Double数据类型，但我们不推荐使用，因为在序列化和反序列化之后，数值存在精度损失，某些情况下会对业务逻辑造成伤害。
-
-**\[3\]：** 我们这里实现的64位整形实际上是伪64位，在NodeJs中它的原形仍然是Number。
-
-我们都知道Js中的Number类型采用IEEE754双精度浮点数标准来表示。IEEE754规定有效数字第一位默认为1，再加上后面的52位来表示数值。
-
-也就是说IEEE754提供的有效数字的精度为53个二进制位，这就意味着NodeJs的Number数值或者说我们实现的Int64数据类型只能精确表示绝对值小于2的53次方的整数。
-
-**\[4\]：** 在Javascript中String类型是Unicode编码，在tars编解码时我们将其转换成了UTF8编码格式；
-
-后台服务程序接受到的字符串是UTF8编码，如果需要按照GBK编码的方式处理字符串，需要后台程序先做下转码（UTF8-&gt;GBK）；
-
-后台服务程序如果使用的是GBK，发送字符串之前，需要将其转成UTF8编码。
-
-## 03 - 基本类型使用方法
-
-```text
-//必须引入stream模块
-var Tars = require("@tars/stream");
-
-//使用Tars.OutputStream对数据进行序列化
-var os = new Tars.OutputStream();
+//use Tars.TarsOutputStream to serialize data
+var os = new Tars.TarsOutputStream();
 
 os.writeBoolean(0, false);
 os.writeInt8(1, 10);
@@ -187,8 +181,8 @@ os.writeUInt16(6, 65535);
 os.writeUInt32(7, 0xFFFFFFEE);
 os.writeString(8, "我的测试程序");
 
-//使用Tars.InputStream对数据进行反序列化
-var is = new Tars.InputStream(os.getBinBuffer());
+//use Tars.TarsInputStream to deserialize data
+var is = new Tars.TarsInputStream(os.getBinBuffer());
 
 var tp0 = is.readBoolean(0, true, false);
 console.log("BOOLEAN:", tp0);
@@ -218,13 +212,11 @@ var tp8 = is.readString(8, true, "");
 console.log("STRING:", tp8);
 ```
 
-## 04 - 复杂类型前传 - 用于表示复杂类型的类型原
+# 04 - Complex type -  prototype used to represent complex types
+First of all, let's understand what is **type prototype**!
 
-首先，我们理解下什么是 **类型原型**！
-
-在C++中，我们可以按如下方法声明一个字符串的容器向量：
-
-```text
+In c++, we can declare the container vector of a string as follows:
+```cpp
 #include <string>
 #include <vector>
 
@@ -232,14 +224,12 @@ std::vector<std::string> vec;
 vec.push_back("qzone");
 vec.push_back("wechat");
 ```
+Where std::vector\<std::string>, std::vector represents the container type, and std::string represents the **type prototype** contained by the container.
 
-其中std::vectorstd::string，std::vector表示容器类型，而std::string则表示该容器所容纳的 **类型原型** 。
+So how do we represent this type in NodeJs? And can it be seamlessly integrated with the coding and decoding library of tars?
 
-那我们如何在NodeJs中表示该类型？并能使之与tars的编解码库无缝的融合？
-
-为了解决这个问题，我们使用如下的方法对std::vector进行模拟，以达到上述C++代码所能完成的功能：
-
-```text
+To solve this problem, we use the following methods to simulate std::vector in c++:
+```javascript
 var Tars = require("@tars/stream");
 
 var abc = new Tars.List(Tars.String);
@@ -247,36 +237,35 @@ abc.push("qzone");
 abc.push("wechat");
 ```
 
-其中Tars.List\(Tars.String\)，Tars.List表示数组类型，而Tars.String则用来表示该容器所容纳的 **类型原型**。
+Tars.List(Tars.String), Tars.List represents the array type, and Tars.String is used to represent the **type prototype** contained by the container.
 
-**至此，我们明白类型原型主要是用来与复杂数据类型组合，表示更加复杂的数据类型。**
+**Now, we understand that type prototypes are used to combine with complex data types to represent more complex data types.**
 
-目前的版本中，我们支持如下的类型原型定义：
+In the current version, we support the following type prototype definitions:：
 
-| 数据类型 | 描述 |
-| :--- | :--- |
-| 布尔值 | \[stream\].Boolean |
-| 整型 | \[stream\].Int8, \[stream\].Int16, \[stream\].32, \[stream\].64, \[stream\].UInt8, \[stream\].UInt16, \[stream\].UInt32 |
-| 数值 | \[stream\].Float, \[stream\].Double |
-| 字符串 | \[stream\].String |
-| 枚举值 | \[stream\].Enum |
-| 数组 | \[stream\].List |
-| 字典 | \[stream\].Map |
-| 二进制Buffer | \[stream\].BinBuffer |
+| Data type | Description |
+| ------------- | ------------- |
+| bool       | [stream].Boolean |
+| integer         | [stream].Int8, [stream].Int16, [stream].32, [stream].64, [stream].UInt8, [stream].UInt16, [stream].UInt32 |
+| number         | [stream].Float, [stream].Double |
+| string       | [stream].String |
+| enum       | [stream].Enum |
+| array         | [stream].List |
+| dictionary         | [stream].Map |
+| binary buffer | [stream].BinBuffer |
 
-为了大家更加清晰的理解该概念，我们提前描述一部分复杂类型的在NodeJs中的表示方法。
+n order for you to understand the concept more clearly, we describe in advance the representation of some complex types in NodeJs.
 
-数据类型的详细使用方法，请参考后续的详细说明。
-
-```text
+For more information on how to use the data type, please refer to the following detailed instructions.
+```javascript
 var Tars = require("@tars/stream");
 
-//c++语法：std::vector<int>
+//c++ code：std::vector<int>
 var abc = new Tars.List(Tars.Int32)
 abc.push(10000);
 abc.push(10001);
 
-//c++语法：std::vector<std::vector<std::string> >
+//c++ code：std::vector<std::vector<std::string> >
 var abc = new Tars.List(Tars.List(Tars.String));
 var ta  = new Tars.List(Tars.String);
     ta.push("ta1");
@@ -287,12 +276,12 @@ var tb  = new Tars.List(Tars.String);
 abc.push(ta);
 abc.push(tb);
 
-//c++语法：std::map<std::string, std::string>
+//c++ code：std::map<std::string, std::string>
 var abc = new Tars.Map(Tars.String, Tars.String);
 abc.insert("key1", "value1");
 abc.insert("key2", "value2");
 
-//c++语法：std::map<std::string, std::vector<string> >
+//c++ code：std::map<std::string, std::vector<string> >
 var abc = new Tars.Map(Tars.String, Tars.List(Tars.String));
 var ta  = new Tars.List(Tars.String);
     ta.push("ta1");
@@ -303,15 +292,15 @@ var tb  = new Tars.List(Tars.String);
 abc.insert("key_a", ta);
 abc.insert("key_b", tb);
 
-//c++语法：std::vector<char>
+//c++ code：std::vector<char>
 var abc = new Tars.BinBuffer();
 abc.writeInt32(10000);
 abc.writeInt32(10001);
 ```
 
-## 05 - 复杂类型 - struct（结构体）的使用方法说明
 
-```text
+# 05-Complex Types-Explanation of how to use struct
+```c++
 module Ext
 {
     struct ExtInfo  {
@@ -321,12 +310,10 @@ module Ext
     };
 };
 ```
+Save the above as a file "Demo.tars", and then use the command "tars2node Demo.tars" to generate the codec file "Demo.js".
 
-将上述内容保存为文件“Demo.tars”，然后使用命令“tars2node Demo.tars”生成编解码文件“Demo.js”。
-
-“Demo.js”内容如下所示：
-
-```text
+The content of "Demo.js" is as follows:
+```javascript
 var TarsStream = require("@tars/stream");
 
 var Ext = Ext || {};
@@ -363,7 +350,7 @@ Ext.ExtInfo.prototype._genKey = function () {
     return this._proto_struct_name_;
 }
 Ext.ExtInfo.prototype.toBinBuffer = function () {
-    var os = new TarsStream.OutputStream();
+    var os = new TarsStream.TarsOutputStream();
     this._writeTo(os);
     return os.getBinBuffer();
 }
@@ -372,124 +359,123 @@ Ext.ExtInfo.create = function (is) {
 }
 ```
 
-**对“module Ext”的说明**
+**Explanation on "module Ext"**
 
-Ext在C++中就是命名空间，在Javascript中我们将它翻译成一个Object，该命名空间下所有的“常量”、“枚举值”、“结构体”、“函数”都挂接在该Object之下。
+Ext is a namespace in C++. In Javascript, we translate it into an Object. All "constants", "enumeration values", "structures", and "functions" in this namespace are attached to the Object. under.
 
-**tars文件中描述的结构体的表示方法**
+**Representation of structures described in tars files**
 
-首先，结构体翻译成一个Object。翻译程序根据数据类型以及tars文件中定义的默认值，生成数据成员。除tars中定义的数据成员之外，根据编解码的需要，翻译程序为结构体添加了若干辅助函数。这些函数如\_writeTo，在需要将结构体序列化成数据流的地方，被编解码库调用，该函数逐个将数据成员写入数据流中。
+First, the structure is translated into an Object. The translator generates data members based on the data type and default values ​​defined in the tars file. In addition to the data members defined in tars, the translator adds several auxiliary functions to the structure according to the needs of the codec. These functions, such as _writeTo, are called by the codec library where the structure needs to be serialized into a data stream. This function writes data members one by one into the data stream.
 
-**翻译程序默认添加的辅助函数**
+**Auxiliary functions added by the translation program by default**
 
-| 方法 | 限制 | 描述 |
-| :--- | :--- | :--- |
-| \_write | 开发者不可用 | 静态函数。当结构体用作类型原型时使用。 |
-| \_read | 开发者不可用 | 静态函数。当结构体用作类型原型时使用。 |
-| \_readFrom | 开发者不可用 | 静态函数。从数据流中读取结构体的数据成员值，并生成一个权限的结构体示例返回。 |
-| \_writeTo | 开发者不可用 | 成员函数。将当前结构体的数据成员写入指定的数据流中。 |
-| \_equal | 开发者不可用 | 成员函数。将当前结构体用作字典类型Key值时的比较函数。 |
-| \_genKey | 开发者不可用 | 成员函数。将当前结构体用作字典类型Key值时，内部使用该函数获得当前结构体的别名。 |
-| toBinBuffer | 开发者可用 | 成员函数。将当前结构体序列化成二进制Buffer，返回值类型为require\("@tars/stream"\).BinBuffer。 |
-| create | 开发者可用 | 成员函数。从数据流中返回一个全新的结构体。 |
+| Method | Restrictions | Description |
+| ------------- | ------------- | ------------- |
+\_write | Developer unavailable | Static function. Used when a structure is used as a type prototype. |
+\_read | Unavailable to developers | Static functions. Used when a structure is used as a type prototype. |
+\_readFrom | Unavailable to developers | Static function. Reads the data member values ​​of the structure from the data stream and generates a permissioned structure example to return. |
+\_writeTo | Developer unavailable | Member function. Writes the data members of the current structure to the specified data stream. |
+\_equal | Unavailable for developers | Member functions. Comparison function when the current structure is used as the dictionary type Key value. |
+\_genKey | Unavailable for developers | Member functions. When the current structure is used as the dictionary type Key value, this function is used internally to obtain the alias of the current structure. |
+| toBinBuffer | Developer Available | Member Functions. Serializes the current structure into a binary buffer, and the return value type is require ("@tars/stream"). BinBuffer. |
+create | Developer Available | Member Functions. Returns a completely new structure from the data stream. |
 
-**结构体的使用示例**
+**Example of using structure**
 
-我们演示结构体在三个典型场景的使用方法：
+We demonstrate the use of structures in three typical scenarios:
 
-**第一种场景：** 当结构体用作RPC函数的参数时。
+**First scenario:** When a structure is used as an argument to an RPC function.
 
-由于rpc框架会自动对参数进行序列化，所以我们无需关心编解码，只需要按照普通的类一样，先new后赋值，然后传入参数直接调用RPC函数即可。
+Since the rpc framework will serialize the parameters automatically, we don't need to care about encoding and decoding, just need to follow the common class, first assign new value, and then pass the parameters to call the RPC function directly.
 
-假如服务端有个RPC如下定义：
+If the server has an RPC as defined below:
 
-```text
+```c ++
 module TRom
 {
-    struct Param  {
-        0 optional string sUserName;
-        1 optional int iId;
-    };
+    struct Param {
+        0 optional string sUserName;
+        1 optional int iId;
+    };
 
-	interface process {
-		int getUserLevel(Param userInfo, out int iLevel);
-	};
+interface process {
+int getUserLevel (Param userInfo, out int iLevel);
+};
 };}
 ```
 
-安装上述方法生成tars编解码文件（生成文件名称为：Protocol.js）之后，按如下方法调用对端服务：
+After installing the above method to generate a tars codec file (the generated file name is Protocol.js), call the peer service as follows:
 
-```text
-var Tars  = require("@tars/rpc").client;
-var TRom = require("./Protocol.js").TRom;
+```javascript
+var Tars = require ("@ tars / rpc"). client;
+var TRom = require ("./ Protocol.js"). TRom;
 
-var prx = Tars.stringToProxy(TRom.NodeJsCommProxy, "TRom.NodeJsTestServer.NodeJsCommObj@tcp -h 10.12.22.13 -p 8080  -t 60000");
+var prx = Tars.stringToProxy (TRom.NodeJsCommProxy, "TRom.NodeJsTestServer.NodeJsCommObj@tcp -h 10.12.22.13 -p 8080 -t 60000");
 
-var usr = new TRom.Param();
+var usr = new TRom.Param ();
 usr.sUserName = "KevinTian";
-usr.iId       = 10000;
+usr.iId = 10000;
 
-prx.getUserLevel(usr).then(function (result) {
-	console.log("success:", result);
+prx.getUserLevel (usr) .then (function (result) {
+console.log ("success:", result);
 }, function (result) {
-	console.log("error:", result);
-}).done();
+console.log ("error:", result);
+}). done ();
 ```
 
-**第二种场景：** 对端非标准rpc框架，接受序列化的数据流作为参数。
+**Second scenario:** The peer non-standard rpc framework accepts serialized data streams as parameters.
 
-在这种场景下需要我们自己对结构体进行序列化。还是以上面的tars文件作为例子，一般的方法如下：
+In this scenario, we need to serialize the structure ourselves. Take the above tars file as an example, the general method is as follows:
 
-```text
-//客户端安装如下方法进行打包，然后将打包后的二进制数据流发送到服务端
-var Tars  = require("@tars/stream");
-var TRom = require("./Protocol.js").TRom;
+```js
+// The client installs the following methods to package, and then sends the packaged binary data stream to the server
+var Tars = require ("@tars/stream");
+var TRom = require ("./ Protocol.js"). TRom;
 
-var usr  = new TRom.Param();
+var usr = new TRom.Param ();
 usr.sUserName = "KevinTian";
-usr.iId       = 10000;
+usr.iId = 10000;
 
-var os = new Tars.OutputStream();
-os.writeStruct(1, usr);
+var os = new Tars.TarsOutputStream ();
+os.writeStruct (1, usr);
 
-//打包并得到发送的二进制数据流
-var toSendBuffer = os.getBinBuffer().toNodeBuffer();
+// Package and get the binary data stream sent
+var toSendBuffer = os.getBinBuffer (). toNodeBuffer ();
 ```
 
-客户端将toSendBuffer发送给服务端，并且服务端接受完毕之后按如下方法进行解码：
+The client sends toSendBuffer to the server, and after the server accepts it, it decodes it as follows:
 
-```text
-var Tars  = require("@tars/stream");
-var TRom = require("./Protocol.js").TRom;
+```javascript
+var Tars = require ("@ tars/stream");
+var TRom = require ("./Protocol.js"). TRom;
 
-var is   = new Tars.InputStream(new Tars.BinBuffer(toSendBuffer));
-var usr  = is.readStruct(1, true, TRom.Param);
+var is = new Tars.TarsInputStream (new Tars.BinBuffer (toSendBuffer));
+var usr = is.readStruct (1, true, TRom.Param);
 
-console.log("TRom.Param.sUserName:", usr.sUserName);
-console.log("TRom.Param.iId:", usr.iId);
+console.log ("TRom.Param.sUserName:", usr.sUserName);
+console.log ("TRom.Param.iId:", usr.iId);
 ```
 
-**第三种场景：** 对方服务要求数据流使用Tup协议，并且已经约定好了各个变量的名字。我们可以按如下的方法进行编解码：
+**Third scenario:** The peer service requires the data stream to use the Tup protocol, and the names of the variables have been agreed. We can encode and decode as follows:
 
-```text
-//客户端根据约定的名字，将结构体放入Tup中
-var Tars  = require("@tars/stream");
-var TRom = require("./Protocol.js").TRom;
+```javascript
+// The client puts the structure into Tup according to the agreed name
+var Tars = require ("@tars/stream");
+var TRom = require ("./ Protocol.js"). TRom;
 
-var usr  = new TRom.Param();
+var usr = new TRom.Param ();
 usr.sUserName = "KevinTian";
-usr.iId       = 10000;
+usr.iId = 10000;
 
-var tup_encode = new Tars.Tup();
-tup_encode.writeStruct("userInfo",  usr);
+var tup_encode = new Tars.Tup ();
+tup_encode.writeStruct ("userInfo", usr);
 
-//打包并得到发送的二进制数据流
-var toSendBuffer = tup_encode.encode(true).toNodeBuffer();
+// Package and get the binary data stream sent
+var toSendBuffer = tup_encode.encode (true) .toNodeBuffer ();
 ```
 
-客户端将toSendBuffer发送给服务端，并且服务端接受完毕之后按如下方法进行解码：
-
-```text
+The client sends toSendBuffer to the server, and after the server accepts it, it decodes it as follows:
+```javascript
 var Tars  = require("@tars/stream");
 var TRom = require("./Protocol.js").TRom;
 
@@ -502,1286 +488,1154 @@ console.log("TRom.Param.sUserName:", usr.sUserName);
 console.log("TRom.Param.iId:", usr.iId);
 ```
 
-## 06 - 复杂类型 - vector（数组）的使用方法说明
+# 06-Complex Types-How to Use Vectors (Arrays)
+Since Javascript's native Array does not support some special operations in tars, we encapsulate it once. Developers can understand the following code:
 
-由于Javascript原生的Array不支持tars中的一些特殊化操作，所以我们对它进行了一次封装。开发者可按下述的代码理解：
-
-```text
-[stream].List = function(proto)
+```javascript
+[stream].List = function (proto)
 {
-    this.proto = proto;
-    this.value = new Array();
-    this.push  = function (value) { this.value.push(value); }
-    ......
+    this.proto = proto;
+    this.value = new Array ();
+    this.push = function (value) {this.value.push (value);}
+    ...
 }
 ```
 
-**\[stream\].List 对象属性**
+#### [stream].List Object Properties
+| Properties | Description |
+| ------------- | ------------- |
+value | Array data type in Js. Tars.List is actually an upper-level encapsulation based on the Array. |
+| length | Returns the number of elements in the array. |
 
-| 属性 | 描述 |
-| :--- | :--- |
-| value | Js中的Array数据类型。Tars.List实际是基于该Array进行的上层封装。 |
-| length | 返回数组中元素的数目。 |
+#### [stream].List Object Method
+| Method | Description |
+| ------------- | ------------- |
+| at | Returns the element at the specified position in the array. |
+| push | Adds an element to the end of the array. |
+| forEach | The traversal method of the current array, please refer to the following examples for specific usage. |
+| toObject | Converts a List instance into a basic data object. For details, please refer to the following examples. |
+readFromObject | Processes the incoming array and pushes it to the List instance. For details, please refer to the following examples. |
 
-**\[stream\].List 对象方法**
+proto is the type prototype of Vector (type prototype determines the method used when encoding and decoding Vector, so the correct type prototype must be passed in when declaring Vector).
 
-| 方法 | 描述 |
-| :--- | :--- |
-| at | 返回数组中指定位置的元素。 |
-| push | 向数组的末尾添加一个元素。 |
-| forEach | 当前数组的遍历方法，具体使用方法请参考后面的示例。 |
-| toObject | 将List实例转化成基本的数据对象，具体使用方法请参考后面的示例。 |
-| readFromObject | 将传入的数组处理后push到List实例中，具体使用方法请参考后面的示例。 |
+#### [stream].List declaration example
 
-proto是Vector的类型原型（类型原型决定了在对Vector编解码时采用的方法，所以声明Vector的时候必须传入正确的类型原型）。
+```javascript
+var Tars = require ("@tars/stream");
 
-**\[stream\].List的声明示例**
+// Example 1: Declare vector <int32>
+var va = new Tars.List (Tars.Int32);
 
-```text
-var Tars = require("@tars/stream");
+// Example 2: Declare vector <string>
+var vb = new Tars.List (Tars.String);
 
-//例子1：声明vector<int32>
-var va = new Tars.List(Tars.Int32);
+// Example 3: Declare vector <map <uint32, string>>
+var vc = new Tars.List (Tars.Map (Tars.UInt32, Tars.String));
 
-//例子2：声明vector<string>
-var vb = new Tars.List(Tars.String);
-
-//例子3：声明vector<map<uint32, string> >
-var vc = new Tars.List(Tars.Map(Tars.UInt32, Tars.String));
-
-//例子4：声明vector<struct>，假设结构体名称为TRom.Param
-var vd = new Tars.Vector(TRom.Param);
+// Example 4: Declare vector <struct>, assuming the structure name is TRom.Param
+var vd = new Tars.Vector (TRom.Param);
 ```
 
-**\[stream\].List的操作示例**
+#### [stream].List operation example
 
-```text
-var Tars = require("@tars/stream");
+```javascript
+var Tars = require ("@tars/stream");
 
-var ve  = new Tars.List(Tars.String);
+var ve = new Tars.List (Tars.String);
 
-//向数组中添加元素
-ve.push("TENCENT-MIG");
-ve.push("TENCENT-SNG");
-ve.push("TENCENT-IEG");
-ve.push("TENCENT-TEG");
+// Add elements to the array
+ve.push ("TENCENT-MIG");
+ve.push ("TENCENT-SNG");
+ve.push ("TENCENT-IEG");
+ve.push ("TENCENT-TEG");
 
-//获取数组的长度
-console.log("Length:", ve.length);
+// Get the length of the array
+console.log ("Length:", ve.length);
 
-//获取指定位置的元素
-console.log("Array[1]:", ve.at(1));
+// Get the element at the specified position
+console.log ("Array [1]:", ve.at (1));
 
-//遍历方法1：
-ve.forEach(function (value, index, oArray) {
-	console.log("Array[" + index + "]:", value);
+// Iterate method 1:
+ve.forEach (function (value, index, oArray) {
+console.log ("Array [" + index + "]:", value);
 });
 
-// 遍历方法2：
-for (var index = 0, len = ve.length; index < len; index++) {
-	console.log("Array[" + index + "]:", ve.at(index));
+// Traverse method 2:
+for (var index = 0, len = ve.length; index <len; index ++) {
+console.log ("Array [" + index + "]:", ve.at (index));
 }
 
-// toObject方法和readFromObject方法的详细例子可以参照sample/list路径下的test-list-c3.js文件
-var user1 = new TRom.User_t();
+// Detailed examples of the toObject method and readFromObject method can refer to the test-list-c3.js file under the sample / list path
+var user1 = new TRom.User_t ();
 user1.id = 1;
 user1.name = 'x1';
 user1.score = 1;
 
-var user2 = new TRom.User_t();
+var user2 = new TRom.User_t ();
 user2.id = 2;
 user2.name = 'x2';
 user2.score = 2;
 
-var user3 = new TRom.User_t();
+var user3 = new TRom.User_t ();
 user3.id = 3;
 user3.name = 'x3';
 user3.score = 3;
 
-var userList1 = new Tars.List(TRom.User_t);
+var userList1 = new Tars.List (TRom.User_t);
 
-console.log('user1: ', user1);
-console.log('user2: ', user2);
+console.log ('user1:', user1);
+console.log ('user2:', user2);
 
-userList1.push(user1);
-userList1.push(user2);
+userList1.push (user1);
+userList1.push (user2);
 
-//toObject方法
-console.log('userList1: ', userList1.toObject());
+// toObject method
+console.log ('userList1:', userList1.toObject ());
 
-var userList2 = new Tars.List(TRom.User_t);
-//readFromObject方法
-userList2.readFromObject([user1, user2, user3]);
-console.log('userList2: ', userList2.toObject());
+var userList2 = new Tars.List (TRom.User_t);
+// readFromObject method
+userList2.readFromObject ([user1, user2, user3]);
+console.log ('userList2:', userList2.toObject ());
 ```
 
-## 07 - 复杂类型 - map（字典）的使用方法说明
+# 07-Complex Type-Map (Dictionary) Instructions
+Because Javascript's native Object does not support some special operations in tars, we encapsulate it once. Developers can understand the following code:
 
-由于Javascript原生的Object不支持tars中的一些特殊化操作，所以我们对它进行了一次封装。开发者可按下述的代码理解：
+```javascript
+[stream].Map = function (kproto, vproto) {
+    var Map = function () {
+        this._kproto = kproto;
+        this._vproto = vproto;
+        this.value = new Object ();
+        this.put = function (key, value) {this.insert (key, value);}
+        ...
+}
 
-```text
-[stream].Map = function(kproto, vproto) {
-    var Map = function() {
-        this._kproto = kproto;
-        this._vproto = vproto;
-        this.value   = new Object();
-        this.put     = function(key, value) { this.insert(key, value); }
-        ......
-	}
-
-	return new Map();
+return new Map ();
 }
 ```
 
-**\[stream\].Map 对象属性**
+#### [stream].Map object properties
+| Properties | Description |
+| ------------- | ------------- |
+| value | Object data type in Js. [stream].Map is actually an upper-level encapsulation based on this Object. |
 
-| 属性 | 描述 |
-| :--- | :--- |
-| value | Js中的Object数据类型。\[stream\].Map实际是基于该Object进行的上层封装。 |
+#### [stream].Map method properties
+| Method | Description |
+| ------------- | ------------- |
+insert | Adds an element to the dictionary. |
+| set | Same as insert. |
+| put | Same as insert. |
+remove | Removes the corresponding value from the dictionary according to the specified key. |
+| clear | Clear the current dictionary. |
+| has | Determine whether the dictionary contains the corresponding value according to the specified key. |
+| size | Returns the number of elements in the current dictionary. |
+| forEach | The traversal method of the current array, please refer to the following examples for specific usage |
+| toObject | Converts a Map instance into a basic data object. Please refer to the following examples for specific usage. |
+readFromObject | Inserts the passed object into the Map instance after processing, please refer to the following examples for specific usage |
 
-**\[stream\].Map 方法属性**
+#### [stream].Map declaration example
 
-| 方法 | 描述 |
-| :--- | :--- |
-| insert | 向字典中添加一个元素。 |
-| set | 同insert。 |
-| put | 同insert。 |
-| remove | 根据指定的key，从字典中删除对应的数值。 |
-| clear | 清空当前字典。 |
-| has | 根据指定的key，判断字典中是否包含对应的数值。 |
-| size | 返回当前字典中元素的数目。 |
-| forEach | 当前数组的遍历方法，具体使用方法请参考后面的示例。 |
-| toObject | 将Map实例转化成基本的数据对象，具体使用方法请参考后面的示例。 |
-| readFromObject | 将传入的对象处理后insert到Map实例中，具体使用方法请参考后面的示例。 |
-
-**\[stream\].Map的声明示例**
-
-```text
+```javascript
 var Tars = require("@tars/stream");
 
-//例子1：声明map<int32, int32>
-var ma = new Tars.Map(Tars.Int32, Tars.Int32);
+// Example 1: Declare map <int32, int32>
+var ma = new Tars.Map (Tars.Int32, Tars.Int32);
 
-//例子2：声明map<uint32, string>
-var mb = new Tars.Map(Tars.Int32, Tars.String);
+// Example 2: Declare map <uint32, string>
+var mb = new Tars.Map (Tars.Int32, Tars.String);
 
-//例子3：声明map<string, string>的方法
-var mc = new Tars.Map(Tars.String, Tars.String);
+// Example 3: Method for declaring map <string, string>
+var mc = new Tars.Map (Tars.String, Tars.String);
 
-//例子4：声明map<string, vector<int32> >
-var md = new Tars.Map(Tars.String, Tars.List(Tars.Int32));
+// Example 4: Declare map <string, vector <int32>>
+var md = new Tars.Map (Tars.String, Tars.List (Tars.Int32));
 
-//例子5：声明map<string, map<int32, vector<string> > >
-var me = new Tars.Map(Tars.String, Tars.Map(Tars.Int32, Tars.List(Tars.String)));
+// Example 5: Declare map <string, map <int32, vector <string>>>
+var me = new Tars.Map (Tars.String, Tars.Map (Tars.Int32, Tars.List (Tars.String)));
 
-//例子6：声明map<string, struct>的方法，假设结构体名称为TRom.Param
-var mf = new Tars.map(Tars.String, TRom.Param);
+// Example 6: Declare the method of map <string, struct>, assuming the structure name is TRom.Param
+var mf = new Tars.map (Tars.String, TRom.Param);
 ```
 
-**\[stream\].Map的操作示例**
+#### [stream].Map operation example
 
-```text
-var Tars = require("@tars/stream");
+```javascript
+var Tars = require ("@tars/stream");
 
-var mc = new Tars.Map(Tars.String, Tars.String);
+var mc = new Tars.Map (Tars.String, Tars.String);
 
-//向字典中添加元素
-mc.insert("KEY-00", "TENCENT-MIG");
-mc.insert("KEY-01", "TENCENT-IEG");
-mc.insert("KEY-02", "TENCENT-TEG");
-mc.insert("KEY-03", "TENCENT-SNG");
+// Add elements to the dictionary
+mc.insert ("KEY-00", "TENCENT-MIG");
+mc.insert ("KEY-01", "TENCENT-IEG");
+mc.insert ("KEY-02", "TENCENT-TEG");
+mc.insert ("KEY-03", "TENCENT-SNG");
 
-//获取字典元素大小
-console.log("SIZE:", mc.size());
+// Get dictionary element size
+console.log ("SIZE:", mc.size ());
 
-//判断字典中是否有指定的值
-console.log("Has:", mc.has("KEY-04"));
+// Check if there is a specified value in the dictionary
+console.log ("Has:", mc.has ("KEY-04"));
 
-//字典遍历
-mc.forEach(function (key, value) {
-	console.log("KEY:", key);
-	console.log("VALUE:", value);
+// Dictionary traversal
+mc.forEach (function (key, value) {
+console.log ("KEY:", key);
+console.log ("VALUE:", value);
 });
 
-// toObject方法和readFromObject方法的详细例子可以参照sample/map路径下的test-map-c5.js文件
-var user1 = new TRom.User_t();
+// Detailed examples of the toObject method and readFromObject method can refer to the test-map-c5.js file under the sample / map path
+var user1 = new TRom.User_t ();
 user1.id = 1;
 user1.name = 'x1';
 user1.score = 1;
 
-var user2 = new TRom.User_t();
+var user2 = new TRom.User_t ();
 user2.id = 2;
 user2.name = 'x2';
 user2.score = 2;
 
-var user3 = new TRom.User_t();
+var user3 = new TRom.User_t ();
 user3.id = 3;
 user3.name = 'x3';
 user3.score = 3;
 
-var userMap1 = new Tars.Map(Tars.String, TRom.User_t);
+var userMap1 = new Tars.Map (Tars.String, TRom.User_t);
 
-userMap1.insert('user1', user1);
-userMap1.insert('user2', user2);
+userMap1.insert ('user1', user1);
+userMap1.insert ('user2', user2);
 
-//toObject方法
-console.log('userMap1: ', userMap1.toObject());
+// toObject method
+console.log ('userMap1:', userMap1.toObject ());
 
-var userMap2 = new Tars.Map(Tars.String, TRom.User_t);
-//readFromObject方法
-userMap2.readFromObject({
-    'user1': user1,
-    'user2': user2,
-    'user3': user3
+var userMap2 = new Tars.Map (Tars.String, TRom.User_t);
+// readFromObject method
+userMap2.readFromObject ({
+    'user1': user1,
+    'user2': user2,
+    'user3': user3
 });
-console.log('userMap2: ', userMap2.toObject());
+console.log ('userMap2:', userMap2.toObject ());
+
 ```
+#### Support MultiMap type
+Support MultiMap type, this type allows a structure as the key of the Map. JavaScript native objects have no way to represent this data type, so this type does not implement the toObject and readFromObject methods supported by ordinary Maps.
 
-**支持MultiMap类型**
+The operation example is as follows:
 
-支持MultiMap类型，此类型允许以一个结构体作为Map的key。javascript原生对象没有办法表示此数据类型，因此此类型没有实现普通Map支持的toObject和readFromObject方法。
+```javascript
+// Construct Map type
+var msg = new Tars.Map (Test.StatMicMsgHead, Test.StatMicMsgBody);
+msg.put (StatMicMsgHead1, StatMicMsgBody1);
+msg.put (StatMicMsgHead2, StatMicMsgBody2);
 
-其操作实例如下：
+// tars encoding
+var os = new Tars.TarsOutputStream ();
+os.writeMap (1, msg);
 
-```text
-//构造Map类型
-var msg = new Tars.Map(Test.StatMicMsgHead, Test.StatMicMsgBody);
-msg.put(StatMicMsgHead1, StatMicMsgBody1);
-msg.put(StatMicMsgHead2, StatMicMsgBody2);
+// tars decoding
+var data = os.getBinBuffer (). toNodeBuffer ();
 
-//tars编码
-var os = new Tars.OutputStream();
-os.writeMap(1, msg);
+var is = new Tars.TarsInputStream (new Tars.BinBuffer (data));
+var ta = is.readMap (1, true, Tars.Map (Test.StatMicMsgHead, Test.StatMicMsgBody));
 
-//tars解码
-var data = os.getBinBuffer().toNodeBuffer();
-
-var is = new Tars.InputStream(new Tars.BinBuffer(data));
-var ta = is.readMap(1, true, Tars.Map(Test.StatMicMsgHead, Test.StatMicMsgBody));
-
-//遍历Map结果集
-ta.forEach(function (key, value){
-    console.log("KEY:", key.masterName, "VALUE.totalRspTime", value.totalRspTime);
+// Traverse the Map result set
+ta.forEach (function (key, value) {
+    console.log ("KEY:", key.masterName, "VALUE.totalRspTime", value.totalRspTime);
 });
 
-//根据值去获取
-var tb = ta.get(StatMicMsgHead2);
+// Get it according to the value
+var tb = ta.get (StatMicMsgHead2);
 if (tb == undefined) {
-    console.log("not found by name : StatMicMsgHead2");
+    console.log ("not found by name: StatMicMsgHead2");
 } else {
-    console.log(tb.totalRspTime);
+    console.log (tb.totalRspTime);
 }
 ```
+# 08-Complex Type-Instructions for Using Binary Buffer
 
-## 08 - 复杂类型 - 二进制Buffer的使用方法说明
+In the browser we can use "DataView" and "ArrayBuffer" to store and manipulate binary data. In order to improve performance, NodeJS provides a Buffer class. In order to facilitate the encoding and decoding of Tars, we have encapsulated the Buffer class. Developers can understand the following code:
 
-在浏览器中我们可以使用“DataView”和“ArrayBuffer”来存储和操作二进制数据。NodeJS为了提升性能，自身提供了一个Buffer类。为了方便Tars的编解码，我们对Buffer类进行了一层封装。开发者可按下述的代码理解：
-
-```text
+```javascript
 [stream].BinBuffer = function (buffer) {
-    this._buffer    = (buffer != undefined && buffer instanceof Buffer)?buffer:null;
-    this._length    = (buffer != undefined && buffer instanceof Buffer)?buffer.length:0;
-    this._capacity  = this._length;
-    this._position  = 0;
+    this._buffer = (buffer! = undefined && buffer instanceof Buffer)? buffer: null;
+    this._length = (buffer! = undefined && buffer instanceof Buffer)? buffer.length: 0;
+    this._capacity = this._length;
+    this._position = 0;
 }
 ```
 
-**\[stream\].BinBuffer 对象属性**
+#### [stream].BinBuffer Object Properties
+| Properties | Description |
+| ------------- | ------------- |
+length | Get the data length of this binary buffer |
+capacity | Get the maximum length of this binary buffer without reallocating memory |
+position | Gets or sets the access pointer of the current binary buffer |
 
-| 属性 | 描述 |
-| :--- | :--- |
-| length | 获取该二进制Buffer的数据长度 |
-| capacity | 获取该二进制Buffer在不重新分配内存的情况下，可容纳数据的最大长度 |
-| position | 获取或者设置当前二进制Buffer的访问指针 |
+> The difference between length and capacity:
+> Suppose we write an Int32 data to BinBuffer. After writing successfully, the difference between length and capacity:
 
-> length和capacity的区别：
+Since the BinBuffer class uses the default 512 length to request memory for the first allocation, the value of capacity at this time is 512
 
-> 假如我们向BinBuffer中写入一个Int32类型的数据。写成功之后，length和capacity的区别：
+> length indicates the size of the real data in the current buffer, and the value of length at this time is 4
 
-> 由于BinBuffer类在第一次分配时使用默认的512长度来申请内存，此时 capacity 的值为 512
-
-> length表示当前Buffer中存在真实数据的大小，此时 length 的值为 4
-
-**\[stream\].BinBuffer 方法属性**
+#### [stream].BinBuffer method properties
 
 **toNodeBuffer**
 
-> 函数定义；\[stream\].BinBuffer.toNodeBuffer\(\)
+> Function definition; [stream].BinBuffer.toNodeBuffer ()
+> Function: Returns the data of the current binary buffer. The value is a deep copy of the data of type NodeJS.Buffer.
 
-> 函数作用：返回当前二进制Buffer的数据，该值为深拷贝的类型为NodeJS.Buffer的数据
+Input parameters: none
 
-> 输入参数：无
-
-> 返回数据：NodeJS.Buffer类型
+Return data: NodeJS.Buffer type
 
 **print**
 
-> 函数定义：\[stream\].BinBuffer.print\(\)
+> Function definition: [stream].BinBuffer.print ()
 
-> 函数作用：以每行16个字节，并16进制的方式打印当前的Buffer
+> Function: Print the current buffer in 16 bytes per line and in hexadecimal
 
 **writeNodeBuffer**
 
-> 函数定义：\[stream\].BinBuffer.writeNodeBuffer\(srcBuffer, offset, byteLength\)
+> Function definition: [stream].BinBuffer.writeNodeBuffer (srcBuffer, offset, byteLength)
 
-> 函数作用：向二进制Buffer中写入NodeJS.Buffer类数据
+> Function: Write NodeJS.Buffer class data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | srcBuffer | NodeJS.Buffer | 原始的Buffer数据 |
-> | offset | UInt32 | 表示拷贝srcBuffer的起始位置 |
-> | byteLength | UInt32 | 表示从offset开始，从srcBuffer中拷贝的数据量 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | srcBuffer | NodeJS.Buffer | Raw Buffer Data |
+> | offset | UInt32 | indicates the starting position of copying srcBuffer |
+> | byteLength | UInt32 | indicates the amount of data copied from srcBuffer starting from offset |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + byteLength`
+> [1] `length = length of the current BinBuffer + originalLength`
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + byteLength`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + byteLength`
 
 **writeBinBuffer**
 
-> 函数定义：\[stream\].BinBuffer.writeBinBuffer\(value\)
+> Function definition: [stream].BinBuffer.writeBinBuffer (value)
 
-> 函数作用：向二进制Buffer中写入\[stream\].BinBuffer类数据
+> Function: Write [stream].BinBuffer data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | \[stream\].BinBuffer | 表示二进制Buffer |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | [stream].BinBuffer | represents a binary buffer |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + value.length`
+> [1] `length = length (original buffer data length) + value.length of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + value.length`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + value.length`
 
 **writeInt8**
 
-> 函数定义：\[stream\].BinBuffer.writeInt8\(value\)
+> Function definition: [stream].BinBuffer.writeInt8 (value)
 
-> 函数作用：向二进制Buffer中写入Int8类数据
+> Function: Write Int8 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Int8 | 8位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Int8 | 8-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 1`
+> [1] `length = length (original buffer data length) + 1` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 1`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 1`
 
 **writeInt16**
 
-> 函数定义：\[stream\].BinBuffer.writeInt16\(value\)
+> Function definition: [stream].BinBuffer.writeInt16 (value)
 
-> 函数作用：向二进制Buffer中写入Int16类数据
+> Function: Write Int16 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Int16 | 16位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Int16 | 16-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 2`
+> [1] `length = length (original buffer data length) + 2` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 2`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 2`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeInt32**
 
-> 函数定义：\[stream\].BinBuffer.writeInt32\(value\)
+> Function definition: [stream].BinBuffer.writeInt32 (value)
 
-> 函数作用：向二进制Buffer中写入Int32类数据
+> Function: Write Int32 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Int32 | 32位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Int32 | 32-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 4`
+> [1] `length = length (original buffer data length) + 4` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeInt64**
 
-> 函数定义：\[stream\].BinBuffer.writeInt64\(value\)
+> Function definition: [stream].BinBuffer.writeInt64 (value)
 
-> 函数作用：向二进制Buffer中写入Int64类数据
+> Function: Write Int64 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Int64 | 64位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Int64 | 64-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 8`
+> [1] `length = length (original buffer data length) of the current BinBuffer + 8`
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 8`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 8`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeUInt8**
 
-> 函数定义：\[stream\].BinBuffer.writeUInt8\(value\)
+> Function definition: [stream].BinBuffer.writeUInt8 (value)
 
-> 函数作用：向二进制Buffer中写入UInt8类数据
+> Function: Write UInt8 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | UInt8 | 8位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | UInt8 | 8-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 1`
+> [1] `length = length (original buffer data length) + 1` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 1`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 1`
 
 **writeUInt16**
 
-> 函数定义：\[stream\].BinBuffer.writeUInt16\(value\)
+> Function definition: [stream].BinBuffer.writeUInt16 (value)
 
-> 函数作用：向二进制Buffer中写入UInt16类数据
+> Function: Write UInt16 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | UInt16 | 16位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | UInt16 | 16-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 2`
+> [1] `length = length (original buffer data length) + 2` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 2`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 2`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeUInt32**
 
-> 函数定义：\[stream\].BinBuffer.writeUInt32\(value\)
+> Function definition: [stream].BinBuffer.writeUInt32 (value)
 
-> 函数作用：向二进制Buffer中写入UInt32类数据
+> Function: Write UInt32 data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | UInt32 | 32位的整型数据 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | UInt32 | 32-bit integer data |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 4`
+> [1] `length = length (original buffer data length) + 4` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeFloat**
 
-> 函数定义：\[stream\].BinBuffer.writeFloat\(value\)
+> Function definition: [stream].BinBuffer.writeFloat (value)
 
-> 函数作用：向二进制Buffer中写入Float\(32位，单精度浮点数\)类数据
+> Function: Write Float (32-bit, single-precision floating point) data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Float | 32位的单精度浮点数 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Float | 32-bit single-precision floating-point number |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 4`
+> [1] `length = length (original buffer data length) + 4` of the current BinBuffer
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeDouble**
 
-> 函数定义：\[stream\].BinBuffer.writeDouble\(value\)
+> Function definition: [stream].BinBuffer.writeDouble (value)
 
-> 函数作用：向二进制Buffer中写入Double\(64位，双精度浮点数\)类数据
+> Function: Write Double (64-bit, double-precision floating point) data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | Double | 64位的双精度浮点数 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | Double | 64-bit double-precision floating-point number |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 8`
+> [1] `length = length (original buffer data length) of the current BinBuffer + 8`
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 8`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + 8`
 
-> \[3\]数据存储采用网络字节序
+> [3] Data storage uses network byte order
 
 **writeString**
 
-> 函数定义：\[stream\].BinBuffer.writeString\(value\)
+> Function definition: [stream].BinBuffer.writeString (value)
 
-> 函数作用：向二进制Buffer中写入String\(UTF8编码\)类数据
+> Function: Write String (UTF8 encoding) data to binary buffer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | value | String | UTF8编码的字符串 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | value | String | UTF8 encoded string |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `length = length(原Buffer数据长度) + 字符串的字节长度`
+> [1] `length = length (original buffer data length) of the current BinBuffer + byte length of the string`
 
-> \[2\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 字符串的字节长度`
+> [2] `position = position of the current BinBuffer (position pointer of the original Buffer) + byte length of the string`
 
 **readInt8**
 
-> 函数定义：\[stream\].BinBuffer.readInt8\(\)
+> Function definition: [stream].BinBuffer.readInt8 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Int8类型的变量
+> Function: Read a variable of type Int8 from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 1`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 1`
 
 **readInt16**
 
-> 函数定义：\[stream\].BinBuffer.readInt16\(\)
+> Function definition: [stream].BinBuffer.readInt16 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Int16类型的变量
+> Function: Read a variable of type Int16 from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 2`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 2`
 
 **readInt32**
 
-> 函数定义：\[stream\].BinBuffer.readInt32\(\)
+> Function definition: [stream].BinBuffer.readInt32 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Int32类型的变量
+> Function: Read a variable of type Int32 from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
 **readInt64**
 
-> 函数定义：\[stream\].BinBuffer.readInt64\(\)
+> Function definition: [stream].BinBuffer.readInt64 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Int64类型的变量
+> Function: Read a variable of type Int64 from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 8`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 8`
 
 **readUInt8**
 
-> 函数定义：\[stream\].BinBuffer.readUInt8\(\)
+> Function definition: [stream].BinBuffer.readUInt8 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个UInt8类型的变量
+> Function: Read a UInt8 variable from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 1`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 1`
 
 **readUInt16**
 
-> 函数定义：\[stream\].BinBuffer.readUInt16\(\)
+> Function definition: [stream].BinBuffer.readUInt16 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个UInt16类型的变量
+> Function: Read a UInt16 variable from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 2`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 2`
 
 **readUInt32**
 
-> 函数定义：\[stream\].BinBuffer.readUInt32\(\)
+> Function definition: [stream].BinBuffer.readUInt32 ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个UInt32类型的变量
+> Function: Read a UInt32 variable from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
 **readFloat**
 
-> 函数定义：\[stream\].BinBuffer.readFloat\(\)
+> Function definition: [stream].BinBuffer.readFloat ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Float\(32位的单精度浮点数\)类型的变量
+> Function: Read a variable of type Float (32-bit single-precision floating-point number) from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 4`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 4`
 
 **readDouble**
 
-> 函数定义：\[stream\].BinBuffer.readDouble\(\)
+> Function definition: [stream].BinBuffer.readDouble ()
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个Double\(64位的双精度浮点数\)类型的变量
+> Function: Read a variable of type Double (64-bit double-precision floating-point number) from the binary buffer according to the current data pointer
 
-> 输入参数：无
+Input parameters: none
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 8`
+> [1] `position = position of the current BinBuffer (position pointer of the original Buffer) + 8`
 
 **readString**
 
-> 函数定义：\[stream\].BinBuffer.readString\(byteLength\)
+> Function definition: [stream].BinBuffer.readString (byteLength)
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个String\(UTF8编码\)类型的变量
+> Function: Read a String (UTF8 encoding) variable from the binary buffer according to the current data pointer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | byteLength | UInt32 | 字符串的字节长度 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | byteLength | UInt32 | Byte Length of String |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 字符串的字节长度`
+> [1] `position = position (original buffer's position pointer) of the current BinBuffer + byte length of the string`
 
-> \[2\]后台对字符串的编码需要使用UTF8字符集
+> [2] Background encoding of strings requires UTF8 character set
 
 **readBinBuffer**
 
-> 函数定义：\[stream\].BinBuffer.readBinBuffer\(byteLength\)
+> Function definition: [stream].BinBuffer.readBinBuffer (byteLength)
 
-> 函数作用：从二进制Buffer中，根据当前数据指针读取一个\[stream\].BinBuffer类型的变量
+> Function: Read a variable of type [stream].BinBuffer from the binary buffer according to the current data pointer
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | byteLength | UInt32 | 二进制Buffer的字节长度 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | byteLength | UInt32 | Byte Length of Binary Buffer |
 
-> 函数说明：
+> Function description:
 
-> \[1\]当前BinBuffer的 `position = position(原Buffer的位置指针) + 二进制Buffer的字节长度`
+> [1] `position = position of the current BinBuffer (position pointer of the original buffer) + byte length of the binary buffer`
 
-## 09 - 编码工具 - OutputStream的使用方法说明
+# 09-Coding Tools-How to Use OutputStream
 
-**构造函数**
+**Constructor**
+> Function definition: [stream].OutputStram ()
 
-> 函数定义：\[stream\].OutputStram\(\)
+> Function: declare an output stream object
 
-> 函数作用：声明一个输出流对象
+Input parameters: none
 
-> 输入参数：无
-
-> 使用示例：var os = new \[stream\].OutputStream\(\)
+Example usage: var os = new [stream].TarsOutputStream ()
 
 **getBinBuffer**
 
-> 函数定义：var buffer = \[stream\].OutputStream.getBinBuffer\(\)
+> Function definition: var buffer = [stream].TarsOutputStream.getBinBuffer ()
 
-> 函数作用：调用该函数获得打包后的二进制数据流
+> Function role: Call this function to get the binary data stream after packing
 
-> 输入参数：无
+Input parameters: none
 
-> 返回数据：返回打包后的二进制数据流，该返回值类型为\[stream\].BinBuffer
+> Return data: return the packed binary data stream, the return value type is [stream].BinBuffer
 
 **writeBoolean**
 
-> 函数定义：\[stream\].OutputStream.writeBoolean\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeBoolean (tag, value)
 
-> 函数作用：向数据流中写一个Boolean类型的变量
+> Function: Write a Boolean variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | Boolean | 表示该变量的值，取值范围{false, true} |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | Boolean | represents the value of the variable, ranging from {false, true} |
 
-> 返回数据：void
+>Return data: void
 
 **writeInt8**
 
-> 函数定义：\[stream\].OutputStream.writeInt8\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeInt8 (tag, value)
 
-> 函数作用：向数据流中写一个int8类型的变量
+> Function role: Write a variable of type int8 to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | int8\(Number\) | 表示该变量的值，取值范围\[-128, 127\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | int8 (Number) | represents the value of the variable, value range [-128, 127] |
 
-> 返回数据：void
+>Return data: void
 
 **writeInt16**
 
-> 函数定义：\[stream\].OutputStream.writeInt16\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeInt16 (tag, value)
 
-> 函数作用：向数据流中写一个Int16类型的变量
+> Function: Write a variable of type Int16 to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | int16\(Number\) | 表示该变量的值，取值范围\[-32768, 32767\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | int16 (Number) | represents the value of the variable, value range [-32768, 32767] |
 
-> 返回数据：void
+>Return data: void
 
 **writeInt32**
 
-> 函数定义：\[stream\].OutputStream.writeInt32\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeInt32 (tag, value)
 
-> 函数作用：向数据流中写一个Int32类型的变量
+> Function: Write an Int32 variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | int32\(Number\) | 表示该变量的值，取值范围\[-2147483648, 2147483647\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | int32 (Number) | represents the value of the variable, value range [-2147483648, 2147483647] |
 
-> 返回数据：void
+>Return data: void
 
 **writeInt64**
 
-> 函数定义：\[stream\].OutputStream.writeInt64\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeInt64 (tag, value)
 
-> 函数作用：向数据流中写一个Int64类型的变量
+> Function: Write an Int64 variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | int64\(Number\) | 表示该变量的值，取值范围\[-9223372036854775808, 9223372036854775807\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | int64 (Number) | represents the value of this variable, the value range [-9223372036854775808, 9223372036854775807] |
 
-> 返回数据：void
+>Return data: void
 
 **writeUInt8**
 
-> 函数定义：\[stream\].OutputStream.writeUInt8\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeUInt8 (tag, value)
 
-> 函数作用：向数据流中写一个UInt8类型的变量
+> Function: Write a UInt8 variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | UInt8\(Number\) | 表示该变量的值，取值范围\[0, 255\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | UInt8 (Number) | represents the value of the variable, in the range [0, 255] |
 
-> 返回数据：void
+>Return data: void
 
 **writeUInt16**
 
-> 函数定义：\[stream\].OutputStream.writeUInt16\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeUInt16 (tag, value)
 
-> 函数作用：向数据流中写一个UInt16类型的变量
+> Function: Write a UInt16 variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | UInt16\(Number\) | 表示该变量的值，取值范围\[0, 65535\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | UInt16 (Number) | represents the value of the variable, value range [0, 65535] |
 
-> 返回数据：void
+>Return data: void
 
 **writeUInt32**
 
-> 函数定义：\[stream\].OutputStream.writeUInt32\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeUInt32 (tag, value)
 
-> 函数作用：向数据流中写一个UInt32类型的变量
+> Function: Write a UInt32 variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | UInt32\(Number\) | 表示该变量的值，取值范围\[0, 4294967295\] |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | UInt32 (Number) | represents the value of the variable, value range [0, 4294967295] |
 
-> 返回数据：void
+>Return data: void
 
 **writeFloat**
 
-> 函数定义：\[stream\].OutputStream.writeFloat\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeFloat (tag, value)
 
-> 函数作用：向数据流中写一个float\(32位\)类型的变量
+> Function: Write a float (32-bit) variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | Float\(Number\) | 单精度浮点数，因为有精度损失问题，不推荐使用该类型 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | Float (Number) | Single-precision floating-point numbers, because of the loss of precision, this type is not recommended |
 
-> 返回数据：void
+>Return data: void
 
 **writeDouble**
 
-> 函数定义：\[stream\].OutputStream.writeDouble\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeDouble (tag, value)
 
-> 函数作用：向数据流中写一个double\(64位\)类型的变量
+> Function: Write a double (64-bit) variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | Double\(Number\) | 双精度浮点数，因为有精度损失问题，不推荐使用该类型 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | Double (Number) | Double-precision floating-point numbers, because of the loss of precision, this type is not recommended |
 
-> 返回数据：void
+>Return data: void
 
 **writeString**
 
-> 函数定义：\[stream\].OutputStream.writeString\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeString (tag, value)
 
-> 函数作用：向数据流中写一个String类型的变量
+> Function: Write a String variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | String | 表示该变量的值，字符串编码字符集为UTF8 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | String | represents the value of the variable, the string encoding character set is UTF8 |
 
-> 返回数据：void
+>Return data: void
 
 **writeStruct**
 
-> 函数定义：writeStruct\(tag, value\)
+> Function definition: writeStruct (tag, value)
 
-> 函数作用：向数据流中写一个自定义结构体的变量
+> Function role: Write a custom structure variable to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | 自定义结构体 | 结构体必须是使用tars2node转换而成的，否则可能会因缺少辅助函数而导致编解码失败 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | Custom structure | The structure must be converted using tars2node, otherwise the codec may fail due to the lack of auxiliary functions |
 
-> 返回数据：void
+>Return data: void
 
 **writeBytes**
 
-> 函数定义：\[stream\].OutputStream.writeBytes\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeBytes (tag, value)
 
-> 函数作用：向数据流中写一个类型为 `char *` 或者 `vector<char>` 的变量
+> Function: Write a variable of type `char *` or `vector <char>` to the data stream
 
-> 输入参数：
+> Input parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | \[stream\].BinBuffer | BinBuffer是对NodeJs中的Buffer类的封装，同时集成了编解码需要用到的辅助函数 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | [stream].BinBuffer | BinBuffer is a wrapper for the Buffer class in NodeJs, and also integrates auxiliary functions needed for encoding and decoding |
 
-> 返回数据：void
+>Return data: void
 
 **writeList**
 
-> 函数定义：\[stream\].OutputStream.writeList\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeList (tag, value)
 
-> 函数作用：向数据流中写一个类型为 `vector<T>`（T不可为byte）的变量
+> Function: Write a variable of type `vector <T>` (T cannot be byte) to the data stream
 
-> 函数参数：
+> Function parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | \[stream\].List\(T\) | 该变量的类型原型 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | [stream].List (T) | type prototype of this variable |
 
-> 返回数据：void
+>Return data: void
 
 **writeMap**
 
-> 函数定义：\[stream\].OutputStream.writeMap\(tag, value\)
+> Function definition: [stream].TarsOutputStream.writeMap (tag, value)
 
-> 函数作用：向数据流中写一个类型为 `map<T, V>` 类型的字段。
+> Function: Write a field of type `map <T, V>` to the data stream.
 
-> 函数参数：
+> Function parameters:
 
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示该变量的数字标识，取值范围\[0, 255\] |
-> | value | \[stream\].Map\(T, V\) | 该变量的类型原型 |
+> | Parameter | Data Type | Description |
+> | ------------- | ------------- | ------------- |
+> | tag | UInt8 | Represents the numeric identifier of the variable, value range [0, 255] |
+> | value | [stream].Map (T, V) | type prototype of this variable |
 
-> 返回数据：void
+>Return data: void
 
-## 10 - 解码工具 - InputStream的使用方法说明
+# 10 - decoding tool - instructions for using InputStream
+**Constructor**
+>Function definition: [stream]. Tarsinputstream (binbuffer)
 
-**构造函数**
+>Function to declare an input stream object
 
-> 函数定义：\[stream\].InputStream\(binBuffer\)
+>Input parameters:  
+>binbuffer the binary data stream to be decoded. The value type must be [stream]. Binbuffer, not the buffer class implemented in nodejs.
 
-> 函数作用：声明一个输入流对象
-
-> 输入参数：
-
-> binBuffer 欲解码的二进制数据流，该值类型必须为\[stream\].BinBuffer，而不能是NodeJs中实现的Buffer类。
-
-> 使用示例：var is = new \[stream\].InputStream\(new \[stream\].BinBuffer\(Node.Buffer\)\)
+>Use example:   
+>var is = new [stream]. Tarsinputstream (new [stream]. Binbuffer (node. Buffer))  
 
 **readBoolean**
-
-> 函数定义：var value = \[stream\].InputStream.readBoolean\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Boolean类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Boolean | 表示读取变量不成功时的返回值，取值范围{false, true} |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Boolean，取值范围{false, true}
+>Function definition: VaR value = [stream]. Tarsinputstream.readboolean (tag, require, default)
+>Function to read a boolean type value from a data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | Boolean | indicates the return value when reading variables unsuccessfully. The value range is {false, true}|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: Boolean, value range {false, true}
 
 **readInt8**
 
-> 函数定义：\[stream\].InputStream.readInt8\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Int8类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Int8 | 表示读取变量不成功时的返回值，取值范围\[-128, 127\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Int8，取值范围\[-128, 127\]
+>Function definition: [stream].Tarsinputstream.readint8 (tag, require, default)
+>Function: read a value of type int8 from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | int8 | indicates the return value in case of unsuccessful reading of variable, value range [- 128, 127]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: int8, value range [- 128, 127]
 
 **readInt16**
-
-> 函数定义：\[stream\].InputStream.readInt16\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Int16类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Int16 | 表示读取变量不成功时的返回值，取值范围\[-32768, 32767\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Int16，取值范围\[-32768, 32767\]
+>Function definition: [stream]. Tarsinputstream.readint16 (tag, require, default)
+>Function: read a value of type int16 from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | int16 | indicates the return value in case of unsuccessful reading of variable. The value range is [- 32768, 32767]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: int16, value range [- 32768, 32767]  
 
 **readInt32**
-
-> 函数定义：\[stream\].InputStream.readInt32\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Int32类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Int32 | 表示读取变量不成功时的返回值，取值范围\[-2147483648, 2147483647\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Int32，取值范围\[-2147483648, 2147483647\]
+>Function definition: [stream]. Tarsinputstream.readint32 (tag, require, default)
+>Function to read a value of type int32 from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | int32 | indicates the return value in case of unsuccessful reading of variable. The value range is [- 2147483648, 2147483647]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: int32, value range [- 2147483648, 2147483647]  
 
 **readInt64**
-
-> 函数定义：\[stream\].InputStream.readInt64\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Int64类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Int64 | 表示读取变量不成功时的返回值，取值范围\[-9223372036854775808, 9223372036854775807\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Int64\(Number\)，取值范围\[-9223372036854775808, 9223372036854775807\]
+>Function definition: [stream]. Tarsinputstream.readint64 (tag, require, default)
+>Function: read a value of type Int64 from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | Int64 | indicates the return value in case of unsuccessful reading of variable. The value range is [- 9223372036854775808, 9223372036854775807]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: Int64 (number), value range [- 9223372036854775808, 9223372036854775807]  
 
 **readUInt8**
-
-> 函数定义：\[stream\].InputStream.readUInt8\(tag, require, default\)
-
-> 函数作用：从数据流读取一个UInt8类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | UInt8 | 表示读取变量不成功时的返回值，取值范围\[0, 255\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：UInt8\(Number\)，取值范围\[0, 255\]
+>Function definition: [stream]. Tarsinputstream.readuint8 (tag, require, default)
+>Function: read a uint8 type value from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | uint8 | indicates the return value in case of unsuccessful reading of variable, value range [0, 255]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: uint8 (number), value range [0, 255]  
 
 **readUInt16**
+>Function definition: [stream].TarsInputStream.readUInt16 (tag, require, default)
+>Function: read a uint16 type value from the data stream
+>Input parameters:
 
-> 函数定义：\[stream\].InputStream.readUInt16\(tag, require, default\)
-
-> 函数作用：从数据流读取一个UInt16类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | UInt8 | 表示读取变量不成功时的返回值，取值范围\[0, 65535\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：UInt16\(Number\)，取值范围\[0, 65535\]
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | uint8 | indicates the return value in case of unsuccessful reading of variable, value range [0, 65535]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: uint16 (number), value range [0, 65535]  
 
 **readUInt32**
-
-> 函数定义：\[stream\].InputStream.readUInt32\(tag, require, default\)
-
-> 函数作用：从数据流读取一个UInt32类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | UInt8 | 表示读取变量不成功时的返回值，取值范围\[0, 4294967295\] |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：UInt32\(Number\)，取值范围\[0, 4294967295\]
+>Function definition: [stream]. Tarsinputstream.readuint32 (tag, require, default)
+>Function: read a uint32 type value from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | uint8 | indicates the return value in case of unsuccessful reading of variable, value range [0, 4294967295]|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: uint32 (number), value range [0, 4294967295]  
 
 **readFloat**
-
-> 函数定义：\[stream\].InputStream.readFloat\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Float（32位，单精度浮点数）类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Float | 表示读取变量不成功时的返回值 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Float\(Number\)
+>Function definition: [stream]. Tarsinputstream.readfloat (tag, require, default)
+>Function: read a float (32-bit, single precision floating-point) type value from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | float | indicates the return value when reading variables is unsuccessful|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: float (number)  
 
 **readDouble**
-
-> 函数定义：\[stream\].InputStream.readFloat\(tag, require, default\)
-
-> 函数作用：从数据流读取一个Double（64位，双精度浮点数）类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | Double | 表示读取变量不成功时的返回值 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：Double\(Number\)
+>Function definition: [stream]. Tarsinputstream.readfloat (tag, require, default)
+>Function to read a double (64 bit, double precision floating-point) type value from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | double | indicates the return value when reading variables is unsuccessful|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: double (number)
 
 **readString**
 
-> 函数定义：\[stream\].InputStream.readString\(tag, require, default\)
-
-> 函数作用：从数据流读取一个String（UTF8编码）类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | default | String | 表示读取变量不成功时的返回值 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回变量的默认值default；
-
-> 返回数据：String（UTF8编码）
+>Function definition: [stream]. Tarsinputstream.readstring (tag, require, default)
+>Function: read a string (utf8 encoding) type value from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Default | string | indicates the return value when reading variables is unsuccessful|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return the default value of the variable;
+>Return data: string (utf8 encoding)  
 
 **readStruct**
-
-> 函数定义：\[stream\].InputStream.readStruct\(tag, require, TYPE\_T\)
-
-> 函数作用：从数据流读取一个自定义结构体类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | TYPE\_T | 自定义结构体的类型原型 | 表示该变量的类型原型 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回一个空的结构体的实例；
-
-> 返回数据：自定义结构体的实例
+>Function definition: [stream]. Tarsinputstream.readstruct (tag, require, type
+>Function to read a value of a custom structure type from a data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Type | type prototype of custom structure | type prototype of the variable|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data flow, the system will return an empty instance of the structure;
+>Return data: instances of custom structures  
 
 **readBytes**
-
-> 函数定义：\[stream\].InputStream.readBytes\(tag, require, TYPE\_T\)
-
-> 函数作用：从数据流读取一个 `[stream].BinBuffer` 类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | TYPE\_T | \[stream\].BinBuffer | 表示该变量的类型原型 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回一个空的\[stream\].BinBuffer的实例；
-
-> 返回数据：\[stream\].BinBuffer
+>Function definition: [stream]. Tarsinputstream.readbytes (tag, require, type_
+>Function: read a value of type '[stream]. Binbuffer' from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Type| [stream]. Binbuffer|indicates the type prototype of the variable|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return an empty instance of [stream]. Binbuffer;
+>Return data: [stream].Binbuffer  
 
 **readList**
-
-> 函数定义：\[stream\].InputStream.readList\(tag, require, TYPE\_T\)
-
-> 函数作用：从数据流读取一个 `[stream].List<T>` 类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | TYPE\_T | \[stream\].List | 表示该变量的类型原型 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回一个空的\[stream\].List\(T\)的实例；
-
-> 返回数据：\[stream\].List\(T\)
+>Function definition: [stream]. Tarsinputstream. Readlist (tag, require, type_
+>Function function: read a value of type '[stream]. List < T >' from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Type | [stream]. List < T > |, indicating the type prototype of the variable|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return an empty instance of [stream]. List (T);
+>Return data: [stream].List  
 
 **readMap**
-
-> 函数定义：\[stream\].InputStream.readMap\(tag, require, TYPE\_T\)
-
-> 函数作用：从数据流读取一个 `[stream].Map<T, V>` 类型的数值
-
-> 输入参数：
-
-> | 参数 | 数据类型 | 描述 |
-> | :--- | :--- | :--- |
-> | tag | UInt8 | 表示欲读取变量的数字标识，取值范围\[0, 255\] |
-> | require | Boolean | 表示当前变量是否为必须值，取值范围{false, true} |
-> | TYPE\_T | \[stream\].Map\(T, V\) | 表示该变量的类型原型 |
-
-> > 对require的说明：
-
-> > 当 `require === true`   时， 如果当前变量不在数据流中，系统将抛出一个读取数据不存在的异常；
-
-> > 当 `require === false` 时，如果当前变量不在数据流中，系统将返回一个空的\[stream\].Map\(T, V\)的实例；
-
-> 返回数据：\[stream\].Map\(T, V\)
-
+>Function definition: [stream]. Tarsinputstream.readmap (tag, require, type_
+>Function function: read a value of type '[stream]. Map < T, V >' from the data stream
+>Input parameters:
+>|Parameter | data type | description|
+>| ------------- | ------------- | ------------- |
+>|Tag | uint8 | indicates the digital ID of the variable to be read, value range [0, 255]|
+>|Require | Boolean | indicates whether the current variable is a required value. The value range is {false, true}|
+>|Type | [stream]. Map (T, V) |, indicating the type prototype of the variable|
+>>Description of require:
+>>When 'require = = = true' &amp; nbsp; &amp; nbsp;, if the current variable is not in the data stream, the system will throw an exception that does not exist to read the data;
+>>When 'require = = = false', if the current variable is not in the data stream, the system will return an empty instance of [stream]. Map (T, V);
+>Return data: [stream]. Map (T, V)

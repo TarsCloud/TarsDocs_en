@@ -1,32 +1,30 @@
 # @tars/winston-tars
 
-`@tars/winston-tars` 提供基于 [winston](https://github.com/flatiron/winston) 的 TARS 扩展，以提供符合 TARS 框架的日志格式与输出。
+`@tars/winston-tars` provides TARS extensions based on [winston](https://github.com/flatiron/winston "winston") to provide TARS-compliant log formats and output.
 
-在 `@tars/winston-tars` 中提供4种 `transport` 对象：
+Provide 4 types of `transport` objects in` @tars/winston-tars`:
 
-* **TarsBase:** 提供符合 `TARS日志` 的基础类
-* **TarsRotate:** 提供按大小输出的滚动日志
-* **TarsDate:** 提供按日期输出的日志
-* **TafRemote:** 输出至远程日志（tars.tarslog）
+* __TarsBase:__ provides base classes that conform to `TARS logs`
+* __TarsRotate:__ provides rolling logs output by size
+* __TarsDate:__ provides logs output by date
+* __TafRemote:__ output to remote log (tars.tarslog)
 
-并提供一种自定义日志级别：
+And provide a custom log level:
 
-* **TarsConfig:** 提供符合TARS框架标准的日志级别与颜色值
+* __TarsConfig:__ Provides log levels and color values that conform to the TARS framework standard
 
-以及相关的辅助方法：
+And related helper methods:
 
-* **Formatter:** 提供了符合TARS日志格式标准的内容格式化方法
-* **DateFormat:** 定义了与时间相关日志滚动的处理方法
+* __Formatter:__ provides content formatting methods that conform to the TARS log format standard
+* __DateFormat:__ defines the processing method for time-related log scrolling
 
-**请注意：如果您的服务在 `TARS平台` 上运行，应直接使用** [**@tars/logs**](https://github.com/tars-node/logs) **模块，更为便捷**
+__Please note: If your service runs on the `TARS platform`, you should use the [@tars/logs](https://github.com/tars-node/logs) module directly, which is more convenient__
 
-### 安装
-
+## Installation
 `npm install @tars/winston-tars`
 
-### 使用
-
-```text
+## use
+```js
 var winston = require('winston');
 
 // Requiring `@tars/winston-tars` will expose
@@ -41,316 +39,309 @@ var winston = require('winston');
 require('@tars/winston-tars');
 ```
 
-### 日志格式
+## Log Format
 
-对于支持 [formatter](https://github.com/winstonjs/winston#custom-log-format) 的 `transport` 对象，`@tars/winston-tars` 提供2种方法格式化日志内容：
+For `transport` objects that support [formatter](https://github.com/winstonjs/winston#custom-log-format),` @tars/winston-tars` provides 2 methods to format log content:
 
-* **详细日志:** Formatter.Detail\(\[options\]\)
-* **精简日志:** Formatter.Simple\(\[options\]\)
+* __Detailed log:__ Formatter.Detail ([options])
+* __Simplified log:__ Formatter.Simple ([options])
 
-**options**:
+__options__:
+* __separ__: the separator between the log content items, * default value is | *
 
-* **separ**: 日志内容项与项之间的分隔符， _默认值为 \|_
+### Detailed logs:
 
-#### 详细日志：
+```js
+var winston = require ('winston');
+var winstonTars = require ('@tars/winston-tars');
 
-```text
-var winston = require('winston');
-var winstonTars = require('@tars/winston-tars');
-
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({
-    	formatter : winstonTars.Formatter.Detail()
-    })]
+var logger = new (winston.Logger) ({
+  transports: [
+    new (winston.transports.Console) ({
+    formatter: winstonTars.Formatter.Detail()
+    })]
 });
 ```
 
-输出日志的格式为：`日期 时间|PID|日志级别|文件名与行号|内容`
+The format of the output log is: `date time | PID | log level | file name and line number | content`
 
-其中 `文件名与行号` 部分可选（详见 [Metadata](https://github.com/tars-node/winston-tars#metadata) 节）
+The file name and line number are optional (see [Metadata](https://github.com/tars-node/winston-tars#metadata) for details)
 
-#### 精简日志
+### Streamlined logs
 
-```text
-var winston = require('winston');
-var winstonTars = require('@tars/winston-tars');
+```js
+var winston = require ('winston');
+var winstonTars = require ('@tars/winston-tars');
 
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({
-    	formatter : winstonTars.Formatter.Simple()
-    })]
+var logger = new (winston.Logger) ({
+  transports: [
+    new (winston.transports.Console) ({
+    formatter: winstonTars.Formatter.Simple()
+    })]
 });
 ```
 
-输出日志的格式为：`日期 时间|内容`
+The format of the output log is: `date time | content`
 
-### TarsConfig
+## TarsConfig
 
-`winston.config.tars` 提供了符合TARS框架标准的日志级别（`levels`）与颜色（`colors`）
+`winston.config.tars` provides log levels (` levels`) and colors (`colors`) that conform to the Tars framework standard
 
-TARS框架的日志级别从低到高（及其对应的颜色）为：
+The log level of the TARS framework from low to high (and its corresponding color) is:
 
-* info : white
-* debug : cyan
-* warn : yellow
-* error : red
-* none : grey
+* info: white
+* debug: cyan
+* warn: yellow
+* error: red
+* none: grey
 
-在使用时需要主动引入：
+Need to actively introduce when using:
 
-```text
-logger.setLevels(winston.config.tars.levels);
-
-winston.addColors(winston.config.tars.colors);
+```js
+logger.setLevels (winston.config.tars.levels);
+winston.addColors (winston.config.tars.colors);
 ```
 
-### TarsBase
+## TarsBase
 
-此模块可单独使用，也可作为其他日志模块的基类。
+This module can be used alone or as a base class for other logging modules.
 
-模块实现了与现有 `TARS` 日志类似的管理方式：
+The module implements similar management methods to existing `TARS` logs:
 
-* 定时重新打开日志文件，以便获取 `fd` 的变更。（当用户删除/移动当前文件后，模块会自动创建新文件）
-* 在文件打开的过程中，产生的日志将会写入临时内存队列，等待文件打开完成后一次性写入。（只要不超过队列最大长度，所有日志均会写入文件）
-* 此模块使用文件名 `options.filename` 作缓存，所以使用相同的 `options.filename` 多次实例化此模块仅会产生一个单例（共享一个实例）
+* Re-open the log file periodically to get changes to `fd`. (When the user deletes / moves the current file, the module will automatically create a new file)
+* During the file opening process, the generated log will be written to the temporary memory queue, waiting to be written once after the file is opened. (As long as the maximum queue length is not exceeded, all logs are written to the file)
+* This module uses the filename `options.filename` for caching, so using the same` options.filename` multiple times to instantiate this module will only produce a singleton (share an instance)
 
-#### 独立使用
+### Standalone
 
-```text
-  winston.add(winston.transports.TarsBase, options)
+```js
+winston.add (winston.transports.TarsBase, options)
 ```
 
-**options**:
+__options__:
+* __filename__: output file name
+* __interval__: Interval for reopening the log file, *The default value is 5000ms*
+* __bufferSize__: the maximum length of the temporary queue (unit is bar), *default value is 10000*
+* __prefix__: prefix of each log content, *default value is empty*
+* __formatter__: Define the log content formatting method, *The default value is Formatter.Detail()*
 
-* **filename**: 输出的文件名
-* **interval**: 重新打开日志文件的间隔， _默认值为 5000ms_
-* **bufferSize**: 临时队列的最大长度（单位为 条）， _默认值为 10000条_
-* **prefix**: 每条日志内容前缀， _默认值为 空_
-* **formatter**: 定义日志内容格式化方法， _默认值为 Formatter.Detail\(\)_
+### As a base class for other classes
 
-#### 作为其他类的基类
+Need to rewrite the following 2 objects:
 
-需要重写如下2个对象：
+* TarsBase.prototype.name: Transport module name
+* TarsBase.prototype._checkfile (callback): This function will be called when the log file is reopened. After the function is processed, it should call `callback ([err])` explicitly
 
-* TarsBase.prototype.name：Transport 模块名
-* TarsBase.prototype.\_checkfile\(callback\)：当重新打开日志文件时会调用此函数，函数处理完成之后，应显式调用 `callback([err])`
+E.g:
 
-例如：
-
-```text
+```js
 var TarsFile = function (options) {
-	var instance = TarsBase.call(this, options);
+var instance = TarsBase.call (this, options);
 
-	//由于父类存在缓存，所以这里需判断父类是否有返回值，如存在（命中缓存）则直接返回无需继续初始化
+// Since the parent class has a cache, it is necessary to determine whether the parent class has a return value. If it exists (hits the cache), it returns directly without further initialization.
 
-	if (instance) {
-		return instance;
-	}
+if (instance) {
+return instance;
+}
 
-	//业务代码
+	//Business code
 };
-util.inherits(TarsFile, TarsBase);
+util.inherits (TarsFile, TarsBase);
 
 TarsFile.prototype.name = 'tarsFile';
 
-TarsFile.prototype._checkfile = function(cb) {
-	//业务代码
+TarsFile.prototype._checkfile = function (cb) {
+	//Business code
 	cb();
 };
 
 winston.transports.TarsFile = TarsFile;
 ```
 
-### TarsRotate
+## TarsRotate
 
-此模块继承于 `TarsBase`
+This module inherits from TarsBase
 
-提供按文件大小输出的滚动日志
+Provides rolling log output by file size
 
-当到达设定的最大大小时，会自动向下滚动，并创建一个新的日志文件。
+When the set maximum size is reached, it will automatically scroll down and create a new log file.
 
-例如：app.log 文件写到最大大小，则会将会执行如下过程：
+For example, if the app.log file is written to the maximum size, the following process will be performed:
 
-> delete app\_n.log  
-> app\_n-1.log ===&gt; app\_n.log  
+> delete app \ _n.log  
+> app \ _n-1.log ===> app \ _n.log  
 > ... ...  
-> app\_1.log ===&gt; app\_2.log  
-> app.log ===&gt; app\_1.log  
-> create app.log
+> app \ _1.log ===> app \ _2.log  
+> app.log ===> app \ _1.log  
+> create app.log  
 
-```text
-  winston.add(winston.transports.TarsRotate, options)
+```js
+  winston.add (winston.transports.TarsRotate, options)
 ```
 
-**options**:
+__options__:
+* __filename__: output file name
+* __maxFiles__: maximum total number of files (ie n in the example), *default is 10*
+* __maxSize__: maximum file size (unit is bytes), *default is 10M*
+* __concatStr__: The connector between characters in the log file name, *The default value is _*
+* __formatter__: Define the log content formatting method, *The default value is Formatter.Detail()*
 
-* **filename**: 输出的文件名
-* **maxFiles**: 最大的文件总数（也就是例子中的 n）， _默认值为 10_
-* **maxSize**: 单文件最大大小（单位为 bytes）， _默认值为 10M_
-* **concatStr**: 日志文件名中字符间的连接符， _默认值为 \__
-* **formatter**: 定义日志内容格式化方法， _默认值为 Formatter.Detail\(\)_
+### TarsRotate.Master
 
-#### TarsRotate.Master
+If the business script passes [Cluster](http://www.nodejs.org/api/cluster.html "Cluster") (multi-process start): Worker only writes the file negatively, and moves the file by the master. To solve the problem of multi-process resource competition.
 
-如果业务脚本通过 [Cluster](http://www.nodejs.org/api/cluster.html)（多进程方式启动的）： Worker 则只负写入文件、而移动文件由 Master 完成，以解决多进程资源竞争问题。
+When the service process (Worker) opens the log file for writing, it sends a message to the main process, as follows:
 
-当服务进程（Worker）打开日志文件准备写入时会向主进程发送消息，如下：
-
-```text
+```js
 {
-	cmd : 'log:rotate',
-	msg : {
-		filename : String, //文件名
-		interval : Number, //多久打开一回文件
-		maxFiles : Number, //最大文件数
-		maxSize : Number, //最大单个文件大小
-		concatStr ： String //日志文件名中字符间的连接符
+	cmd: 'log: rotate',
+	msg: {
+		filename: String, // file name
+		interval: Number, // how often to open the file
+		maxFiles: Number, // Maximum number of files
+		maxSize: Number, // Maximum single file size
+		concatStr: String // Concatenator between characters in log file name
 	}
 }
 ```
+After the master process receives the message, it needs to pass it to the `TarsRotate.Master.start` method. The complete example is as follows:
 
-主进程（Master）收到消息后，需透传给 `TarsRotate.Master.start` 方法，完整的例子如下：
-
-```text
-worker.on('message', function(msg) {
-	if (msg && typeof msg === 'object' && msg.cmd === 'log:rotate') {
-		var data = msg.msg;	
-		TarsRotate.Master.start(data.filename, data.interval, data.maxFiles, data.maxSize, data.concatStr);
-	}
+```js
+worker.on ('message', function (msg) {
+if (msg && typeof msg === 'object' && msg.cmd === 'log: rotate') {
+var data = msg.msg;
+TarsRotate.Master.start (data.filename, data.interval, data.maxFiles, data.maxSize, data.concatStr);
+}
 });
 
-process.on('exit', function() {
-	TarsRotate.Master.close();
+process.on ('exit', function() {
+TarsRotate.Master.close();
 });
 ```
 
-**如果服务通过** [**node-agent**](https://github.com/tars-node/node-agent) **（或在TARS平台）运行，则无需配置平台）运行，无需显式调用此模块。只需按照平时的写法 `console.[log|info|warn|error]` 即可正确的输出滚动日志**
+__If the service runs through [node-agent](https://github.com/tars-node/node-agent "node-agent") (or on the TARS platform, you don't need to configure the platform), no explicit Call this module. Just follow the usual writing `console. [Log | info | warn | error]` to output the rolling log correctly__
 
-### DateFormat
+## DateFormat
 
-定义了与时间相关的日志（`TarsDate`）滚动的处理方法：
+Defines the processing method for time-dependent log (`TarsDate`) scrolling:
 
-* 按1天日志：LogByDay\(\[interval, pattern\]\)
-  * **interval**: 1 _每隔一天滚动一份日志_
-  * **pattern**: %Y%m%d _年月日_ （如：20150101）
-* 按1小时日志：LogByHour\(\[interval, pattern\]\)
-  * **interval**: 1 _每隔一小时滚动一份日志_
-  * **pattern**: %Y%m%d%H _年月日小时_ （如：2015010110）
-* 按10分钟日志：LogByMinute\(\[interval, pattern\]\)
-  * **interval**: 10 _每隔十分钟滚动一份日志_
-  * **pattern**: %Y%m%d%H%M _年月日小时分钟_ （如：201501011020）
-* 自定义格式日志：LogByCustom\(pattern\)
-  * **pattern**: 需要用户自定义
+* Log by day: LogByDay ([interval, pattern])  
+* __interval__: 1 _Roll a log every other day_
+* __pattern__:% Y% m% d _year month day_ (eg: 20150101)
+* Log by 1 hour: LogByHour ([interval, pattern])
+* __interval__: 1 _Roll a log every hour_
+* __pattern__:% Y% m% d% H _year month day hour_ (eg: 2015010110)
+* Log by 10 minutes: LogByMinute ([interval, pattern])
+* __interval__: 10 _Roll a log every ten minutes_
+* __pattern__:% Y% m% d% H% M _ year, month, day, hour, minute_ (eg: 201501011020)
+* Custom format log: LogByCustom (pattern)
+* __pattern__: user-defined
 
-其中 `pattern` 为日志文件名中的时间格式，可参见 `linux strftime`
+Where `pattern` is the time format in the log file name, see` linux strftime`
 
-#### 例子
+### Examples
 
-每隔 1天 滚动一份日志
-
+Rolling a log every other day
 > DateFormat.LogByDay  
-> 或者  
-> new DateFormat.LogByDay\(\)
+> Or  
+> new DateFormat.LogByDay()
 
-每隔 20分钟 滚动一份日志
+Roll a log every 20 minutes
+> new DateFormat.LogByMinute (20)
 
-> new DateFormat.LogByMinute\(20\)
+Scroll a log every 20 minutes, the time format in the file name is% Y-% m-% d_% H:% M
+> new DateFormat.LogByMinute (20, '% Y-% m-% d_% H:% M')
 
-每隔 20分钟 滚动一份日志，文件名中时间格式为 %Y-%m-%d\_%H:%M
 
-> new DateFormat.LogByMinute\(20, '%Y-%m-%d\_%H:%M'\)
+## TarsDate
 
-### TarsDate
+This module inherits from TarsBase
 
-此模块继承于 `TarsBase`
+Provides logs output by date(year, month, day, hour, minute)
 
-提供按日期（年、月、日、小时、分）输出的日志
+When the set time interval is reached, a new log file is automatically created
 
-当到达设定的时间间隔时，会自动创建一个新的日志文件
+The format of the output file name is: filename\_[% Y |% m |% d |% H |% M] .log, such as: app\_20141015.log
 
-输出的文件名的格式为：filename\_\[%Y\|%m\|%d\|%H\|%M\].log，如：app\_20141015.log
-
-```text
-  winston.add(winston.transports.TarsDate, options)
+```js
+  winston.add (winston.transports.TarsDate, options)
 ```
 
-**options**:
+__options__:
+* __filename__: output file name
+* __concatStr__: The connector between characters in the log file name, *The default value is _*
+* __format__: interval for creating a new file, as a DateFormat object, *default value is FORMAT.LogByDay*
+* __formatter__: defines the log content formatting method. *The default value is Formatter.Simple()*
 
-* **filename**: 输出的文件名
-* **concatStr**: 日志文件名中字符间的连接符， _默认值为 \__
-* **format**: 创建新文件的间隔，为 DateFormat 对象， _默认值为 FORMAT.LogByDay_
-* **formatter**: 定义日志内容格式化方法， _默认值为 Formatter.Simple\(\)_
+For convenience use TarsDate.FORMAT = DateFormat
 
-为了方便使用 TarsDate.FORMAT = DateFormat
 
-### TarsRemote
+## TarsRemote
 
-提供远程日志的功能，会将日志输出至 `tars.tarslog.LogObj` 服务。
+Provides the function of remote logging, which will output logs to the `tars.tarslog.LogObj` service.
 
-请注意：这里并不是一收到日志就会发送，而是将日志整合在一起定时发送。
+Please note: This is not to send the log as soon as it is received, but to integrate the log and send it regularly.
 
-```text
-  var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.TarsRemote)(options)
-    ]
-  });
+```js
+  var logger = new (winston.Logger) ({
+    transports: [
+      new (winston.transports.TarsRemote) (options)
+    ]
+  });
 ```
 
-**options**:
+__options__:
+* __filename__: remote log file name (no need to include date, path and other additional information)
+* __tarsConfig__: tars configuration file path or configured `@ tars / utils.Config` instance
+* __tarsLogServant__: remote log service Servant Obj, *read configuration file `tars.application.server.log` section by default*
+* __interval__: Interval for sending logs, *The default value is 500ms*
+* __format__: interval for creating a new file, as a DateFormat object, *default value is FORMAT.LogByDay*
+* __hasSufix__: whether the log file name has a .log suffix, *default is true*
+* __hasAppNamePrefix__: Whether to allow the framework to add a business-related identifier to the log file name. *The default value is true*
+* __concatStr__: The connector between user-defined characters and date characters in the log file name. *The default value is _*
+* __separ__: separator between log content items, *default is |*
+* __formatter__: Define the log content formatting method, *The default value is Formatter.Detail()*
 
-* **filename**: 远端日志文件名（不需要包含日期、路径等附加信息）
-* **tarsConfig**: tars配置文件路径 或 已配置的 `@tars/utils.Config` 实例
-* **tarsLogServant**: 远程日志服务 Servant Obj，_默认读取配置文件 `tars.application.server.log` 节_
-* **interval**: 发送日志的间隔， _默认值为 500ms_
-* **format**: 创建新文件的间隔，为 DateFormat 对象， _默认值为 FORMAT.LogByDay_
-* **hasSufix**: 日志文件名是否带.log后缀， _默认值为 true_
-* **hasAppNamePrefix**: 是否允许框架在日志文件名上增加业务相关的标识， _默认值为 true_
-* **concatStr**: 日志文件名中用户自定义字符与日期字符间的连接符， _默认值为 \__
-* **separ**: 日志内容项之间的分隔符， _默认值为 \|_
-* **formatter**: 定义日志内容格式化方法， _默认值为 Formatter.Detail\(\)_
+_Please note: `TarsRemote`` options.format` cannot be `FORMAT.LogByCustom`_
 
-_请注意：在 `TarsRemote` 中 `options.format` 不能为 `FORMAT.LogByCustom`_
+For convenience, TarsRemote.FORMAT = DateFormat
 
-为了方便使用 TarsRemote.FORMAT = DateFormat
+__If the service runs through [node-agent](https://github.com/tars-node/node-agent "node-agent") (or on the TARS platform), you do not need to configure the options.tarsConfig item__
 
-**如果服务通过** [**node-agent**](https://github.com/tars-node/node-agent) **（或在TARS平台）运行，则无需配置 `options.tarsConfig` 项**
 
-### Metadata
+## Metadata
 
-通过指定 [Metadata](https://github.com/winstonjs/winston#logging-with-metadata) 可输出2种附加数据。
+By specifying [Metadata](https://github.com/winstonjs/winston#logging-with-metadata "Metadata"), two kinds of additional data can be output.
 
-#### pid
+### pid
 
-通过 `pid` 属性，可以指定日志输出条目中 _进程id_ 部分，默认情况下为 `process.pid`
+With the pid attribute, you can specify the _process id_ part of the log output entry, which is `process.pid 'by default
 
-如：
+Such as:
 
-```text
-logger.info('data', {
-	pid : 123456
+```js
+logger.info ('data', {
+	pid: 123456
 });
 ```
 
-则输出：
+Then output:
 
-> 2015-01-01 00:00:01\| **123456** \|INFO\|data
+> 2015-01-01 00: 00: 01 |__123456__ | INFO | data
 
-#### lineno
 
-通过 `lineno` 属性，可以指定日志输出条目中 _文件名与行号_ 部分，默认值为空（也就是不输出这一节）。
+### lineno
 
-如：
+With the `lineno` attribute, you can specify the _file name and line number_ part of the log output entry. The default value is empty (that is, this section is not output).
 
-```text
-logger.info('data', {
-	lineno : 'app.js:6'
+Such as:
+
+```js
+logger.info ('data', {
+	lineno: 'app.js: 6'
 });
 ```
 
-则输出：
+Then output:
 
-> 2015-01-01 00:00:01\|123456\|INFO\| **app.js:6** \|data
-
+> 2015-01-01 00:00:01|123456|INFO|__app.js:6__ |data

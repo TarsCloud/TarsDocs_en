@@ -1,74 +1,54 @@
 # @tars/utils
+TARS Framework Aids Collection
 
-## @tars/utils
-
-TARS 框架辅助工具集合
-
-### Installation
-
-```text
+## Installation
+```sh
 $ npm install @tars/utils
 ```
 
-### 01. 配置文件解析器
-
-```text
-var Config = require('@tars/utils').Config;
+## 01. Configuration file parser
+```js
+var Config = require ('@tars/utils'). Config;
 ```
+### API
+#### parseFile(sFilePath, [encoding, callback])
+Parse the specified file
+* `sFilePath`: filename
+* `encoding`: File encoding type. (Default: utf8)
+* `callback`: callback function, callback function format function callback (ret, config) {}, where ret is the object {code: return code, success is 0, failure is -1, message: description, exception: if success is undefined, if the failure is an event object}, config is the parser itself
 
-#### API
+### parseText(sText)
+Parse the string, and store the result of the parsing in the internal _data property, you can get the corresponding value through the get method
+* `sText`: string
+* `return`: true: parsing succeeded, false: parsing failed
 
-**parseFile\(sFilePath, \[encoding, callback\]\)**
+#### get(key, defaultValue)
+After the file is parsed, the result is stored in an object, and the specified value can be obtained through the get method. Note: If there is the same key in the configuration file / string, when get the value corresponding to the key, not all the values ​​will be obtained, but the value corresponding to the last of the key can also be understood as corresponding to the same key. The value overwrites the previous value.
+* `key`: The key value that needs to be valued, the format is x1.x2.x3, where x1, x2, and x3 are deep keys in order. Note: If the key value itself is in the format of x1.x2, take the corresponding key. The value needs to be written as <x1.x2>, see the example for specific usage.
+* `defaultValue`: Cannot get the default value of the result
 
-解析指定文件
+#### getDomain(key, defaultValue)
+Get the attribute array of type Object in the value corresponding to key
+* `key`: The key value.
+* `defaultValue`: Cannot get the default value of the result
 
-* `sFilePath`: 文件名
-* `encoding`: 文件编码类型。 \(默认值: utf8\)
-* `callback`: 回调函数，回调函数的格式 function callback\(ret, config\){}, 其中ret为对象{code: 返回码，成功为0， 失败为-1, message: 描述, exception:如果成功为undefined，如果失败为事件对象}， config为解析器本身
+#### getDomainValue(key, defaultValue)
+Gets the array of property values ​​of type Object in the value corresponding to key
+* `key`: The key value.
+* `defaultValue`: Cannot get the default value of the result
 
-#### parseText\(sText\)
+#### getDomainLine(key, defaultValue)
+Get all non-blank lines in the path corresponding to key
+* `key`: The key value.
+* `defaultValue`: Cannot get the default value of the result
+* `return`: array
 
-解析字符串，并将解析的结果存于内部的\_data属性中，可以通过get方法获取相应的值
+#### data
+Through this property, you can get the results of file parsing
 
-* `sText`: 字符串
-* `return`: true：解析成功, false: 解析失败
+## example
 
-**get\(key, defaultValue\)**
-
-文件被解析之后，会将结果存储到一个对象中，通过get方法可以获取制定的值。注：如果配置文件/字符串中有相同的key，则get获取key对应的值时，不会获取所有的值，而是获取该key最后对应的那个值，也可以理解为对应相同的key后面的值覆盖前面的值。
-
-* `key`: 需要取值的key值，格式为x1.x2.x3，其中x1，x2，x3依次为深层次的key，注：如果key值本身为x1.x2格式，取该key对应的值时需要写成&lt;x1.x2&gt;,具体使用参见例子。
-* `defaultValue`: 取不到结果的默认值
-
-**getDomain\(key, defaultValue\)**
-
-获取key对应的值中类型为Object的属性数组
-
-* `key`: key值。
-* `defaultValue`: 取不到结果的默认值
-
-**getDomainValue\(key, defaultValue\)**
-
-获取key对应的值中类型为Object的属性值数组
-
-* `key`: key值。
-* `defaultValue`: 取不到结果的默认值
-
-**getDomainLine\(key, defaultValue\)**
-
-获取key对应路径下的所有非空行
-
-* `key`: key值。
-* `defaultValue`: 取不到结果的默认值
-* `return`: 数组
-
-**data**
-
-通过该属性，可以获取文件解析的结果
-
-### example
-
-```text
+```js
 var Config = require('@tars/utils').Config;
 
 var config = new Config();
@@ -81,96 +61,78 @@ console.log('getDomain: tars.application.server: ', config.getDomain('tars.appli
 console.log('getDomainValue: tars.application.server: ', config.getDomainValue('tars.application.server'));
 ```
 
-具体例子参见examples目录下的test-config.js文件
+For specific examples, see the test-config.js file in the examples directory
 
-### 02. Endpoint工具
+## 02. Endpoint tools
+```js
+var Endpoint = require ('@tars/utils'). Endpoint;
+```
+### API
+#### Class method: parse (desc)
+Parse Endpoint information from a string
+* `desc`: string, for example: 'tcp -h 127.0.0.1 -p 10000 -t 60000'
+* `return`: Returns an Endpoint instance.
 
-```text
-var Endpoint = require('@tars/utils').Endpoint;
+#### toString()
+Endpoint information into strings
+
+#### copy()
+Copy the Endpoint instance
+
+## example
+
+```js
+var Endpoint = require ('@tars/utils').Endpoint;
+
+var endpoint = Endpoint.parse ('tcp -h 127.0.0.1 -p 10000 -t 60000');
+console.log ('endpoint:' + endpoint.toString());
+console.log ('endpoint.copy:' + endpoint.copy(). toString());
 ```
 
-#### API
+For specific examples, see the test-endpoint.js file in the examples directory
 
-**Class方法：parse\(desc\)**
-
-从字符串中解析出Endpoint信息
-
-* `desc`: 字符串，例如：'tcp -h 127.0.0.1 -p 10000 -t 60000'
-* `return`: 返回Endpoint实例。
-
-**toString\(\)**
-
-Endpoint信息转化成字符串
-
-**copy\(\)**
-
-拷贝Endpoint实例
-
-### example
-
-```text
-var Endpoint = require('@tars/utils').Endpoint;
-
-var endpoint = Endpoint.parse('tcp -h 127.0.0.1 -p 10000 -t 60000');
-console.log('endpoint: ' + endpoint.toString());
-console.log('endpoint.copy: ' + endpoint.copy().toString());
+## 03. timeProvider
+```js
+var timeProvider = require ('@tars/utils').timeProvider;
 ```
+### API
+#### nowTimestamp()
+Use Date.now() to get the time. This method is the most efficient. The Date.now() method is about twice as efficient as new Date(). GetTime() and 4 times as process.hrtime().
+* `return`: return object
 
-具体例子参见examples目录下的test-endpoint.js文件
-
-### 03. timeProvider工具
-
-```text
-var timeProvider = require('@tars/utils').timeProvider;
-```
-
-#### API
-
-**nowTimestamp\(\)**
-
-采用Date.now\(\)的方式获取时间，此种方式效率最高，Date.now\(\)的方式的效率大概是new Date\(\).getTime\(\)的2倍，是process.hrtime\(\)方式的4倍。
-
-* `return`: 返回对象
-
-```text
+```js
 {
-    hrtime: // 数组类型，[秒, 纳秒],
-    timestamp: // 单位ms
+    hrtime: // array type, [seconds, nanoseconds],
+    timestamp: // unit ms
 }
 ```
 
-**diff\(oTime\)**
+#### diff(oTime)
+Time interval of the current time relative to oTime
+* `oTime`: relative time, object type returned by nowTimestamp function
+* `return`: floating point type, time interval, in milliseconds
+* Note: nowTimestamp and diff are used in pairs
 
-当前时间相对于oTime的时间间隔
+#### dateTimestamp()
+Get the current timestamp, that is, the time from machine startup to the current time (process.hrtime)
+* `return`: return object
 
-* `oTime`: 相对时间，nowTimestamp函数返回的对象类型
-* `return`: 浮点类型，时间间隔，单位毫秒
-* 注：nowTimestamp和diff配对使用
-
-**dateTimestamp\(\)**
-
-获取当前的时间戳, 即机器从启动到当前的时间（process.hrtime）
-
-* `return`: 返回对象
-
-```text
+```js
 {
-    hrtime: // 数组类型，[秒, 纳秒],
-    timestamp: // 单位ms
+    hrtime: // array type, [seconds, nanoseconds],
+    timestamp: // unit ms
 }
 ```
 
-**dateTimestampDiff\(oTime\)**
+#### dateTimestampDiff(oTime)
+Time interval of the current time relative to oTime
+* `oTime`: relative time, object type returned by dateTimestamp function
+* `return`: floating point type, time interval, in milliseconds
+* Note: dateTimestamp and dateTimestampDiff are used in pairs
 
-当前时间相对于oTime的时间间隔
+## example
 
-* `oTime`: 相对时间，dateTimestamp函数返回的对象类型
-* `return`: 浮点类型，时间间隔，单位毫秒
-* 注：dateTimestamp和dateTimestampDiff配对使用
-
-### example
-
-```text
+```js
 var timeProvider = require('@tars/utils').timeProvider;
 
 var i = 0, count = 10000000;
@@ -194,27 +156,25 @@ t2 = new Date().getTime();
 console.log('【hrTime】interval: ' + (t2 - t1));
 ```
 
-具体例子参见examples目录下的test-timer.js文件
+For specific examples, see the test-timer.js file in the examples directory
 
-### 03. Promise库
-
-```text
-var Promise = require('@tars/utils').Promise;
+## 03. Promise Library
+```js
+var Promise = require ('@tars/utils').Promise;
 ```
 
-为 TARS 应用提供一个方便统一的Promise库。开发 TARS 应用时推荐大家使用此库而不是自己选择Promise库，当出现更好的promise方案时，我们可以直接替换此模块中的实现，直接对所有应用生效。
+Provide a convenient and unified Promise library for TARS applications. When developing TARS applications, we recommend that you use this library instead of choosing the Promise library yourself. When a better promise solution appears, we can directly replace the implementation in this module and take effect directly for all applications.
 
-```text
-var Promise=require("@tars/utils").Promise;
-var promise=new Promise(function(resolve,reject){
-    setTimeout(function(){
-        resolve(666)
-    },3000);
+```javascript
+var Promise = require ("@tars/utils").Promise;
+var promise = new Promise (function (resolve, reject) {
+     setTimeout (function() {
+         resolve (666)
+     }, 3000);
 });
-promise.then(function(data){
-    console.log(data);
+promise.then (function (data) {
+     console.log (data);
 });
 ```
 
-目前 TARS 中的Promise是基于bluebird库实现的，在q、bluebird、原生Promise中bluebird性能最好。
-
+Promises in TARS are currently implemented based on the bluebird library. Bluebird has the best performance among q, bluebird, and native promises.
