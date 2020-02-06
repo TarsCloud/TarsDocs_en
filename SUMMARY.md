@@ -17,8 +17,8 @@
 ## Start <a id="rumen"></a>
 * [INTRODUCTION](rumen/jian-jie.md)
 * [Tars Deploy](rumen/an-zhuang/README.md)
-  * [Docker Install](rumen/an-zhuang/docker-huan-jing-an-zhuang.md)
-  * [Mysql Install](rumen/an-zhuang/mysql.md)
+  * [Docker Installation](rumen/an-zhuang/docker-huan-jing-an-zhuang.md)
+  * [Mysql Installation](rumen/an-zhuang/mysql.md)
   * [Tars Source Compiler & Deploy](rumen/an-zhuang/source.md)
   * [Tars Deploy By Docker](rumen/an-zhuang/docker.md)
   * [Tars Deploy In K8s](rumen/an-zhuang/k8s-docker-1.md)
@@ -105,7 +105,7 @@
     * [WebSocketServer](an-li/tarsphp/da-jian-websocketserver.md)
     * [Actual combat of barrage activity](an-li/tarsphp/tan-mu-huo-dong-shi-zhan.md)
 
-## Tars.js <a id="Tars.js></a>
+## Tars.js <a id="Tars.js"></a>
 * [Tars.js](kai-fa/tars.js/README.md)
   * [@tars/stream](kai-fa/tars.js/tars-stream.md)
   * [@tars/rpc](kai-fa/tars.js/tars-rpc.md)
