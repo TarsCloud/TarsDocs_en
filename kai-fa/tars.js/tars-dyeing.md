@@ -1,64 +1,61 @@
-# @tars/dyeing
+# @ tars / dyeing
 
-## @tars/dyeing
+The TARS dyeing basic module provides methods for obtaining and judging `staining objects`.
 
-TARS 染色基础模块，提供获取与判断 `染色对象` 的方法。
+__Users: You should not use this module directly, but use other modules that meet the `staining standards` to obtain` staining objects`__
 
-**使用者：不应该直接使用此模块，而应使用其他符合 `染色标准` 的模块获取 `染色对象`**
+__Module developer: Get `TARS stained objects` You should use this module's` gen () `method to get` colored objects`__
 
-**模块开发者：获取 `TARS染色对象` 应使用此模块的 `gen()` 方法获取 `染色对象`**
+## Dyeing (Introduction)
 
-### 染色（简介）
+Coloring is a state passed on the interface's invocation chain (server <==> client) to identify a specific request processing process.
 
-染色是在接口的调用链（服务端 &lt;==&gt; 客户端）上传递的一种状态，用于标识一次特定的请求处理过程。
+This state consists of a flag and additional information `KEY` _ (optional) _.
 
-这种状态由一个 标志位 与 附加信息 `KEY` _（可选）_ 构成。
+Services on the call chain can set (originate) and read (receive) this state, and perform corresponding processing (such as outputting specific logs and characteristics).
 
-调用链上的服务可以设置（发起）与读取（接收）这种状态，并作对应的处理（如输出特定的日志、特性）。
+In the system, dyeing consists of this module and its corresponding convention.
 
-在系统中，染色由此模块与其对应的约定构成。
+## Standard (Convention)
 
-### 标准（约定）
+If the module uses a dyeing system, it is necessary to comply with the following conventions (At the same time, we will refer to the modules that meet the conventions as the modules that meet the `staining standards`):
 
-如模块使用染色体系，则需遵守如下约定（与此同时，我们将符合约定的模块称之为符合 `染色标准` 的模块）：
+1. Provide the `getDyeingObj ()` method and return `Dyeing Object`.
+2. Use the @ tars / dyeing.gen method to generate a dyeing object.
+3. Use the @ tars / dyeing.is () method to determine whether the dyeing object is valid.
 
-1. 提供 `getDyeingObj()` 方法，返回 `染色对象`。
-2. 通过 `@tars/dyeing.gen` 方法，生成 `染色对象`。
-3. 通过 `@tars/dyeing.is()` 方法，判断 `染色对象` 是否有效。
+## Module method
 
-### 模块方法
+### TarsDyeing.gen (dyeing [, key, args])
 
-#### TarsDyeing.gen\(dyeing\[, key, args\]\)
+By calling this method, you can get `colored objects`:
 
-通过调用此方法，可获得 `染色对象`：
+__dyeing__: Do you need dyeing
+__key__: Coloring additional information `KEY` (optional)
+__args__: additional parameters of the program (optional)
 
-**dyeing**: 是否需要染色  
-**key**: 染色附加信息 `KEY`（可选）  
-**args**: 程序的附加参数（可选）
+`key` is passed to the next service through the call chain, while` args` is only valid in the current dyed object (it is not passed).
 
-`key` 会通过调用链传递给下一个服务，而 `args` 仅只会在当前的染色对象中有效（并不会进行传递）。
+__Please note: The cause of the staining is different from the cause of the staining (thing). This module only cares about the stained objects, not the cause of the staining. __
 
-**请注意：染色对象 与 染色发起原因，这是不同的（东西）。此模块仅关心 染色对象，而不关心 染色发起原因。**
+### TarsDyeing.is (obj)
 
-#### TarsDyeing.is\(obj\)
+Call this method to determine whether an object passed in is a `colored object`:
 
-调用此方法，可以判断 一个传入的对象是否是 `染色对象`：
+If an empty object is passed in, the method will also return `false`
 
-如传入空对象，方法同样会返回 `false`
+## Dyeing Object Properties
 
-### 染色对象 属性
+### dyeingObj.dyeing
 
-#### dyeingObj.dyeing
+Whether coloring is required, this is `Boolean`
 
-是否需要染色，此为 `Boolean`
+### dyeingObj.key
 
-#### dyeingObj.key
+Additional information passed by the dye, this is `String` and is optional and may not exist
 
-染色传递的附加信息，此为 `String` 且为可选值，不一定存在
+### dyeingObj.args
 
-#### dyeingObj.args
+Additional information about the dyed object itself, which should not be passed between services by business code (only used as a local parameter).
 
-染色对象本身的附加信息，业务代码不应将其在服务间进行传递（仅作为本地参数使用）。
-
-此对象类型不限，同时也为可选值
-
+This object is not limited in type and is also optional
