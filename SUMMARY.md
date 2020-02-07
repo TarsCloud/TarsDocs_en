@@ -46,6 +46,8 @@
   * [Development Specification](kai-fa/tarscpp/kai-fa-gui-fan.md)
   * [Service Thread Description](kai-fa/tarscpp/fu-wu-xian-cheng-shuo-ming-wen-dang.md)
   * [Protobuf Support](kai-fa/tarscpp/protobuf-xie-yi-zhi-chi-wen-dang.md)
+  * [HTTP 1/2](kai-fa/tars-http12.md)
+  * [TLS Support](kai-fa/tars-tls-tong-xin-zhi-chi.md)
   * [Performance](kai-fa/tarscpp/xing-neng-shu-ju.md)
   * [Example]
     * [Tars C++ QuickStart](an-li/tarscpp/tars_cpp_quickstart.md) 
@@ -127,8 +129,6 @@
 * [Guidelines for Web's User System](kai-fa/tars-yong-hu-ti-xi-mo-kuai-shi-yong-zhi-yin.md)
 * [Web Management platform API](kai-fa/guan-li-ping-tai-api.md)
 * [Call chain](kai-fa/tars-tiao-yong-lian.md)
-* [HTTP 1/2](kai-fa/tars-http12.md)
-* [TLS Support](kai-fa/tars-tls-tong-xin-zhi-chi.md)
 * [IDC Set](kai-fa/tars-idc-set.md)
 * [Auth](kai-fa/tars-jian-quan-gong-neng.md)
 
