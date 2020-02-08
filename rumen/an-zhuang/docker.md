@@ -1,9 +1,10 @@
+# 目录
 
-# Directory
-> * [Intro](#chapter-1)
-> * [Deploy Tars by Docker](#chapter-2)
-> * [Installation example](#chapter-3)
-> * [Problem checking](#chapter-4)
+> - [1. Intro](#chapter-1)
+> - [2. Deploy Tars framework by Docker](#chapter-2)
+> - [3. Deploy Tars Node by Docker](#chapter-3)
+> - [4. Trouble Shot](#chapter-4)
+> - [5. docker-compose](#chapter-5)
 
 # 1 <a id="chapter-1"></a>Intro
 
@@ -14,34 +15,75 @@ This section mainly introduces the use of docker to complete the deployment of t
 
 First, make sure you have installed the docker environment on your service. If not, please refer to[docker install](docker-huan-jing-an-zhuang.md)
 
-## 2 <a id="chapter-2"></a>Deploy Tars by Docker
+## 2 <a id="chapter-2"></a>Deploy Tars framework by Docker
 
 **If you want the source code to compile docker by yourself, see [Install](source.md)**
 
 Using docker to install the tars framework, there are two images to choose from: framework / tars
 
-**Note: the difference is whether you want to deploy the business service in the image (not recommended, not convenient for upgrading the tars framework)**
+**Note: the difference is whether you want to deploy the business service in the image (not recommended, not convenient for upgrading the tars framework))**
 
-### 2.1 tarscloud/framework
+### 2.1 create a docker network
 
-1. Pull Image
+First create a docker network to make sure this guide work properly on each OS platform. Tars will works exactly like it works in VM or cloud hosting machine.
+
+```sh
+# Create a bridge virtual network and set the name, subnet and gateway.
+docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars
+```
+
+### 2.2 Start MySQL
+
+- Provide MySQL service to platform. You can skip this if you have a running MySQL instance. We highly suggest you to separate framework DB with business DB.
+
+```
+docker run -d \
+    --net=tars \
+    -e MYSQL_ROOT_PASSWORD="123456" \
+    --ip="172.25.0.2" \
+    -v /data/framework-mysql:/var/lib/mysql \
+    -v /etc/localtime:/etc/localtime \
+    --name=tars-mysql \
+    mysql:5.6
+```
+
+### 2.3 run tarscloud/framework docker
+
+1. Pull docker image
+
 ```sh
 docker pull tarscloud/framework:stable
 ```
 
-2. Start Image
+2. Run docker image
+
 ```sh
-docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=eth0 -eSLAVE=false \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tarscloud/framework:stable
+# Mount timezone file /etc/localtime to container. Remove it if you don't have.
+# expose port 3000 for web entry
+# expose port 3001 for web authorization
+docker run -d \
+    --name=tars-framework \
+    --net=tars \
+    -e MYSQL_HOST="172.25.0.2" \
+    -e MYSQL_ROOT_PASSWORD="123456" \
+    -e MYSQL_USER=root \
+    -e MYSQL_PORT=3306 \
+    -e REBUILD=false \
+    -e INET=eth0 \
+    -e SLAVE=false \
+    --ip="172.25.0.3" \
+    -v /data/framework:/data/tars \
+    -v /etc/localtime:/etc/localtime \
+    -p 3000:3000 \
+    -p 3001:3001 \
+    tarscloud/framework:stable
 ```
 
-3. Directory
+You can access `http://${your_machine_ip}:3000` to enter Tars web management platform.
 
-During creation, the directory / data / tars of docker will be mapped to the host directory / data / tars. After starting docker, please check the host directory / data / tars. Normally, the following directories will be created:
+3. Directory
+   During creation, the directory / data / tars of docker will be mapped to the host directory / data / tars. After starting docker, please check the host directory / data / tars. Normally, the following directories will be created:
+
 - app_log: Log directory of the tar service
 - tarsnode-data: tarsnode/data directory (to store the business services published to docker) to ensure that docker is restarted and the data is not lost
 - web_log: Logs of the tars-node-web module in the web (only available to the host)
@@ -50,92 +92,167 @@ During creation, the directory / data / tars of docker will be mapped to the hos
 
 If these directories are not created, you can create them manually and restart docker
 
-### 2.2 tarscloud/tars
+4. Parameter interpretation
 
-1. Pull Image
-```sh
-docker pull tarscloud/tars:stable
-```
+MYSQL_IP: IP of MySQL DB instance
 
-2. Start Image
-```sh
-docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=eth0 -eSLAVE=false \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tarscloud/tars:stable
-```
-
-Path mapping is same to tarscloud/framework
-
-### 2.3 Parameter interpretation
-
-MYSQL_HOST: mysql ip address
-
-MYSQL_ROOT_PASSWORD: mysql root password
+MYSQL_ROOT_PASSWORD: Root password for MySQL
 
 INET: The name of the network interface (as you can see in ifconfig, such as eth0) indicates the native IP bound by the framework. Note that it cannot be 127.0.0.1
 
 REBUILD: Whether to rebuild the database is usually false. If there is an error in the intermediate installation and you want to reset the database, you can set it to true
 
-SLAVE: slave node
+SLAVE: Is this a slave node
 
-MYSQL_USER: mysql user
+MYSQL_USER: MySQL user. Will use root as default.
 
-MYSQL_PORT: mysql port
+MYSQL_PORT: MySQL port
 
-Map three directories to the host:
-- -v/data/tars:/data/tars, include tars application log, web log, patch directory
+5. Run platform replica
 
 **If you want to deploy multiple nodes, just execute docker run... On different machines. Pay attention to the parameter settings!**
 
-**Here, you must use --net=host to indicate that the docker and the host are on the same network** 
-
-For details, see [Install](source.md)
-
-After installation, visit `http://${your_machine_ip}:3000` to open web
-
-## 3 <a id="chapter-3"></a>Installation example]
-
-For example, install two machines, one database (suppose: primary [192.168.7.151], secondary [192.168.7.152], MySQL: [192.168.7.153])
-
-execute in 192.168.7.151:
-```
-docker run -d --net=host -e MYSQL_HOST=192.168.7.153 -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=eth0 -eSLAVE=false \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tarscloud/framework:stable
-
-```
-After the master node finishes executing, the slave node executes:
-```
-docker run -d --net=host -e MYSQL_HOST=192.168.7.153 -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=eth0 -eSLAVE=true \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tarscloud/framework:stable
+```sh
+docker run -d \
+    --name=tars-framework-slave \
+    --net=tars \
+    -e MYSQL_HOST="172.25.0.2" \
+    -e MYSQL_ROOT_PASSWORD="123456" \
+    -e MYSQL_USER=root \
+    -e MYSQL_PORT=3306 \
+    -e REBUILD=false \
+    -e INET=eth0 \
+    -e SLAVE=true \
+    --ip="172.25.0.4" \
+    -v /data/framework-slave:/data/tars \
+    -v /etc/localtime:/etc/localtime \
+    docker.tarsyun.com/tarscloud/framework:stable
 ```
 
-**Note: slave parameters are different**
+**Attention: SLAVE environment is true**
 
-## 4 <a id="chapter-4"></a>Problem checking
+## 3 <a id="chapter-3"></a>Docker Deploy Tars Node by Docker
+
+1. Pull image
+
+```sh
+docker pull tarscloud/tars-node:stable
+```
+
+2. Run Node image
+
+```sh
+docker run -d \
+    --name=tars-node \
+    --net=tars \
+    -e INET=eth0 \
+    -e WEB_HOST="http://172.25.0.3:3000" \
+    --ip="172.25.0.5" \
+    -v /data/node:/data/tars \
+    -v /etc/localtime:/etc/localtime \
+    -p 9000-9010:9000-9010 \
+    tarscloud/tars-node:stable
+```
+
+- Ports 9000 to 9010 are for your applications. You can add more ports if necessary
+- Node will register itself to Tars framework `172.25.0.3`.You can find it in the node management part of your platform web.
+
+## 4 <a id="chapter-4"></a>Trouble Shot
 
 If the docker still cannot open the management platform after running, you can check as follows:
+
 - Close docker. Note that you may need to use docker stop
 - Start the image, do not use the -d parameter
 
 ```sh
-docker run --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=eth0 -eSLAVE=false \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tarscloud/framework:stable
+docker --name=tars-framework \
+    --net=tars \
+    -e MYSQL_HOST="172.25.0.2" \
+    -e MYSQL_ROOT_PASSWORD="123456" \
+    -e MYSQL_USER=root \
+    -e MYSQL_PORT=3306 \
+    -e REBUILD=false \
+    -e INET=eth0 \
+    -e SLAVE=false \
+    --ip="172.25.0.3" \
+    -v /data/framework:/data/tars \
+    -v /etc/localtime:/etc/localtime \
+    -p 3000:3000 \
+    -p 3001:3001 \
+    tarscloud/framework:stable
 ```
-- Check whether there is obvious problem with docker output
 
-If the web platform is open, but the error is displayed, you need to check the web problems. You can enter docker, please refer to check the web problems in [check the web problem](web.MD)
+- Check whether there is obvious problem with docker output
+- You can use the same way to diagnosis node.
+
+If the web platform is open, but the error is displayed, you need to check the web problems. You can enter docker, please refer to check the web problems in[check the web problem](web.md)
+
+## 5 <a id="chapter-5"></a>docker-compose
+
+- We provided a docker-compose.yml for you too. The subnet is set to `172.25.1.0/16` in case conflict with the guide in chapter 2 to 4
+
+```yaml
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.6
+    container_name: tars-mysql
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+    volumes:
+      - ./mysql/data:/var/lib/mysql:rw
+      - ./source/Shanghai:/etc/localtime
+    networks:
+      internal:
+        ipv4_address: 172.25.1.2
+  framework:
+    image: tarscloud/framework:stable
+    container_name: tars-framework
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    restart: always
+    networks:
+      internal:
+        ipv4_address: 172.25.1.3
+    environment:
+      MYSQL_HOST: "172.25.1.2"
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_USER: "root"
+      MYSQL_PORT: 3306
+      REBUILD: "false"
+      INET: eth0
+      SLAVE: "false"
+    volumes:
+      - ./framework/data:/data/tars:rw
+      - ./source/Shanghai:/etc/localtime
+    depends_on:
+      - mysql
+  node:
+    image: tarscloud/tars-node:stable
+    container_name: tars-node
+    restart: always
+    networks:
+      internal:
+        ipv4_address: 172.25.1.5
+    volumes:
+      - ./node/data:/data/:rw
+      - ./source/Shanghai:/etc/localtime
+    environment:
+      INET: eth0
+      WEB_HOST: http://172.25.1.3:3000
+    ports:
+      - "9000-9010:9000-9010"
+    depends_on:
+      - framework
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.1.0/16
+```
