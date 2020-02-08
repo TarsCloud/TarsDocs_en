@@ -1,27 +1,29 @@
 # Directory
-> * [Intro](#chapter-1)
-> * [Create HttpServer](#chapter-2)
-> * [Service Deployment](#chapter-3)
-> * [Develop guideline](#chapter-4)
+
+> - [1. Intro](#chapter-1)
+> - [2. Create Http HelloWorld](#chapter-2)
+> - [3. Create Tars HelloWorld](#chapter-3)
+> - [4. Create Tars HelloWorld Client](#chapter-4)
 
 ## 1 <a id="chapter-1"></a>Intro
 
 ### tars-client
 
 The PHP ability to call the tars service is provided in the tars-client, including:
-* Call the instance of the remote service;
-* Call stat info report
-* Automatic failover
+
+- Call the instance of the remote service;
+- Call stat info report
+- Automatic failover
 
 ### tars-server
 
 Tars-server provides the underlying server framework and supports the following features:
 
-* High performance service based on swoole1.x/2.x
-* Support two protocol modes: tup protocol and tars stream
-* Support three kinds of servers: http, TCP and timer
-* Reporting, monitoring and log integration
-* Tars platform publish support
+- High performance service based on swoole1.x/2.x
+- Support two protocol modes: tup protocol and tars stream
+- Support three kinds of servers: http, TCP and timer
+- Reporting, monitoring and log integration
+- Tars platform publish support
 
 ### tars-config
 
@@ -59,12 +61,13 @@ Modules of configuration file parsing by tars
 
 The tool of automatic code generation can automatically generate server and client code.
 
-## 2 <a id="chapter-2"></a>Create HttpServer
+## 2 <a id="chapter-2"></a>Create Http HelloWorld
 
 ### Directory structure description
 
 1. scripts: Store the scripts required by the business, such as tars2php.sh, which is responsible for generating the code required by the client according to the tars file
 2. src: The directory of business logic mainly includes the following structure:
+
 - component: The basic class of the storage controller is convenient for all controllers to share
 - conf: The configuration required by the business is just a demo. If the configuration is distributed from the platform, it will be written to this folder by default;
 - controller: C layer in MVC model
@@ -74,198 +77,460 @@ The tool of automatic code generation can automatically generate server and clie
 - services.php: Declare the base namespace name of the entire project
 - tars: The TCP service depends on the example.tars file under this folder and the tars.client.proto.php file, which are necessary for generating code under the service. This will be explained in the following guide line.
 
-## 3 <a id="chapter-3"></a>Service Deployment
+### Service Deployment
 
-Enter operation  = & gt; template
+1. Enter operation =&gt; template
 
-  The platform will provide a template for PHP named tars.tarsphp.default
+The platform will provide a template for PHP named tars.tarsphp.default
 
-  **You must first modify the execution path of PHP in it**
+**You must first modify the execution path of PHP in it**
 
-  There are two ways to ensure that HTTP server uses the correct template:
-
-1. Create a new tars.tarsphp.http, inherit from tars.tarsphp.default. Add the following content:
-
-```text
-<tars> 
-  <application>
-      <client>
-      </client>   
-      <server>
-        protocolName=http    
-      </server>
-  </application>
-</tars>
-```
-
-Just add:
-
-```text
-  protocolName=http
-```
-
-2 The second way is to add this part of content in the private template:
-
-```text
-<tars> 
-  <application>
-      <client>
-      </client>   
-      <server>
-        protocolName=http    
-      </server>
-  </application>
-</tars>
-```
-
-Log in to the tars management platform and access the Operation - & gt; deployment.
+2. Enter operation =&gt; deploy
 
 ```
-App = match tars.proto.php in the tar folder below
+App         = match tars.proto.php in the tar folder below
 Server Name = match tars.proto.php in the tar folder below
 Server Type = tars_php
 Template    = tars.tarsphp.default
-
+obj         = match tars.proto.php in the tar folder below
 NodeName    = tarsnode node ip
 Port        = server port
 Port Type   = TCP
 Protocol    = NOT TARS
-```  
+```
 
 Notice:
+
 - Protocol type HTTP service must select non tars
 - The number of threads corresponds to the number of processes in swoole
 - The maximum number of connections, maximum queue length and queue timeout are not valid for PHP services
 
-## 4 <a id="chapter-4"></a> Develop Guideline
+### Develop Guideline
 
 Basic steps:
-- Create a new directory structure, and fix it to scripts, src, and tars
-- Create a new directory under src and copy the component and controller folders in example
-- Create composer.json, content as:
 
-```text
-{   
-  "name" : "tars-http-server-demo",   
-  "description": "tars http server",   
-  "require": 
-  {       
-    "phptars/tars-server": "~0.2",       
-    "phptars/tars-deploy": "~0.1",       
-    "phptars/tars2php": "~0.1",       
-    "phptars/tars-log": "~0.1",       
-    "ext-zip" : ">=0.0.1"   
-  },   
-  "autoload": 
-  {       
-    "psr-4": 
-    {           
-      "HttpServer\\" : "./"​       
-    }   
-  },   
-  "minimum-stability": "stable",   
-  "scripts" : 
-  {       
-    "deploy" : "\\Tars\\deploy\\Deploy::run"   
+1. Create a new directory structure, and fix it to scripts, src, and tars
+2. Create `src/composer.json`
+
+```json
+{
+  "name": "tars/helloworld/phphttp",
+  "description": "tars php http hello world",
+  "require": {
+    "phptars/tars-server": "~0.2",
+    "phptars/tars-deploy": "~0.1",
+    "phptars/tars2php": "~0.1",
+    "phptars/tars-log": "~0.1",
+    "ext-zip": ">=0.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "PHPHttp\\": "./"
+    }
+  },
+  "minimum-stability": "stable",
+  "scripts": {
+    "deploy": "\\Tars\\deploy\\Deploy::run"
   }
+}
+```
+
+3. Create `src/index.php`
+
+```php
+<?php
+/**
+ * Platform entrypoint
+ */
+require_once __DIR__.'/vendor/autoload.php';
+
+use \Tars\cmd\Command;
+
+//php index.php  conf restart
+$config_path = $argv[1];
+$pos = strpos($config_path, '--config=');
+
+$config_path = substr($config_path, $pos + 9);
+
+$cmd = strtolower($argv[2]);
+
+$class = new Command($cmd, $config_path);
+$class->run();
+```
+
+- This will cause platform and requirement initialization.
+
+4. Create `src/services.php`
+
+```php
+<?php
+return [
+    // Hello is the object name
+    'Hello' => [
+        'namespaceName' => 'PHPHttp\\', // psr4 root namespace
+        'saveTarsConfigFileDir' => 'src/conf/', // config directory
+        'saveTarsConfigFileName' => ['',], // Config files which need to be pulled from Tars framework.
+        'monitorStoreConf' => [
+            //'className' => Tars\monitor\cache\RedisStoreCache::class,
+            //'config' => [
+            // 'host' => '127.0.0.1',
+            // 'port' => 6379,
+            // 'password' => ':'
+            //],
+            'className' => Tars\monitor\cache\SwooleTableStoreCache::class,
+            'config' => [
+                'size' => 40960
+            ]
+        ],
+        'registryStoreConf' => [
+            'className' => Tars\registry\RouteTable::class,
+            'config' => [
+                'size' => 200
+            ]
+        ],
+        'protocolName' => 'http', //http, json, tars or other
+        'serverType' => 'http', //http(no_tars default), websocket, tcp(tars default), udp
+    ],
+];
+```
+
+namespaceName should match the psr4 settings in composer.json.
+
+monitorStoreConf is the stats report storage configuration
+
+- className is the storage class name. Use `\Tars\monitor\cache\SwooleTableStoreCache::class` for _swoole_table_ as default. _tars-monitor_ allow you to use _redis_ redis instead. You can also build your own storage class by implement `\Tars\monitor\contract\StoreCacheInterface`.
+
+5. run `composer install`
+6. Create `tars/tars.proto.php` to define your servant
+
+```php
+<?php
+return [
+    'appName' => 'HelloWorld',
+    'serverName' => 'PHPHttp',
+    'objName' => 'Hello',
+];
+```
+
+- appName, serverName, objName should be exactly as the servant you deployed.
+
+7. Create `src/component/Controller.php`
+
+```php
+<?php
+
+namespace PHPHttp\component;
+
+use Tars\core\Request;
+use Tars\core\Response;
+
+class Controller
+{
+    protected $request;
+    protected $response;
+
+    public function __construct(Request $request, Response $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+    }
+
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function cookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
+    {
+        $this->response->cookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+    }
+
+    // send raw data to client
+    public function sendRaw($result)
+    {
+        $this->response->send($result);
+    }
+
+    public function header($key, $value)
+    {
+        $this->response->header($key, $value);
+    }
+
+    public function status($http_status_code)
+    {
+        $this->response->status($http_status_code);
+    }
 }
 
 ```
 
-1. Create index.php in src, content as:
+- This is the base class for all Controllers.
 
-```text
-<?
-  phprequire_once(__DIR__."/vendor/autoload.php");
-  ​use \Tars\cmd\Command;​
-  //php tarsCmd.php  conf restart
-  $config_path = $argv[1];
-  $pos = strpos($config_path,"--config=");​
-  $config_path = substr($config_path,$pos+9);​
-  $cmd = strtolower($argv[2]);​
-  $class = new Command($cmd,$config_path);
-  $class->run();
+8. Create `src/controller/IndexController.php`
+
+```php
+<?php
+
+namespace PHPHttp\controller;
+
+use PHPHttp\component\Controller;
+use Tars\client\CommunicatorConfig;
+use Tars\App;
+
+class IndexController extends Controller
+{
+    public function actionIndex()
+    {
+        $this->sendRaw('Hello Tars!');
+    }
+}
 ```
 
-This file is responsible for startup and entry loading
+- The accessable url for this action is `http://{machine_ip}:9000/index/index`
 
-2. Create services.php, content as:
+9. Run `composer run-script deploy` in `src` directory to build deployment package.
+10. Upload `src/PHPHttp_xxx.tar.gz` and deploy
 
-```text
-  <?php    
-    // 以namespace的方式,在psr4的框架下对代码进行加载    
-    return [      
-      'obj' => [          
-        'namespaceName' => 'HttpServer\\',          
-        'saveTarsConfigFileDir' => 'src/conf/', 
-        //从tarsconfig拉下来的文件保存目录 默认src目录下的conf          
-        'saveTarsConfigFileName' => [ '',], 
-        //需要从tarsconfig拉下来的文件名 在web上配置          
-        'monitorStoreConf' => [              
-          //使用redis缓存主调上报信息              
-          //'className' => Tars\monitor\cache\RedisStoreCache::class,              
-          //'config' => [              
-            // 'host' => '127.0.0.1',              
-            // 'port' => 6379,              
-            // 'password' => ':'              
-            //],              
-            //使用swoole_table缓存主调上报信息（默认）              
-            'className' => Tars\monitor\cache\SwooleTableStoreCache::class,              
-            'config' => [                  
-              'size' => 40960              
-              ]          
-              ],          
-              'registryStoreConf' => [              
-                'className' => Tars\registry\RouteTable::class,              
-                'config' => [                  
-                  'size' => 200              
-                  ]          
-                  ],          
-                  'protocolName' => 'http', 
-                  //http, json, tars or other          
-                  'serverType' => 'http', 
-                  //http(no_tars default), websocket, tcp(tars default), udp      
-                  ],  
-                  ];
+- You can find app logs in `/data/app/tars/app_log/HelloWorld/PHPHttp` if the service if failed to start.
+
+## 3. <a id="chapter-3">Create Tars HelloWorld
+
+### Directory structure description
+
+1. scripts: Store the scripts required by the business, such as tars2php.sh, which is responsible for generating the code required by the client according to the tars file
+2. src: The directory of business logic mainly includes the following structure:
+
+- component: The basic class of the storage controller is convenient for all controllers to share
+- conf: The configuration required by the business is just a demo. If the configuration is distributed from the platform, it will be written to this folder by default;
+- impl: Tars api logic
+- servant: The client source code generated by tars2php, the directory name can be completely customized, and only needs to be distinguished during use;
+- composer.json: Explain project dependencies
+- index.php: The entry file of the whole service. The file name can be customized, but the private template on the platform must be changed. Add the entry field under the server
+- services.php: Declare the base namespace name of the entire project
+- tars: The TCP service depends on the example.tars file under this folder and the tars.client.proto.php file, which are necessary for generating code under the service. This will be explained in the following guide line.
+
+### Deploy servant
+
+```
+AppName = HelloWorld
+ServerName = PHPTars
+ObjName = Hello
 ```
 
-namespaceName为业务实际使用的namespaceName,必须与composer.json中的配置相互对应 monitorStoreConf为主调上报信息的存储配置
+### Develop guideline
 
-* className 为主调上报信息的存储实现类的类名，默认为 \Tars\monitor\cache\SwooleTableStoreCache::class 使用_swoole\_table_存储，_tars-monitor_中还提供了_redis_的存储方式，用户也可以自定义新的实现，但是必须实现 _\Tars\monitor\contract\StoreCacheInterface_ 接口
-* config 为主调上报信息的存储实现类的配置信息，在实现类初始化时作为参数传入，默认对应_swoole\_table_的size
+1. Create `scripts/tars2php.sh`
 
-1. composer install,加载对应的依赖包
-2. 在src下新建conf目录存储配置,默认为ENVConf.php
-3. tars文件夹下面新建tars.proto.php文件, 里面需要包含对你服务本身的说明:
+```bash
+#!/bin/bash
 
-   ```text
-   <?phpreturn array(   'appName' => 'PHPTest',   'serverName' => 'PHPHttpServer',   'objName' => 'obj',);
-   ```
+cd ../tars/
 
-   这个名称要与在tars平台上面的名称完全一一对应。
+php ../src/vendor/phptars/tars2php/src/tars2php.php ./tarsclient.proto.php
 
-4. 如果你只是试一试,那么首先在可以直接跳到第14步 如果你需要调用tars服务,请继续
-5. 将隔壁tcp-server的hello.tars放入tars文件夹中,同时在tars文件夹下面新建tarsclient.proto.php文件:
+```
 
-   ```text
-   <?phpreturn array(  'appName' => 'PHPTest',  'serverName' => 'PHPServer',  'objName' => 'obj',  'withServant' => false,//决定是服务端,还是客户端的自动生成  'tarsFiles' => array(      './example.tars'  ),  'dstPath' => '../src/servant',  'namespacePrefix' => 'HttpServer\servant',);
-   ```
+- Use this script to generate code based on the definations in tarsclient.proto.php
 
-   APPName、serverName、objName 需要与tars平台上面申请的完全一致。withServant必须为false,同时指定tarsFiles的路径。 dstPath一般是`../src/?`,这里为`../src/servant`,这样生成的代码就会到这个文件夹。 namespacePrefix是对应代码的命名空间,这里是`HttpServer\servant`,这个与composer.json中的psr-4的名称也是相互对应的。
+2. Create `src/composer.json`
 
-6. 执行scripts下面的tars2php.sh会在src/servant下面生成一个三级文件夹
+```json
+{
+  "name": "tars/helloworld/phptars",
+  "description": "tars php hello world",
+  "require": {
+    "phptars/tars-server": "~0.2",
+    "phptars/tars-deploy": "~0.1",
+    "phptars/tars2php": "~0.1",
+    "phptars/tars-log": "~0.1",
+    "ext-zip": ">=0.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "PHPTars\\": "./"
+    }
+  },
+  "minimum-stability": "stable",
+  "scripts": {
+    "deploy": "\\Tars\\deploy\\Deploy::run"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/"
+    }
+  }
+}
+```
 
-   ```text
-   cd ../tars/php ../src/vendor/phptars/tars2php/src/tars2php.php ./tarsclient.proto.php
-   ```
+- Run `composer install` after composer.json created.
 
-   这里就是PHPTest/PHPServer/obj
+3. Create platform entrypoint `src/index.php`
 
-   * classes文件夹 - 存放tars中的struct生成的文件
-   * tars文件夹 - 存放tars文件
-   * TestTafServiceServant.php - 实际的远程rpc调用文件
+```php
+<?php
+/**
+ * platform entrypoint
+ */
+require_once __DIR__.'/vendor/autoload.php';
 
-7. 在controller中增加对应的rpc调用代码,具体可参考代码中demo,或tars-client的用法说明
-8. 完成代码开发后,在src目录下执行 composer run-script deploy 会自动进行代码打包
-9. 将打包好的代码,上传到tars平台,并进行发布
+use \Tars\cmd\Command;
 
+//php index.php  conf restart
+$config_path = $argv[1];
+$pos = strpos($config_path, '--config=');
+
+$config_path = substr($config_path, $pos + 9);
+
+$cmd = strtolower($argv[2]);
+
+$class = new Command($cmd, $config_path);
+$class->run();
+```
+
+4. Create service config file `src/services.php`
+
+```php
+<?php
+return [
+    // Hello is the ObjName in service deploy form
+    'Hello' => [
+        'home-api' => '\PHPTars\servant\HelloWorld\PHPTars\Hello\SayHelloTafServiceServant',
+        'home-class' => '\PHPTars\impl\SayHello',
+        'protocolName' => 'tars', //http, json, tars or other
+        'serverType' => 'tcp', //http(no_tars default), websocket, tcp(tars default), udp
+    ],
+];
+
+```
+
+5. Create `tars/tars.proto.php`
+
+```php
+<?php
+return [
+    'appName' => 'HelloWorld',
+    'serverName' => 'PHPTars',
+    'objName' => 'Hello',
+];
+
+```
+
+6. Create `tars/tarsclient.proto.php`
+
+```php
+<?php
+return array(
+    'appName' => 'HelloWorld',
+    'serverName' => 'PHPTars',
+    'objName' => 'Hello',
+    'withServant' => true, // The tars2php.sh script will generate server code for true, client code for false.
+    'tarsFiles' => array(
+        './SayHello.tars', // tars file location based on tars directory. Only support one file for tars server.
+    ),
+    'dstPath' => '../src/servant', // The target direcoty for code generating. Location is based on scripts directory
+    'namespacePrefix' => 'PHPTars\servant',
+);
+```
+
+- Define the code generating parameters
+
+7. Create `tars/SayHello.tars`
+
+```c++
+module SayHelloTafServiceServant
+{
+    interface SayHelloTafService
+    {
+        int greeting(string name, out string greeting); // out stands for output parameter.
+    };
+
+};
+```
+
+- You can learn more about tars defination in [tars protocol doc](../../kai-fa/tars_protocol.md)
+- Run `cd scripts && ./php2tars.sh` to generate tars code
+
+8. Create `src/impl/SayHello.php` to implement tars API
+
+```php
+<?php
+
+namespace PHPTars\impl;
+
+use PHPTars\servant\HelloWorld\PHPTars\Hello\SayHelloTafServiceServant;
+
+class SayHello implements SayHelloTafServiceServant
+{
+    public function greeting($name, &$greeting)
+    {
+        $greeting = "PHPTars says hello to $name";
+
+        return 0;
+    }
+}
+
+```
+
+- This class is what we set in `home-class`. see `src/services.php`
+
+9. Run `composer run-script deploy` in src directory to build a deployment package
+10. Deploy tars service to node
+
+- You can access HelloWorld.PHPHttp service page to test this API on debug tool.
+- You can find app logs in `/data/app/tars/app_log/HelloWorld/PHPTars` on node machine if service is failed to start.
+
+## 4. <a id="chapter-4"></a>Create Tars HelloWorld Client
+
+- Let's call the tars API in PHPHttp project.
+
+1. Copy `SayHello.tars` to `tars/SayHello.tars`
+2. Create `tars/tarsclient.proto.php`
+
+```php
+<?php
+
+return array(
+    'appName' => 'HelloWorld',
+    'serverName' => 'PHPHttp',
+    'objName' => 'Hello',
+    'withServant' => false, //false for client code generating
+    'tarsFiles' => array(
+        './SayHello.tars',
+    ),
+    'dstPath' => '../src/servant',
+    'namespacePrefix' => 'PHPHttp\servant',
+);
+```
+
+- Execute `scripts/php2tars.php` to generate client code.
+
+3. Add new action to `src/controller/IndexController.php`
+
+```php
+    public function actionTestGreeting()
+    {
+        $config = new \Tars\client\CommunicatorConfig();
+        $config->setLocator(\Tars\App::$tarsConfig['tars']['application']['client']['locator']);
+
+        $userService = new \PHPHttp\servant\HelloWorld\PHPTars\Hello\SayHelloTafServiceServant($config);
+        $greeting = '';
+        $return = $userService->greeting('Frank Lee', $greeting);
+
+        $this->sendRaw(json_encode(compact('return', 'greeting')));
+    }
+```
+
+- `PHPHttp\servant\HelloWorld\PHPTars\Hello\SayHelloTafServiceServant` is generated by tars2php.sh
+- `\Tars\App::$tarsConfig` will be initialized by tars configs after service started.
+- `\Tars\App::$tarsConfig['tars']['application']['client']['locator']` is the location of registry object which provide route service for tars nodes.
+- !!!! Tars is a multi-language platform. We must initialize parameters with proper type before we made the call. !!!!
+
+4. Package you code and deploy
+
+- You can check the result by access `http://{machine_ip}/index/TestGreeting`
