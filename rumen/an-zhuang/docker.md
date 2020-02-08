@@ -19,7 +19,7 @@ First, make sure you have installed the docker environment on your service. If n
 
 **If you want the source code to compile docker by yourself, see [Install](source.md)**
 
-Using docker to install the tars framework, there are two images to choose from: framework / tars
+Using docker to install the tars framework, there are two images to choose from: framework / tars .
 
 **Note: the difference is whether you want to deploy the business service in the image (not recommended, not convenient for upgrading the tars framework))**
 
