@@ -1,4 +1,4 @@
-# Directory
+# Tars.js
 > * [Intro](#chapter-1)
 > * [Development Mode](#chapter-1)
 
