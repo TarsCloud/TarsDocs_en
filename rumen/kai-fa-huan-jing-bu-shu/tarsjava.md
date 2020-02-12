@@ -1,4 +1,4 @@
-# Directory
+# TarsJava
 > * [Environmental Dependency](#chapter-1)
 > * [Build Project](#chapter-1)
 > * [Config Dependency](#chapter-1)
