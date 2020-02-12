@@ -1,12 +1,11 @@
 
 
-# Directory
+# Tars.js
 > * [Tars rpc server](#chapter-1)
 > * [Tars http server](#chapter-2)
 > * [Tars client rpc](#chapter-3)
 > * [Other](#chapter-4)
 
-## Tars.js 
 This document provides a quick start to step by step for several development scenarios of tars nodejs.
 
 For more details and features, please refer to [tars nodejs development document](https://tarscloud.github.io/TarsDocs/kai-fa/tars.js/), And readme documents of each sub module。
