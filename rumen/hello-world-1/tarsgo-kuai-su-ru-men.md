@@ -1,4 +1,4 @@
-# Directory
+# TarsGo
 > * [Create service](#chapter-1)
 > * [Define interface file](#chapter-2)
 > * [Server development](#chapter-3)
