@@ -1,4 +1,4 @@
-# Directory
+# TarsGo
 > * [Environmental preparation](#chapter-1)
 
 # 1 <a id="chapter-1"></a> Environmental preparation
