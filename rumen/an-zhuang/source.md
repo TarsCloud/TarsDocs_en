@@ -6,7 +6,7 @@
 
 This document describes the steps to deploy, run, and test Tars framework.
 
-If you use Tars for production environment, the deployment steps are similar, but you need pay attention to fault-tolerance. You can join us for discussion in the QQ group code 579079160.  
+If you use Tars for the production environment, the deployment steps are similar, but you need pay attention to fault-tolerance. You can join us for discussion in the QQ group code 579079160.  
  
 ## 1. <a id="chapter-1"></a>Dependent environments  
   
@@ -116,14 +116,14 @@ If you want to install on different path:
 
 # 3 <a id="chapter-3"></a>Tars framework Installation 
 
-## 3.1. 框架安装模式
+## 3.1. Installation
 
-**There are two Installation mode of TarsFramework:**
+**There are two Installation modes of TarsFramework:**
 
 - centos7 automatic deploy, During the installation process, the network needs to download resources from the outside
 - Make a docker image to complete the installation. The process of making a docker requires network download resources, but no external network is needed to start and run the docker image
 
-**Tars Framework Installation Attentions:**
+**Attentions:**
 
 - During the installation process, because the tar web relies on nodejs, it will automatically download nodejs, NPM, PM2 and related dependencies, and set the environment variables to ensure that nodejs takes effect
 - The version of nodejs currently downloads v12.13.0 by default
@@ -275,7 +275,7 @@ Map three directories to the host:
 
 **Here, you must use --net=host to indicate that the docker and the host are on the same network**
 
-## 3.5. mysql权限问题
+## 3.5. mysql privilege
 
 The above installation of MySQL requires root permission by default, but in some scenarios without root user or when root user has to input password interactively (such as Tencent cloud CDB), you can install it as follows:
 
