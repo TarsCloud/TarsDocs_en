@@ -1,4 +1,4 @@
-# Directory
+# TarsPHP
 > * [Intro](#chapter-1)
 > * [Install PHP](#chapter-2)
 > * [Install swoole](#chapter-3)
