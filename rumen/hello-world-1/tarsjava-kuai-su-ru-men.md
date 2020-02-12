@@ -1,4 +1,4 @@
-# Directory
+# TarsJava
 > * [Define interface file](#chapter-1)
 > * [Interface file compilation](#chapter-2)
 > * [Service interface implementation](#chapter-3)
