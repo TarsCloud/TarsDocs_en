@@ -133,7 +133,7 @@
 * [Auth](kai-fa/tars-jian-quan-gong-neng.md)
 
 ## FAQ <a id="question"></a>
-* [Install](chang-jian-wen-ti/Install_faq.md)
+* [Install](chang-jian-wen-ti/Install_faq-en.md)
 * [TarsCPP](chang-jian-wen-ti/tarscpp-chang-jian-wen-ti.md)
 * [TarsJava](chang-jian-wen-ti/tarsjava-chang-jian-wen-ti.md)
 * [TarsPHP](chang-jian-wen-ti/tarsphp-chang-jian-wen-ti.md)
