@@ -1,14 +1,14 @@
-# Tars-Spring 使用说明
+# Tars-Spring introduction
 
-## 功能说明
+## Functional description
 
-Tars支持使用Spring配置servant，使用此功能需要依赖tars-spring.jar包，以及spring 4及以上版本。你可以将你的servant作为一个Spring bean，你可以自由的使用Spring的功能最后只需要通过Tars提供的标签告知Tars哪些些bean是servant即可。
+Tars supports the use of Spring to configure servant, which needs to depend on the tars-spring.jar package, as well as the spring 4 and above. You can use your servant as a Spring bean, and you can use the function of Spring freely. Finally, you only need to tell Tars which bean is servant through the label provided by the Tars.
 
-## 依赖配置
+## Dependency configuration
 
-使用此功能需要添加依赖jar包，在pom.xml中添加如下配置：
+Using this function requires adding a dependency jar package and adding the following configuration in pom.xml:
 
-```text
+```xml
 <dependency>
       <groupId>com.tencent.tars</groupId>
       <artifactId>tars-spring</artifactId>
@@ -16,15 +16,15 @@ Tars支持使用Spring配置servant，使用此功能需要依赖tars-spring.jar
 </dependency>
 ```
 
-## 服务暴露配置
+## Service exposure configuration
 
-使用spring配置模式需要在resources目录下将tars原版配置文件servants.xml改为servants-spring.xml，如果两种配置文件均存在会优先读取servant.xml则不会启用spring模式。
+Using the spring configuration mode, you need to change the tars original configuration file servants.xml to servants-spring.xml under the resources directory.If all two configuration files exist, the spring mode will not be enabled if the servant.xml will be read first.
 
-### Servant配置
+### Servant configuration
 
-在Spring模式下，servants-spring.xml为spring配置文件，在配置文件中需要先引入Tars的xsd文件：
+In the Spring mode, servants-spring.xml is spring configuration file. The Tars's XSD file needs to be introduced first in the configuration file as follow:
 
-```text
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,38 +35,33 @@ Tars支持使用Spring配置servant，使用此功能需要依赖tars-spring.jar
 </beans>
 ```
 
-Tars中自定义了多个spring标签，配置servant时需要先将servant定义为一个bean，然后通过Tars标签定义为servant：
+Multiple spring tags are defined in Tars. When configuring servant, you need to define servant as a bean, and then define it as servant by  the Tars tag.
 
-```text
+```xml
 <tars:servant name="HelloObj" interface="com.qq.test.GreeterServant" ref="greeterServantImp"/>
 <bean id="greeterServantImp" class="com.qq.test.impl.GreeterServantImp" />
 ```
 
-servant标签通过name指定servant名称，ref指定对应的bean名，通过interface指定对应的接口名。当然你也可以通过添加@Component标签然后通过spring自动扫描获取到bean，同样只需要配置对应bean名即可：
+The servant tag specifies the name of the servant through the name. Ref specifies the corresponding bean name, and interface specifies the corresponding interface name. Of course, you can also get bean by adding a @Component tag and then bean is obtained by spring automatic scanning, as well as configuring a corresponding bean name：
 
-```text
+```xml
 <context:component-scan base-package="com.qq.tars.test"/>
 <tars:servant name="HelloObj" interface="com.qq.test.GreeterServant" ref="greeterServantImp"/>
 ```
 
-### Listener配置
+### Listener configuration
 
-listener的配置与servant配置相同，也需要将你的Listener定义为bean，然后通过tars标签将对应的bean指定为Listener：
+The configuration of listener is the same as that of the servant configuration, and you need to define your Listener as bean, and then the corresponding bean is specified as Listener through the Tars tag.
 
-```text
+```xml
 <tars:listener ref="startListener"/>
 <bean id="startListener" class="com.qq.test.ServiceStartListener" />
 ```
+## 1.3.0 Version update Guide
 
-## 1.3.0版本升级指南
-
-如需使用tars-spring等新功能需要将tars升级到1.3.0版本及以上版本，本次改动相对较大，附上版本升级指南：
-
-1. 管理平台需要重新编译升级。
-2. tars-node需要升级到新版本。
-3. 在模版管理中修改tars.tarsjava.default模版的classpath配置项，修改为
-
+If you need new functions like tars-spring, you need to upgrade the tars to the 1.3.0 version and the above version. As the change is relatively large, the version update guide is as follows:
+1. The management platform needs to be recompiled and upgraded.
+2. Tars-node needs to be upgraded to a new version.
+3. Modifying the classpath configuration item of the tars.tarsjava.default template in the template management to the following code:
 > classpath=${basepath}/conf:${basepath}/WEB-INF/classes:${basepath}/WEB-INF/lib
-
-1. 在构建tars-java项目时servants.xml需要放在resources目录下
-
+4. When building a tars-java project, servants.xml needs to be placed under the resources directory.
