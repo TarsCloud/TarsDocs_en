@@ -1,18 +1,23 @@
-# 使用指南
+# contents #
+> * Server development
+> * Client development
+> * Service configuration
+> * Service logs
+> * Service management
+> * Abnormally report
+> * Attribute statistics
 
-## 框架使用指南
+# Guidelines for the use of the tars framework #
 
-### 服务端开发
+## Server development ##
 
-下面通过一个完整的hello world例子介绍如何实现自己的服务。
+The following is a complete Hello world example to show how to implement your own services.
 
-#### 依赖配置
+### Dependency configuration ###
+Add dependent jar packages in the build project **pom.xml**
 
-在构建项目**pom.xml**中添加依赖jar包
-
-* 框架依赖配置
-
-```text
+- Framework dependency configuration
+```xml
 <dependency>
     <groupId>com.tencent.tars</groupId>
     <artifactId>tars-server</artifactId>
@@ -20,10 +25,8 @@
     <type>jar</type>
 </dependency>
 ```
-
-* 插件依赖配置
-
-```text
+- Plug-in unit dependency configuration
+```xml
 <plugin>
     <groupId>com.tencent.tars</groupId>
     <artifactId>tars-maven-plugin</artifactId>
@@ -42,12 +45,10 @@
     </configuration>
 </plugin>
 ```
+### Definition of interface files ###
 
-#### 接口文件定义
-
-接口文件定义是通过Tars接口描述语言来定义，在src/main/resources目录下建立hello.tars文件，内容如下
-
-```text
+The definition of the interface file is defined by the Tars interface description language, and the hello.tars file is set up under the src/main/resources directory. The contents are as follows
+```    	protobuf
 module TestApp 
 {
 	interface Hello
@@ -56,66 +57,64 @@ module TestApp
 	};
 };
 ```
+### Compilation of interface files ###
 
-#### 接口文件编译
+Provide plug-in compile to generate java code, add java file configuration in tars-maven-plugin
 
-提供插件编译生成java代码，在tars-maven-plugin添加生成java文件配置
-
-```text
+```xml
 <plugin>
 	<groupId>com.tencent.tars</groupId>
 	<artifactId>tars-maven-plugin</artifactId>
 	<version>1.6.1</version>
 	<configuration>
 		<tars2JavaConfig>
-			<!-- tars文件位置 -->
+			<!-- Tars file location -->
 			<tarsFiles>
 				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
 			</tarsFiles>
-			<!-- 源文件编码 -->
+			<!-- Source file encoding -->
 			<tarsFileCharset>UTF-8</tarsFileCharset>
-			<!-- 生成服务端代码 -->
+			<!-- Generating server-side code -->
 			<servant>true</servant>
-			<!-- 生成源代码编码 -->
+			<!-- Generating source code coding -->
 			<charset>UTF-8</charset>
-			<!-- 生成的源代码目录 -->
+			<!-- Generated source code directory -->
 			<srcPath>${basedir}/src/main/java</srcPath>
-			<!-- 生成源代码包前缀 -->
+			<!-- Generating the source code package prefix -->
 			<packagePrefixName>com.qq.tars.quickstart.server.</packagePrefixName>
 		</tars2JavaConfig>
 	</configuration>
 </plugin>
 ```
 
-在工程根目录下执行mvn tars:tars2java
-
-```text
+Executing mvn tars:tars2java in the project root directory
+```			java
 @Servant
 public interface HelloServant {
     public String hello(int no, String name);
 }	
 ```
+### Service interface implementation ###
 
-#### 服务接口实现
+Create a new HelloServantImpl.java file and implement HelloServant.java interface.
 
-新创建一个HelloServantImpl.java文件，实现HelloServant.java接口
-
-```text
+```java
 public class HelloServantImpl implements HelloServant {
 ```
 
-```text
+```java
 @Override
 public String hello(int no, String name) {
     return String.format("hello no=%s, name=%s, time=%s", no, name, System.currentTimeMillis());
 }
 ```
 
-#### 服务暴露配置
 
-在WEB-INF下创建一个servants.xml的配置文件，服务编写后需要进程启动时加载配置暴露服务，配置如下:​
+### Service exposure configuration ###
 
-```text
+Create a servants.xml configuration file under WEB-INF. After the service is written, you need to load the configuration exposed service when the process starts. The configuration is as follows:
+​			
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <servants>
 	<servant name="HelloObj">
@@ -125,365 +124,359 @@ public String hello(int no, String name) {
 </servants>
 ```
 
-说明：除了此方法之外，还可以采用spring模式来配置服务，详情见tars\_java\_spring.md。
+Note: in addition to this method, spring mode can also be used to configure services. For details, see tars_java_spring.md.
 
-#### 服务配置ServerConfig
+### Server configure ServerConfig
 
-服务框架中有全局的结构ServerConfig，它记录了服务的基本信息，在服务框架初始化时会自动从服务配置文件中初始化这些参数。参数说明：
+The service framework has a global structure, ServerConfig, which records the basic information of the service and initializes the parameters automatically from the service configuration file when the service framework is initialized. The parameters are described as follows：
+> * Application：Application name，If the configuration file is not configured, the default is UNKNOWN；
+> * ServerName：Service name；
+> * BasePath：basic path, usually representing the path of an executable file；
+> * DataPath：data file path, usually representing the data of the service itself；
+> * LocalIp：Local IP, the default IP value is the first network card IP of non 127.0.0.1 in this machine；
+> * LogPath：Log file path, how to write log files, please refer to the following content；
+> * LogLevel：Rolling log level；
+> * Local：A service can have a management port, which can be sent to a service through a management port, which represents the address of the bound management port, such as TCP -h 127.0.0.1 -p 8899, indicating no management port if it is not set；
+> * Node：If the local NODE address is set, the heartbeat is sent to NODE regularly, otherwise the heartbeat is not transmitted, usually only the service that is posted to the frame has the parameter；
+> * Log：Log center address，such as ：tars.tarslog.LogObj@tcp –h .. –p …，If this is not configured, the remote log is not recorded；
+> * Config：Configuration center address，such as：tars.tarsconfig.ConfigObj@tcp –h … -p …，If it is not configured, the addConfig function is invalid and cannot be configured from the remote configuration center；
+> * Notify：Information report center address，such as：tars.tarsnotify.NotifyObj@tcp –h … -p …，If there is no configuration, the reported information is discarded directly；
+> * SessionTimeOut：Timeout settings to prevent free connections；
+> * SessionCheckInterval：The inspection cycle is mainly to prevent free connection timeouts；
 
-> * Application：应用名称，如果配置文件没有配置，默认为UNKNOWN；
-> * ServerName：服务名称；
-> * BasePath：基本路径，通常表示可执行文件的路径；
-> * DataPath：数据文件路径，通常表示存在服务自己的数据；
-> * LocalIp：本地ip，默认是本机非127.0.0.1的第一块网卡IP；
-> * LogPath：日志文件路径，日志的写法请参考后续；
-> * LogLevel：滚动log日志级别；
-> * Local：服务可以有管理端口，可以通过管理端口发送命令给服务，该参数表示绑定的管理端口的地址，例如tcp -h 127.0.0.1 -p 8899，如果没有设置则没有管理端口；
-> * Node：本地NODE地址，如果设置，则定时给NODE发送心跳，否则不发送心跳，通常只有发布到框架上面的服务才有该参数；
-> * Log：日志中心地址，例如：tars.tarslog.LogObj@tcp –h .. –p …，如果没有配置，则不记录远程日志；
-> * Config：配置中心地址，例如：tars.tarsconfig.ConfigObj@tcp –h … -p …，如果没有配置，则addConfig函数无效，无法从远程配置中心拉取配置；
-> * Notify：信息上报中心地址，例如：tars.tarsnotify.NotifyObj@tcp –h … -p …，如果没有配置，则上报的信息直接丢弃；
-> * SessionTimeOut：防空闲连接超时设置；
-> * SessionCheckInterval：防空闲连接超时检查周期；
+The configuration file format of the service is as follows：
 
-服务的配置文件格式如下：
+	<tars>
+	  <application>
+	    <server>
+	       #The ip:port of the local node
+	       node=tars.tarsnode.ServerObj@tcp -h x.x.x.x -p 19386 -t 60000
+	       #Application name
+	       app=TestApp
+	       #Server name
+	       server=HelloServer
+	       #Local ip
+	       localip=x.x.x.x
+	       #Management port
+	       local=tcp -h 127.0.0.1 -p 20001 -t 3000
+	       #Service executable files, configuration files, and so on
+	       basepath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/bin/
+	       #Service data directory
+	       datapath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/data/
+	       #Log path
+	       logpath=/usr/local/app/tars/app_log/
+	       #The address of the configuration center
+	       config=tars.tarsconfig.ConfigObj
+	       #The address of the report[Option]
+	       notify=tars.tarsnotify.NotifyObj
+	       #Remote log address[Option]
+	       log=tars.tarslog.LogObj
+	       #Timeout time of service stop
+	       deactivating-timeout=2000
+	       #Log level
+	       logLevel=DEBUG
+	       #Timeout settings to prevent free connections
+		   sessionTimeOut=120000
+		   #The inspection cycle is mainly to prevent free connection timeouts
+	       sessionCheckInterval=60000
+	    </server>
+	  </application>
+	</tars>
 
-```text
-<tars>
-  <application>
-    <server>
-       #本地node的ip:port
-       node=tars.tarsnode.ServerObj@tcp -h x.x.x.x -p 19386 -t 60000
-       #应用名称
-       app=TestApp
-       #服务名称
-       server=HelloServer
-       #本机ip
-       localip=x.x.x.x
-       #管理端口
-       local=tcp -h 127.0.0.1 -p 20001 -t 3000
-       #服务可执行文件,配置文件等
-       basepath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/bin/
-       #服务数据目录
-       datapath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/data/
-       #日志路径
-       logpath=/usr/local/app/tars/app_log/
-       #配置中心的地址
-       config=tars.tarsconfig.ConfigObj
-       #通知上报的地址[可选]
-       notify=tars.tarsnotify.NotifyObj
-       #远程日志的地址[可选]
-       log=tars.tarslog.LogObj
-       #服务停止的超时时间
-       deactivating-timeout=2000
-       #日志等级
-       logLevel=DEBUG
-       #防空闲连接超时设置
-	   sessionTimeOut=120000
-	   #防空闲连接超时检查周期
-       sessionCheckInterval=60000
-    </server>
-  </application>
-</tars>
-```
+### Adapter
 
-#### Adapter
+Adapter represents the binding port. A new binding port is added to the service, and a new Adapter is set up, and the relevant parameters and processing objects can be very convenient to complete the processing on this port, which is usually used to complete the support of other protocols.
 
-Adapter表示了绑定端口。服务新增一个绑定端口，则新建立一个Adapter，并设置相关的参数和处理对象则可以非常方便的完成对这个端口上的处理，通常用这个功能来完成在其他协议的支撑。
+For TARS services, the addition of adapter items in the service configuration file means that an additional Servant processing object can be completed.
 
-对于TARS服务而言，在服务配置文件中增加adapter项，即可以完成增加一个Servant处理对象。
+The Adapter configuration is as follows:
 
-Adapter配置如下：
+	<tars>
+	  <application>
+	    <server>
+	       #Configure the binding port
+	       <TestApp.HelloServer.HelloObjAdapter>
+	            #Allowed IP address
+	            allow
+	            #Monitor IP address
+	            endpoint=tcp -h x.x.x.x -p 20001 -t 60000
+	            #Handle group
+	            handlegroup=TestApp.HelloServer.HelloObjAdapter
+	            #Maximum connection
+	            maxconns=200000
+	            #protocol
+	            protocol=tars
+	            #Queue size
+	            queuecap=10000
+	            #Queue timeout time Millisecond
+	            queuetimeout=60000
+	            #Servant
+	            servant=TestApp.HelloServer.HelloObj
+	            #Current thread number
+	            threads=5
+	       </TestApp.HelloServer.HelloObjAdapter>
+	    </server>
+	  </application>
+	</tars>
 
-```text
-<tars>
-  <application>
-    <server>
-       #配置绑定端口
-       <TestApp.HelloServer.HelloObjAdapter>
-            #允许的IP地址
-            allow
-            #监听IP地址
-            endpoint=tcp -h x.x.x.x -p 20001 -t 60000
-            #处理组
-            handlegroup=TestApp.HelloServer.HelloObjAdapter
-            #最大连接数
-            maxconns=200000
-            #协议
-            protocol=tars
-            #队列大小
-            queuecap=10000
-            #队列超时时间毫秒
-            queuetimeout=60000
-            #处理对象
-            servant=TestApp.HelloServer.HelloObj
-            #当前线程个数
-            threads=5
-       </TestApp.HelloServer.HelloObjAdapter>
-    </server>
-  </application>
-</tars>
-```
+Adding servant items needs to be completed in servants.xml..xml中完成配置
 
-添加servant项需要在servants.xml中完成配置
+### Service startup
 
-#### 服务启动
+When the service starts, add the configuration file **-Dconfig=config.conf** to the boot command.
+Note: config.conf is the configuration file, the configuration files of the server and the client must be merged into this file. The complete configuration file is as follows：
 
-服务启动时需要在启动命令中添加配置文件\*\*-Dconfig=config.conf\*\*， 注意：config.conf为配置文件，服务端的配置文件和客户端的配置文件必须合并到这一个文件中。完整的如下：
+	<tars>
+	  <application>
+	    enableset=n
+	    setdivision=NULL
+	    <server>
+	       #The ip:port of the local node
+	       node=tars.tarsnode.ServerObj@tcp -h x.x.x.x -p 19386 -t 60000
+	       #Application name
+	       app=TestApp
+	       #Server name
+	       server=HelloServer
+	       #Local ip
+	       localip=x.x.x.x
+	       #Management port
+	       local=tcp -h 127.0.0.1 -p 20001 -t 3000
+	       #Service executable files, configuration files, and so on
+	       basepath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/bin/
+	       #Service data directory
+	       datapath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/data/
+	       #Log path
+	       logpath=/usr/local/app/tars/app_log/
+	       #The address of the configuration center
+	       config=tars.tarsconfig.ConfigObj
+	       #The address of the report[Option]
+	       notify=tars.tarsnotify.NotifyObj
+	       #Remote log address[Option]
+	       log=tars.tarslog.LogObj
+	       #Timeout time of service stop
+	       deactivating-timeout=2000
+	       #Log level
+	       logLevel=DEBUG
+	        #Configure the binding port
+	       <TestApp.HelloServer.HelloObjAdapter>
+	            #Allowed IP address
+	            allow
+	            #Monitor IP address
+	            endpoint=tcp -h x.x.x.x -p 20001 -t 60000
+	            #Handle group
+	            handlegroup=TestApp.HelloServer.HelloObjAdapter
+	            #Maximum connection
+	            maxconns=200000
+	            #protocol
+	            protocol=tars
+	            #Queue size
+	            queuecap=10000
+	            #Queue timeout time Millisecond
+	            queuetimeout=60000
+	            #Servant
+	            servant=TestApp.HelloServer.HelloObj
+	            #Current thread number
+	            threads=5
+	       </TestApp.HelloServer.HelloObjAdapter>
+	    </server>
+	    <client>
+	       #Master's address
+	       locator=tars.tarsregistry.QueryObj@tcp -h x.x.x.x -p 17890
+	       #Synchronous timeout time
+	       sync-invoke-timeout=3000
+	       #Asynchronous timeout time
+	       async-invoke-timeout=5000
+	       #Refresh the time interval of the IP list
+	       refresh-endpoint-interval=60000
+	       #The time interval of the reported data
+	       report-interval=60000
+	       #sampling rate
+	       sample-rate=100000
+	       #Maximum sampling number
+	       max-sample-count=50
+	       #Template name
+	       modulename=TestApp.HelloServer
+	    </client>
+	  </application>
+	</tars>
 
-```text
-<tars>
-  <application>
-    enableset=n
-    setdivision=NULL
-    <server>
-       #本地node的ip:port
-       node=tars.tarsnode.ServerObj@tcp -h x.x.x.x -p 19386 -t 60000
-       #应用名称
-       app=TestApp
-       #服务名称
-       server=HelloServer
-       #本机ip
-       localip=x.x.x.x
-       #管理端口
-       local=tcp -h 127.0.0.1 -p 20001 -t 3000
-       #服务可执行文件,配置文件等
-       basepath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/bin/
-       #服务数据目录
-       datapath=/usr/local/app/tars/tarsnode/data/TestApp.HelloServer/data/
-       #日志路径
-       logpath=/usr/local/app/tars/app_log/
-       #配置中心的地址
-       config=tars.tarsconfig.ConfigObj
-       #通知上报的地址[可选]
-       notify=tars.tarsnotify.NotifyObj
-       #远程日志的地址[可选]
-       log=tars.tarslog.LogObj
-       #服务停止的超时时间
-       deactivating-timeout=2000
-       #日志等级
-       logLevel=DEBUG
-        #配置绑定端口
-       <TestApp.HelloServer.HelloObjAdapter>
-            #允许的IP地址
-            allow
-            #监听IP地址
-            endpoint=tcp -h x.x.x.x -p 20001 -t 60000
-            #处理组
-            handlegroup=TestApp.HelloServer.HelloObjAdapter
-            #最大连接数
-            maxconns=200000
-            #协议
-            protocol=tars
-            #队列大小
-            queuecap=10000
-            #队列超时时间毫秒
-            queuetimeout=60000
-            #处理对象
-            servant=TestApp.HelloServer.HelloObj
-            #当前线程个数
-            threads=5
-       </TestApp.HelloServer.HelloObjAdapter>
-    </server>
-    <client>
-       #主控的地址
-       locator=tars.tarsregistry.QueryObj@tcp -h x.x.x.x -p 17890
-       #同步超时时间
-       sync-invoke-timeout=3000
-       #异步超时时间
-       async-invoke-timeout=5000
-       #刷新ip列表的时间间隔
-       refresh-endpoint-interval=60000
-       #上报数据的时间间隔
-       report-interval=60000
-       #采样率
-       sample-rate=100000
-       #最大采样数
-       max-sample-count=50
-       #模版名称
-       modulename=TestApp.HelloServer
-    </client>
-  </application>
-</tars>
-```
+### Asynchronous nesting
 
-#### 异步嵌套
+Asynchronous nesting represents the following:
 
-异步嵌套代表如下情况：
+>  A invokes B asynchronously, B receives the request and then calls C asynchronously. After C returns, B returns the result back to A.
 
-> A 异步调用B，B接收到请求后再异步调用C，等C返回后，B再将结果返回A。
+Normally, after receiving the request, B needs to return to A after the interface is processed, so it cannot be implemented if B also initiates an asynchronous request to C in the interface Therefore, it is necessary to declare startup asynchronism in the implementation interface method to achieve asynchronous calls across services.
 
-通常情况下面，B接收到请求后，在接口处理完毕以后就需要返回应答给A，因此如果B在接口中又发起异步请求到C，则无法实现。
+​	
+	//Declarations start asynchronous context
+	AsyncContext context = AsyncContext.startAsync();
+	//Interface implementation
+	...
+	
+	//Back packet after asynchronous processing
+	context.writeResult(...);
 
-因此需要在实现接口方法中，声明启动异步来实现跨服务的异步调用，​//声明启动异步上下文 AsyncContext context = AsyncContext.startAsync\(\); //接口实现 ...
+## Client development
 
-```text
-//在异步处理后回包
-context.writeResult(...);
-```
+The client can complete remote calls without writing any protocol communication code.
 
-### 客户端开发
+### communicator
 
-客户端可以不用写任何协议通信代码即可完成远程调用。
+after the server is completed, the client completes the receiving and sending operations to the server through the 
+communicator **Communicator**.
 
-#### 通信器
+The initialization of the communicator is as follows:
 
-完成服务端以后，客户端对服务端完成收发包的操作是通过通信器**Communicator**来实现的。
+	CommunicatorConfig cfg = CommunicatorConfig.load("config.conf");
+	//Construct communicator
+	Communicator communicator = CommunicatorFactory.getInstance().getCommunicator(cfg);
 
-通信器的初始化如下：
+Explain：
+> * The configuration file format of communicator will be introduced later：
+> * Communicator default does not use configuration files or can be used. All parameters have default values:
+> * Communicator can also be initialized directly by attributes:
+> * If you need to get the client invocation agent by name, you must set the locator parameter:
 
-```text
-CommunicatorConfig cfg = CommunicatorConfig.load("config.conf");
-//构建通信器
-Communicator communicator = CommunicatorFactory.getInstance().getCommunicator(cfg);
-```
+Communicator attributes:
+> * locator: The address of the registry service must be IP port. If there is no need for registry to locate the service, no configuration is required；
+> * connect-timeout：Network connection timeout time, milliseconds, without configuration, the default value is 3000.
+> * connections；The number of connections, the default value is 4.
+> * sync-invoke-timeout：The maximum timeout time (synchronization) of the invoke, milliseconds, without configuration, the default value is 3000
+> * async-invoke-timeout：The maximum timeout time (asynchronous) of the invoke, milliseconds, without configuration, the default value is 5000
+> * refresh-endpoint-interval：Go to registry to refresh the configuration time interval, milliseconds, if not configured, the default value is 1 minutes
+> * stat：The address of the service is invoked between the modules,If there is no configuration, the reported data is discarded directly.
+> * property：Address reported in property, if there is no configuration, the reported data will be discarded directly.
+> * report-interval：The interval time of reporting to stat/property, default value is 60000 milliseconds
+> * modulename：Module name, The default value is the executable program name.
 
-说明：
 
-> * 通信器的配置文件格式后续会介绍；
-> * 通信器缺省不采用配置文件也可以使用，所有参数都有默认值；
-> * 通信器也可以直接通过属性来完成初始化；
-> * 如果需要通过名字来获取客户端调用代理，则必须设置locator参数；
+The communicator configuration file format is as follows:
 
-通信器属性说明：
+	<tars>
+	  <application>
+		#set invoking
+		enableset                      = N
+		setdivision                    = NULL 
+	    #configuration required by proxy
+	    <client>
+	        #address
+	        locator                     = tars.tarsregistry.QueryObj@tcp -h 127.0.0.1 -p 17890
+	        #Maximum timeout time at synchronous invoke(millisecond)
+	        connect-timeout             = 3000
+	        #Network connection number
+	        connections                 = 4
+	        #Network connection timeout time(millisecond)
+	        sync-invoke-timeout         = 3000
+	        #Maximum timeout time at asynchronous invoke(millisecond)
+	        async-invoke-timeout        = 5000
+	        #Time interval when a port is refreshed(millisecond)
+	        refresh-endpoint-interval   = 60000
+	        #Invokes between each module
+	        stat                        = tars.tarsstat.StatObj
+	        #Address of the reported property
+	        property                    = tars.tarsproperty.PropertyObj
+	        #report time interval
+	        report-interval             = 60000
+	        #Module name
+	        modulename                  = TestApp.HelloServer
+	    </client>
+	  </application>
+	</tars>
 
-> * locator: registry服务的地址，必须是有ip port的，如果不需要registry来定位服务，则不需要配置；
-> * connect-timeout：网络连接超时时间，毫秒，没有配置缺省为3000
-> * connections；连接数，默认为4；
-> * sync-invoke-timeout：调用最大超时时间（同步），毫秒，没有配置缺省为3000
-> * async-invoke-timeout：调用最大超时时间（异步），毫秒，没有配置缺省为5000
-> * refresh-endpoint-interval：定时去registry刷新配置的时间间隔，毫秒，没有配置缺省为1分钟
-> * stat：模块间调用服务的地址，如果没有配置，则上报的数据直接丢弃；
-> * property：属性上报地址，如果没有配置，则上报的数据直接丢弃；
-> * report-interval：上报给stat/property的时间间隔，默认为60000毫秒；
-> * modulename：模块名称，默认为可执行程序名称；
 
-通信器配置文件格式如下：
+Instruction:
+> * When using the Tars framework as the server, communicator does not need to create itself, you can directly use the communicator in the service framework, such as: CommunicatorFactory.getInstance().getCommunicator().stringToProxy(...),
+in the case of pure client, users need to define their communicator and generate agent (proxy) themselves.
+> * getCommunicator()is the initialization of the framework and can be obtained at any time.
+> * For agents created by communicators, it is not necessary to use stringToProx to create it every time when you need it. Once established, you can use it all the time.
+> * For the creation and use of the agent, see the following sections.
+> * For the same Obj name, the Proxy returned after repeated stringToProxy invokes is the same. Multithread invocation is secure and does not affect performance.
 
-```text
-<tars>
-  <application>
-	#set调用
-	enableset                      = N
-	setdivision                    = NULL 
-    #proxy需要的配置
-    <client>
-        #地址
-        locator                     = tars.tarsregistry.QueryObj@tcp -h 127.0.0.1 -p 17890
-        #同步最大超时时间(毫秒)
-        connect-timeout             = 3000
-        #网络连接数
-        connections                 = 4
-        #网络连接超时时间(毫秒)
-        sync-invoke-timeout         = 3000
-        #异步最大超时时间(毫秒)
-        async-invoke-timeout        = 5000
-        #刷新端口时间间隔(毫秒)
-        refresh-endpoint-interval   = 60000
-        #模块间调用
-        stat                        = tars.tarsstat.StatObj
-        #属性上报地址
-        property                    = tars.tarsproperty.PropertyObj
-        #report time interval
-        report-interval             = 60000
-        #模块名称
-        modulename                  = TestApp.HelloServer
-    </client>
-  </application>
-</tars>
-```
+### Timeout control
 
-使用说明：
+Timeout control is for the client proxy (agent). There is a record in the configuration file of the communicator in the upper section:
 
-> * 当使用Tars框架做服务端使用时，通信器不要自己创建，直接采用服务框架中的通信器就可以了，例如：CommunicatorFactory.getInstance\(\).getCommunicator\(\).stringToProxy\(...\)，对于纯客户端情形，则要用户自己定义个通信器并生成代理（proxy）；
-> * getCommunicator\(\)是框架初始化，随时可以获取；
-> * 对于通信器创建出来的代理，也不需要每次需要的时候都stringToProxy，初始化时建立好，后面直接使用就可以了；
-> * 代理的创建和使用，请参见下面几节；
-> * 对同一个Obj名称，多次调用stringToProxy返回的Proxy其实是一个，多线程调用是安全的，且不会影响性能；
+	#Maximum timeout time at synchronous invoke(millisecond)
+	sync-invoke-timeout          = 3000
+	#Maximum timeout time at asynchronous invoke(millisecond)
+	async-invoke-timeout         = 5000
 
-#### 超时控制
+The above timeout time is valid for all proxy generated by communicator. If you need to set the timeout separately, set it as follows:
 
-超时控制是对客户端proxy（代理）而言。上节中通信器的配置文件中有记录：
-
-```text
-#同步最大超时时间(毫秒)
-sync-invoke-timeout          = 3000
-#异步最大超时时间(毫秒)
-async-invoke-timeout         = 5000
-```
-
-上面的超时时间对通信器生成的所有proxy都有效，如果需要单独设置超时时间，设置如下：
-
-针对proxy设置\(ServantProxyConfig与CommunicatorConfig类似\)​
-
-```text
-//设置该代理单独初始化配置
+For proxy settings (ServantProxyConfig is similar to CommunicatorConfig)
+​	
+```java
+//Set the agent to initialize the configuration
 public <T> T stringToProxy(Class<T> clazz, ServantProxyConfig servantProxyConfig)
 ```
 
-#### 调用
 
-本节会详细阐述远程调用的方式。
+### invoking
 
-首先简述tars客户端的寻址方式，其次会介绍客户端的调用方式，包括但不限于单向调用、同步调用、异步调用、hash调用等。
+This section describes the way of remote calls in detail.
 
-**寻址方式简介**
+First of all, it describes the addressing mode of tars client, and then introduces the mode of calling of the client, including but not limited to one way call, synchronous call, asynchronous call, hash call and so on.
 
-Tars服务的寻址方式通常可以分为如下两种方式，即服务名在主控注册和不在主控注册，主控是指专用于注册服务节点信息的名字服务（路由服务）。 名字服务中的服务名添加则是通过操作管理平台实现的。
+#### A brief introduction to the way of addressing
 
-对于没有在主控注册的服务，可以归为直接寻址方式，即在服务的obj后面指定要访问的ip地址。客户端在调用的时候需要指定HelloObj对象的具体地址：
+The addressing modes of Tars services are usually divided into two ways: the name of the service is registered in the master control and the master control is not registered, and the master control refers to the name service (routing service) dedicated to the information of the registered service node.
 
-即：TestApp.HelloServer.HelloObj@tcp -h 127.0.0.1 -p 9985
+The service name in the name service is added through the operation management platform.
 
-TestApp.HelloServer.HelloObj：对象名称
+For non registered services, it can be classified as direct addressing, which is to specify the IP address to be accessed behind the obj of the service. The client needs to specify the specific address of the HelloObj object when invoking.
 
-tcp：tcp协议
+That is: TestApp.HelloServer.HelloObj@tcp -h 127.0.0.1 -p 9985
 
--h：指定主机地址，这里是127.0.0.1
+TestApp.HelloServer.HelloObj：Object name
 
--p：端口地址，这里是9985
+tcp：tcp protocol
 
-如果HelloServer在两台服务器上运行，则HelloPrx初始化方式如下：​
+-h：Specify the host address, Here is 127.0.0.1
 
-```text
+-p：Port address, here is 9985
+
+If HelloServer runs on two servers, the HelloPrx initialization is as follows:
+​	
+```java
 HelloPrx prx = c.stringToProxy("TestApp.HelloServer.HelloObj@tcp -h 127.0.0.1 -p 9985:tcp -h 192.168.1.1 -p 9983");
 ```
 
-即，HelloObj的地址设置为两台服务器的地址。此时请求会分发到两台服务器上（分发方式可以指定，这里不做介绍），如果一台服务器down，则自动将请求分到另外一台，并定时重试开始down的那一台服务器。
+That is, the address of HelloObj is set to the address of two servers. At this point, the request will be distributed to two servers (the distribution can be specified without introduction), and if one server down, it automatically divides the request into another and retries the down server at regular intervals.
 
-对于在主控中注册的服务，服务的寻址方式是基于服务名进行的，客户端在请求服务端的时候则不需要指定HelloServer的具体地址，但是需要在生成通信器或初始化通信器的时候指定registry\(主控中心\)的地址。
+For services registered in the master control, the service is addressed based on the name of the service, and the client does not need to specify the specific address of the HelloServer when the server is requested, but the registry needs to be specified when the communicator is generated or the communicator is initialized.
 
-```text
+```java
 HelloPrx prx = c.stringToProxy<HelloPrx>("TestApp.HelloServer.HelloObj");
 ```
 
-**单向调用**
+#### Unidirectional invoke
 
-所谓单向调用，表示客户端只管发送数据，而不接收服务端的响应，也不管服务端是否接收到请求。​
-
-```text
+The unidirectional invoke means that the client simply sends data without receiving the response from the server, regardless of whether the server receives the request.
+​	
+```java
 HelloPrx prx = c.stringToProxy("TestApp.HelloServer.HelloObj");
-//发起远程调用
+//making remote invoke
 prx.async_hello(null, 1000, "hello word");
 ```
 
-**同步调用**
+#### Synchronous invoke
 
-请看如下调用示例：​
-
-```text
+Please look at the following invoke for the example:
+​	
+```java
 HelloPrx prx = c.stringToProxy("TestApp.HelloServer.HelloObj");
-//发起远程调用
+//making remote invoke
 prx.hello(1000, "hello word");
 ```
 
-**异步调用**
+#### asynchronous invoke
 
-请看如下调用示例：
+Please look at the following invoke for the example:
 
-```text
+```java
 HelloPrx prx = c.stringToProxy("TestApp.HelloServer.HelloObj");
-//发起远程调用
+//making remote invoke
 prx.async_hello(new HelloPrxCallback() {
         
         @Override
@@ -501,32 +494,36 @@ prx.async_hello(new HelloPrxCallback() {
     }, 1000, "hello word");
 ```
 
-注意：
 
-> * 当接收到服务端返回时，HelloPrxCallback的callback\_hello会被响应。
-> * 如果调用返回异常或超时，则callback\_exception会被调用，ret的值定义如下：
+Note:
+> * When the server returns, the callback_hello of HelloPrxCallback will be responded.
+> * If the call returns an exception or timeout, the callback_exception will be called, and the value of RET is defined as follows.
 
-**set方式调用**
+#### Set mode invoke
 
-目前框架已经支持业务按set方式进行部署，按set部署之后，各个业务之间的调用对开业务发来说是透明的。但是由于有些业务有特殊需求，需要在按set部署之后，客户端可以指定set名称来调用服务端，因此框架则按set部署的基础上增加了客户端可以指定set名称去调用业务服务的功能。
+At present, the framework has already supported the deployment of business in set mode. After set deployment, the calls between businesses are transparent to the business deveploment. But because some services have special needs, after deploying set, the client can specify the set name to invoke the server, so the framework increases the function of the client to specify the set name to invoke the service on the basis of the set deployment.
 
-详细使用规则如下，
+The detailed use of the rules is as follows.
 
-假设业务服务端HelloServer部署在两个set上，分别为Test.s.1和Test.n.1。那么客户端指定set方式调用配置​enableset = Y setdivision = Test.s.1
+Suppose the business server HelloServer is deployed on two set, namely Test.s.1 and Test.n.1. Then the client specifies the set mode to call configuration
+​	
+		enableset                      = Y
+		setdivision                    = Test.s.1
 
-### 业务配置
 
-Tars服务框架提供了从tarsconfig拉取服务的配置到本地目录的功能。
+## Business configuration
 
-使用方法很简单，服务在启动通过在注册监听器里面加载到服务conf目录。
+The Tars service framework provides the function of pulling the service from tarsconfig to the local directory.
 
-以HelloServer为例：
+The method used is simple, and the service is loaded into the service conf directory through the information registered in the listener at startup.
 
-```text
+Take HelloServer as an example:
+
+```java
 public class AppStartListener implements AppContextListener {
 ```
 
-```text
+```java
     @Override
     public void appContextStarted(AppContextEvent event) {
         ConfigHelper.getInstance().loadConfig("helloServer.conf");
@@ -538,62 +535,63 @@ public class AppStartListener implements AppContextListener {
 }
 ```
 
-在servant.xml中注册配置​
-
-```text
+Registration configuration in servant.xml
+​	
+```xml
 <listener>
 	<listener-class>com.qq.tars.quickstart.server.AppStartListener</listener-class>
 </listener>
 ```
 
-说明：
 
-> * HelloServer.conf配置文件可以在管理平台上配置；
-> * HelloServer.conf拉取到本地后，业务只要通过classloader就可以加载；
-> * 配置文件的管理都在web管理平台上，同时管理平台可以主动push配置文件到Server；
-> * 配置中心支持ip级别的配置，即一个服务部署在多台服务上，只有部分不同（与IP相关），这种情况下，配置中心可以支持配置文件的合并，同时支持在web管理平台查看和修改；
+Instruction:
+> * The HelloServer.conf configuration file can be configured on the management platform.
+> * After HelloServer.conf is pulled to local, business can be loaded through classloader.
+> * The configuration files are managed on the web management platform, and the management platform can take the initiative to configure push files to Server.
+> * The configuration center supports IP level configuration, that is, a service is deployed on multiple services, only partially different (IP related). In this case, the configuration center can support configuration file consolidation, while supporting the view and modification of the web management platform.
 
-注意：
+Note:
+> * For services that have not been released to the management platform, the address of the Config should be specified in the configuration file of the service, otherwise remote configuration can not be used.
 
-> * 对于没有发布到管理平台上的服务，需要在服务的配置文件中指定Config的地址，否则不能使用远程配置。
+## Service log
 
-### 服务日志
-
-框架支持本地和远程日志，获取日志Logger对象如下​
-
-```text
+The framework supports local and remote logs, and gets the log Logger object as follows
+​	
+```java
 private final static Logger FLOW_LOGGER = Logger.getLogger("flow", LogType.LOCAL);
 ```
 
-说明：打远程日志前需要预先申请远程日志服务
+Illustration: remote log service must be pre applied before long log.
+> * LogType.LOCAL：Only print local logs
+> * LogType.REMOTE: Only print remote logs
+> * LogType.All : Print local and remote logs
 
-> * LogType.LOCAL：只打本地日志
-> * LogType.REMOTE只打远程日志
-> * LogType.All 打本地和远程日志
+## Service management
 
-### 服务管理
+The service framework can support dynamic receiving commands to handle related business logic, such as dynamic update configuration, etc.
 
-服务框架可以支持动态接收命令，来处理相关的业务逻辑，例如：动态更新配置等。
+- Send management command
 
-* 发送管理命令
+The sending way of service management commands is to distribute the service to the platform through the management platform and send commands through the management platform.
+​	
+The TARS service framework is currently built in commands:
 
-服务的管理命令的发送方式：通过管理平台，将服务发布到平台上，通过管理平台发送命令；​TARS服务框架目前内置命令：
+> * tars.help    		//View all management commands
+> * tars.loadconfig     //From the configuration center, pull the configuration down: tars.loadconfig filename
+> * tars.setloglevel    //Set the level of the rolling log: tars.setloglevel [NONE, ERROR, WARN, DEBUG]
+> * tars.viewstatus     //View the state of the service
+> * tars.connection     //View the current link situation
 
-> * tars.help //查看所有管理命令
-> * tars.loadconfig //从配置中心, 拉取配置下来: tars.loadconfig filename
-> * tars.setloglevel //设置滚动日志的等级: tars.setloglevel \[NONE, ERROR, WARN, DEBUG\]
-> * tars.viewstatus //查看服务状态
-> * tars.connection //查看当前链接情况
+- Custom command
 
-* 自定义命令
+The custom command sending mode of the service is sent through the custom command of the management platform.
+Just register related commands and command processing classes, as follows:
 
-服务的自定义命令发送方式，通过管理平台自定义命令发送； 只需注册相关命令以及命令处理类，如下
-
-```text
+```java
 CustemCommandHelper.getInstance().registerCustemHandler("cmdName",new CommandHandler() {
 ```
 
-```text
+```java
 	@Override
 	public void handle(String cmdName, String params) {
 		
@@ -601,102 +599,100 @@ CustemCommandHelper.getInstance().registerCustemHandler("cmdName",new CommandHan
 });
 ```
 
-### 异常上报
+## Abnormally Report
+To better monitor, the framework supports direct reporting of exceptions to tarsnotify in the program and can be viewed on the management platform page.
 
-为了更好监控，框架支持在程序中将异常直接上报到tarsnotify，并可以在管理平台页面上查看到。
-
-框架提供异常上报工具，使用如下​
-
-```text
+The framework provides an exception reporting tool, which is used as follows:
+​	
+```java
 NotifyHelper.getInstance().notifyNormal(info);
 NotifyHelper.getInstance().notifyWarn(info);
 NotifyHelper.getInstance().notifyError(info);
 ```
 
-说明：
+ Illustration:
+> * notifyNormal: Report common information
+> * notifyWarn: Report warning information
+> * notifyError: Report error information
 
-> * notifyNormal 上报普通的信息
-> * notifyWarn 上报警告信息
-> * notifyError 上报错误信息
 
-### 属性统计
+## Attribute statistics
 
-为了方便业务做统计，框架中也支持能够在管理平台看上报的信息展示。
+In order to facilitate business statistics, the framework also supports information presentation that can be reported on the management platform.
 
-目前支持的统计类型包括以下几种：
+The statistical types that are currently supported include the following:
+> * Summing (sum)
+> * Mean (AVG)
+> * Distribution (distr)
+> * Maximum value (max)
+> * Minimum value (min)
+> * Count (count)
 
-> * 求和（sum）
-> * 平均（avg）
-> * 分布（distr）
-> * 最大值（max）
-> * 最小值（min）
-> * 计数（count）
+The example code is as follows:
+​	
+	PropertyReportHelper.getInstance().createPropertyReporter("queue_size");
+	PropertyReportHelper.getInstance().reportPropertyValue("queue_size", 100);
 
-示例代码如下：​PropertyReportHelper.getInstance\(\).createPropertyReporter\("queue\_size"\); PropertyReportHelper.getInstance\(\).reportPropertyValue\("queue\_size", 100\);
+Illustration:
+> * The report of the data is regularly reported and can be set in the configuration of communicator. It is now 1 minutes.
+> * Notice that when the createPropertyReport is called, you must create and save the created objects after the service is started, and then take the object report, and do not use create every time.
 
-说明：
+## Dyed log
 
-> * 上报数据是定时上报的，可以在通信器的配置中设置，目前是1分钟一次;
-> * 注意调用createPropertyReport时，必须在服务启动以后创建并保存好创建的对象，后续拿这个对象report即可，不要每次使用的时候create;
+In debug, in order to facilitate the real-time view of a user's log of subsequent related call message flows after calling an interface of a service, the framework supports a separate print of all the logs triggered by the user to a specified log file.
+There are two ways to dye logs: active opening and passive opening.
 
-### 染色日志
+- Active staining:
 
-为了方便在debug时实时查看某个用户在调用某服务某接口后引起的后续相关调用消息流的日志，框架中支持将该用户触发的所有日志单独打印一份到一个指定日志文件中。
+> - If the requested client explicitly invokes the dyed opening interface in the framework, the intermediate logs are printed as the dyed logs from the opening switch to the dyed off interface in the explicit call frame.
+> - When the dyeing function is opened, all the initiated tars requests automatically pass the dyeing state, and the log generated after the request is received will also be printed as a dyed log. After the request is completed, the dyed switch of the transferred service will be automatically closed.
 
-染色日志有主动打开和被动打开两种方法：
+The example code is as follows:
 
-* 主动染色：
-
-> * 在发起请求的客户端显式调用框架中的染色开启接口，从打开开关到显式调用框架中染色关闭接口，中间的日志都会额外打印为染色日志。
-> * 在开启染色功能时，所有的发起的taf请求都会自动传递染色状态，被调服务接收到请求后产生的日志也会打印为染色日志，在该请求处理完成后，会自动关闭被调服务的染色开关。
-
-示例代码如下：
-
-```text
-DyeingSwitch.enableActiveDyeing("helloServer");   //主动打开开关接口，参数表示染色日志名称
-...业务处理
-loggerInnerImpl.info("hello world");   //此时出于染色开启状态，该条日志会额外打印一份到染色日志中
-...业务处理
-DyeingSwitch.closeActiveDyeing();    //主动关闭染色开关接口
+```
+DyeingSwitch.enableActiveDyeing("helloServer");   //Open the switch interface automatically, and the parameter indicates the name of the dyed log.
+...Business processing
+loggerInnerImpl.info("hello world");   //At this time, because of the color opening state, the log will print an extra copy to the dyed log.
+...Business processing
+DyeingSwitch.closeActiveDyeing();    //Active closure of dyed switch interface
 ```
 
-说明：
+Illustration:
 
-> * 开启染色日志时传递的参数推荐填写服务名，如果填写为null则默认名称为default;
-> * 染色日志的日志级别和日志类型与原本日志相同，如果原本日志只打本地，那么染色日志也只打本地，原本日志要打远程染色日志才会打远程;
+> - When the dyed log is opened, the parameter passed is recommended to fill in the service name. If it is null, the default name is default.
+> - The log level and log type of the dyed log are the same as the original log. If the original log is only local, the dyed log is only local, and the original log will be remote to play the long distance dyed log.
 
-* 被动染色：
+- Passive staining:
 
-  > * 在请求的服务端预设预先设定染色条件，如果接收到的请求满足染色条件，那么服务端框架层会自动打开染色开关;
-  > * 染色状态传递的机制和主动染色相同，但是不需要在业务层显式关闭染色开关;
+  > - When the requesting server presupposes the coloring condition, if the received request satisfies the dyeing condition, the server framework will automatically open the dye switch.
+  > - The mechanism of color state transfer is the same as active staining, but there is no need to turn off the dye switch explicitly in the business layer.
 
-使用方法如下：
+The use of the method is as follows:
 
-首先在需要染色的Tars接口上定义染色routeKey，这个值就是判断是否开启染色的变量，示例如下：
+First, the routeKey is defined on the Tars interface that needs to be dyed. This value is the variable that determines whether to turn on the coloring. The example is as follows:
 
-```text
+```java
 @Servant
 public interface HelloServant {
-     public String sayHello(@TarsRouteKey int no, String name);  //使用注释routeKey来表示开启染色的参数变量
+     public String sayHello(@TarsRouteKey int no, String name);  //Use annotation routeKey to represent parameter variables for opening dyeing
 }
 ```
 
-在定义染色routeKey之后，可以通过管理命令"tars.setdyeing"来设置需要染色用户标识（就是routeKey注释对应的值），远程对象名称和接口函数名（可选）。
+After defining the dyed routeKey, you can set the user identity of the dyed user (the value corresponding to the routeKey annotation), the remote object name and the interface function name (optional) by managing the command "tars.setdyeing".
 
-管理命令格式如下：
+The format of the management command is as follows:
 
-```text
-tars.setdyeing dyeingKey dyeingServant [dyeingInterface]  //三个参数分别对应上文所提值，接口名可选填
+```
+tars.setdyeing dyeingKey dyeingServant [dyeingInterface]  //The three parameters correspond to the values mentioned above, and the interface names are optional
 ```
 
-假设远程对象名称是TestApp.HelloServer.HelloObj,请求接口名为sayHello,需要染色的用户号码为12345，对应的管理命令如下：
+If the name of the remote object is TestApp.HelloServer.HelloObj, the request interface name is sayHello, the user number that needs to be dyed is 12345, and the corresponding management command is as follows:
 
-```text
+```
 tars.setdyeing 12345 TestApp.HelloServer.HelloObj sayHello
 ```
 
-* 染色日志查询：
+- The query of the dyed log:
 
-  > * 本地染色日志：日志默认所在目录为/usr/local/app/tars/app\_log/tars\_dyeing/，对于主动染色，日志名为打开开关时传入的参数加固定后缀；对于被动染色，日志名为染色入口服务的Server名称加固定后缀。后缀为\_dyeing。
-  > * 远程日志：在tarslog服务打日志所在机器上 的/usr/local/app/tars/remote\_app\_log/tars\_dyeing/dyeing/目录下，日志名为tars\_dyeing.dyeing\_{此部分同本地染色日志名}。
-
+  > - Local dyed log: the log default directory is /usr/local/app/tars/app_log/tars_dyeing/, for active dyeing, the log name is the fixed suffix when the switch is opened, the log name is the Server name of the staining entry service and the fixed suffix for the passive stain. The suffix is _dyeing.
+  > - Remote log: under the /usr/local/app/tars/remote_app_log/tars_dyeing/dyeing/ directory on the machine where the tarslog service print log is located, the log is named tars_dyeing.dyeing_{with the local dyed log name}.
