@@ -1,23 +1,23 @@
-# Tars-Spring-Cloud 使用说明
+# Tars Java-Spring Cloud Integration instructions
 
-## 功能说明
+## Function description
 
-​ Tars-java支持兼容Spring Cloud系统,用户可以将Tars-Java框架融入Spring Cloud。
+​Tars-java is compatible with the Spring Cloud system, users can integrate the Tars-java into Spring Cloud.
+## Environmental dependence
 
-## 环境依赖
+​The following requirements should be met before operation.
 
-​ 在操作前需要满足以下条件：
+- JDK 1.8 or above.
 
-* JDK 1.8或以上
-* 如果要想使用服务发现功能，需要已运行Spring Cloud的Eureka Server实例，具体配置启动方法请参考Spring Cloud相关教程。
+- If you want to use the discovery feature, you need an Eureka Server instance that has already run Spring Cloud. For details on how to start the configuration, please refer to the Spring Cloud related tutorial.
 
-## 发布服务
+## Service release
 
-下面展示如何创建并发布一个服务。
+Here are the steps to create and publish a service:
 
-* 首先添加创建一个maven工程，在项目的pom.xml文件中添加依赖配置：
+- First, create a maven project and add dependency configuration to the project's pom.xml:
 
-```text
+```xml
 <dependency>
     <groupId>com.tencent.tars</groupId>
     <artifactId>tars-spring-cloud-starter</artifactId>
@@ -25,9 +25,9 @@
 </dependency>
 ```
 
-* 编写接口Tars文件，生成服务端接口代码，具体操作过程参考tars\_java\_quickstart.md文档的服务开发部分。
+- Write the Tars file and generate the server interface code. For the specific operation process, please refer to the service development part of the tars_java_quickstart.md document:
 
-```text
+```java
 @Servant
 public interface HelloServant {
 
@@ -35,9 +35,9 @@ public interface HelloServant {
 }
 ```
 
-* 生成接口后需要对接口进行实现。实现接口中的方法，之后对整个实现类添加@TarsServant注解，该注解表明被修饰的类是一个Tars Servant，并需要在注解中表明该Servant名称，作为客户端调用Servant的标识,按照Tars规范，servant名称采用"Obj"结尾。
+- After the interface code is generated, the interface needs to be implemented. Then add the @TarsServant annotation to the entire implementation class, indicating that the modified class is a Tars Servant, don't forget to identify the Servant name in the annotation as the client calls the Servant identifier. According to the Tars specification, the servant name should end with "Obj":
 
-```text
+```java
 @TarsServant(name="HelloObj")
 public class HelloServantImpl implements HelloServant {
 
@@ -48,116 +48,118 @@ public class HelloServantImpl implements HelloServant {
 }
 ```
 
-* 编写服务启动类，采用spring boot的启动方式，并且通过注解@EnableTarsConfiguration表明Tars-Java服务，并会尝试向Spring Cloud注册中心注册服务。
+- Write the startup-class of service, using the spring boot startup method, and indicate that this is a Tars-java service by annotating @EnableTarsConfiguration and try to register the service into the Spring Cloud:
 
-```text
+```java
 @SpringBootApplication
 @EnableTarsConfiguration
 public class Application {
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }
 ```
+- To write a Spring Cloud configuration file, you need to specify the address of the service registry and the information of the service itself in the configuration file. Create the configuration file application.yml in the resources directory. The example is as follows:
 
-* 编写Spring Cloud配置文件，需要在配置文件中注明服务注册中心的地址和服务自身的信息等，在resources目录下的添加配置文件application.yml,示例如下:
-
-```text
+```yml
 eureka:
   client:
     serviceUrl:
-      #服务注册中心的地址
+      #Service registry address
 	  defaultZone: http://localhost:8761/eureka/
 
-#此标签下的都是tars-java特有的配置
+#The configuration under this tab is unique to Tars-java
 tars:    
-  #服务端配置
+  #Server configuration
   server:
-    #服务端口
+    #Server port
     port: 18601 
-    #应用名称，具体含义参考tars_java_quickstart.md的服务命名章节
+    #Application name, The specific meaning refers to the service naming chapter of tars_java_quickstart.md
     application: TestApp
-    #服务名称，具体含义参考tars_java_quickstart.md的服务命名章节
+    #Server name, The specific meaning refers to the service naming chapter of tars_java_quickstart.md
     server-name: HelloJavaServer
-    #指定服务日志路径，以实际情况为准
+    #Specify the service log path, whichever is the case
     log-path: /usr/local/tars-eureka-test/bin/log
-    #指定数据文件路径，以实际情况为准
+    #Specify data file path, whichever is the case
     data-path: /usr/local/tars-eureka-test/data
-  #客户端配置
+  #Client configuration
   client:
     async-invoke-timeout: 10000
-    #服务发现中心地址，一般同注册中心地址,可不填
+    #Service discovery center address, generally the same as the registration center address, can be left blank
     locator: http://localhost:8761/eureka/
 ```
+- Start the Application class, open the registry address [http://localhost:8761](http://localhost:8761/)(Based on your actual situation, this is the default address of Eureka), you can see that the Tars service is already registered on Eureka:
 
-* 启动Application类，打开注册中心地址[http://localhost:8761](http://localhost:8761/)（以自己的实际情况为准，这是Eureka默认地址），可以看到Tars服务已经注册在Eureka上了：
+![eureka-tars-java](../docs/images/eureka-tars-java.png)
 
-![](../../assets/eureka-tars-java.png)
+ TESTAPP.HELLOJAVASERVER is the service we just registered, where TESTAPP corresponds to the application name in the configuration file(attributes corresponding to tars.server.application), HELLOJAVASERVER corresponds to the server name in the configuration file(attributes corresponding to tars.server.server-name). The name registered on Eureka is the application name of the configuration file plus the service name, separated by a '.'. The service name displayed on the Eureka page is all uppercase, but it is actually the name filled in our configuration file.
+ Eureka.
 
-TESTAPP.HELLOJAVASERVER就是我们刚才注册的服务，其中TESTAPP对应配置文件中的应用名称（tars.server.application对应的属性），HELLOJAVASERVER对应配置文件中的服务名称（tars.server.server-name对应的属性）。Eureka上注册的名称为配置文件的应用名称加上服务名称，中间使用'.'号分割。Eureka页面上显示的服务名称为全部大写，但实际上还是我们配置文件中填写的名称。。
+So far, a service has been developed.
 
-至此便开发完成了一个服务。
+## Access service
 
-## 消费服务
+Here's how to discover and access a service.
 
-下面展示如何发现并访问一个服务：
+- First create a maven project and add the following dependency configuration to the project's pom.xml file:
 
-* 首先添加创建一个maven工程，在项目的pom.xml文件中添加依赖配置
+```xml
+<dependency>
+    <groupId>com.tencent.tars</groupId>
+    <artifactId>tars-spring-cloud-starter</artifactId>
+    <version>1.6.1</version>
+</dependency>
+```
 
-  ```text
-  <dependency>
-      <groupId>com.tencent.tars</groupId>
-      <artifactId>tars-spring-cloud-starter</artifactId>
-      <version>1.6.1</version>
-  </dependency>
-  ```
 
-* 使用服务端接口Tars文件生成客户端访问接口，具体操作过程参考tars\_java\_quickstart.md文档的客户端开发部分。
+- Use the Tars file on the server to generate the client access interface. For details, refer to the client development part of the tars_java_quickstart.md file:
 
-```text
+
+```java
 @Servant
 public interface HelloPrx {
 
-	public String hello(int no, String name);
+	 String hello(int no, String name);
 
-	public String hello(int no, String name, @TarsContext java.util.Map<String, String> ctx);
+	 String hello(int no, String name, @TarsContext java.util.Map<String, String> ctx);
 
-	public void async_hello(@TarsCallback HelloPrxCallback callback, int no, String name);
+	 void async_hello(@TarsCallback HelloPrxCallback callback, int no, String name);
 
-	public void async_hello(@TarsCallback HelloPrxCallback callback, int no, String name, @TarsContext java.util.Map<String, String> ctx);
+	 void async_hello(@TarsCallback HelloPrxCallback callback, int no, String name, @TarsContext java.util.Map<String, String> ctx);
 }
 ```
 
-* 编写启动类，采用spring boot的启动方式。
+- Write a startup class that uses spring boot as the startup method:
 
-  ```text
-  @SpringBootApplication
-  public class Application {
-      public static void main(String[] args) {
-          SpringApplication.run(Application.class, args);
-          //消费服务...
-      }
-  }
-  ```
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+        //use service...
+    }
+}
+```
 
-* 编写配置文件application.yml，添加主控相关信息：
+- Write the configuration file application.yml and add the master related information:
 
-  ```text
-  eureka:
-    client:
-      serviceUrl:
-        #服务注册中心的地址
-        defaultZone: http://localhost:8761/eureka/
-        #客户端不需要向spring cloud主控注册
-        register-with-eureka: false
-  ```
+```
+eureka:
+  client:
+    serviceUrl:
+      #Service center address
+      defaultZone: http://localhost:8761/eureka/
+      #The client does not need to register with the spring cloud master
+      register-with-eureka: false
+```
 
   ​
 
-* 通过注解@TarsClient来自动加载客户端访问接口,需要通过注解的name属性指定要访问的Obj对象名称，名称由访问目标servant的应用名+“.”+服务名+"."+servant名称三段组成。示例中的名称就是上面服务注册的servant。持有该变量的类需要注册为spring bean：
+- By annotating @TarsClient to make the system automatically load clients to access the interface, you need to specify the name of the Obj object to be accessed by the name attribute of the annotation. The name consists of the application name + "." + service name + "." + servant name. The name in the example is the servant registered by the service above. The class holding the variable needs to be registered as a spring bean
 
-```text
+```java
 @Component
 public class Client {
     @TarsClient(name = "TestApp.HelloJavaServer.HelloObj")
@@ -165,9 +167,10 @@ public class Client {
 }
 ```
 
-* 调用目标方法
+- Call target method
 
-```text
+
+```java
 proxy.hello(10, "hello");
 ```
 
