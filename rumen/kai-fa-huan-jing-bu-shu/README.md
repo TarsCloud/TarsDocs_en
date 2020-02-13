@@ -1,4 +1,4 @@
-# Tars.js
+# Development Environment Setup
 > * [Intro](#chapter-1)
 > * [Development Mode](#chapter-1)
 
