@@ -107,7 +107,7 @@
     * [WebSocketServer](an-li/tarsphp/da-jian-websocketserver.md)
     * [Actual combat of barrage activity](an-li/tarsphp/tan-mu-huo-dong-shi-zhan.md)
 
-## Tars.js(kai-fa/tars.js/README.md) <a id="Tars.js"></a>
+## Tars.js <a id="Tars.js"></a>
 * [Tars.js](kai-fa/tars.js/README.md)
   * [@tars/stream](kai-fa/tars.js/tars-stream.md)
   * [@tars/rpc](kai-fa/tars.js/tars-rpc.md)
