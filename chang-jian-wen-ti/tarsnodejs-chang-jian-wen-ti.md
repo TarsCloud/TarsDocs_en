@@ -1,8 +1,7 @@
-# TarsNodejs 常见问题
+# TarsNodejs FAQ
 
-### 为什么egg框架开发的nodejs应用在Tars平台上发布和重启偶尔会失败？
+### When node.js applications developed egg framework in tars, they may fail in release or restart. Why?
 
-> * egg框架如果不是使用的single mode，会开启一个独立的worker进程来监听端口。当Tars发布或重启时，egg启动的端口监听进程并不会被杀死，导致再次启动时端口被占用，监听失败，服务启动失败。
-> * Tars Nodejs的进程管理器node-agent包含了Cluster子进程、异常监控、进程拉起、监控上报等功能。普通的Nodejs程序只要发布上Tars平台自然就拥有了以上特性，无需再自己做进程管理。
-
+> * When egg doesn't use in single mode, it will open an independent worker process to listen to ports. When applications release or restart in tars, listening process won't be killed. So the port will be used and cannot be listened. The service cannot be started. 
+> * Process management of Tars Nodejs, named node-agent, including Cluster sub-process, exception monitoring, process pull-up, monitoring and reporting, etc. Ordinary Nodejs programs naturally have the above features as long as they are released on the Tars platform, and there is no need to do their own process management.
 
