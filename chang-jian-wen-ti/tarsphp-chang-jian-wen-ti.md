@@ -1,30 +1,32 @@
-# TarsPHP 常见问题
+# TarsPHP FAQ
 
-### 问题：php服务的业务日志在哪里查看？
+### Q: Where can check service log?
 
-答：/usr/local/app/tars/app\_log/$APPNAME/$SERVERNAME/$APPNAME.$SERVERNAME.log 不要忘记同时查看php\_error哈
+A: /usr/local/app/tars/app\_log/$APPNAME/$SERVERNAME/$APPNAME.$SERVERNAME.log. Don't forget to check php\_error.
 
-### 问题：Class 'TARS\_Struct' not found in /usr/local/app/tars/tarsnode/data/PHPTest.PHPHttpServer/bin/src/vendor/phptars/tars-report/src/ServerInfo.php on line 5
+### Q: Class 'TARS\_Struct' not found in /usr/local/app/tars/tarsnode/data/PHPTest.PHPHttpServer/bin/src/vendor/phptars/tars-report/src/ServerInfo.php on line 5
 
-答：请确认一下phptars扩展是否已经被安装，检查命令：php -m \| grep phptars。 安装方式请见/php/php\_extension下面的auto和auto7脚本内容以及相应文档
+A: Please check whether installed phptars. 
+   Command: php -m \| grep phptars
+   Installation: please check script and documentation of auto and auto7 in /php/php\_extension.
 
-### 问题：搭建了http和tcp的服务，但是tcp服务无法正确回包，是什么问题？
+### Q: The tcp service does not return packets correctly when http and tcp services are built. Why
 
-答：请检查tcp服务状态是否正常，检查php\_error、业务日志中是否有权限导致的服务无法启动问题； 请检查tcp服务是否使用了正确的模板，比如不能指定protocolName为http，因为tcp服务一定要使用tars协议进行通信的，并且一定要指定swoole自动拼包的package\_length等配置参数； 使用tcpdump -iany -s0 port tcp服务端口 -XNNnn 进行抓包，看http服务是否正常发包给tcp服务了
+A: Check whether the status of the tcp service is normal, and check whether the service cannot be started due to the php\ _ error and the permission in the business log. Check whether the tcp service uses the correct template. For example, you cannot specify protocolName as http, because the tcp service must use the tars protocol for communication, and you must specify configuration parameters such as package\ _ length of swoole automatic parcel. Use tcpdump-iany-s0 port tcp service port-XNNnn to grab packets to see if the http service has properly sent packets to the tcp service.
 
-### 问题：我可以不通过平台启动php的服务么？
+### Q: Can I start php service without tars platform?
 
-答：显然是可以的，直接到服务目录下：/usr/local/app/tars/tarsnode/data/PHPTest.PHPHttpServer/bin 下面会有两个脚本tars\_stop.sh和tars\_start.sh，只要有权限，是可以直接启停服务的。
+A: Obviously, it is possible to go directly to the service directory: /usr/local/app/tars/tarsnode/data/PHPTest.PHPHttpServer/bin there will be two scripts tars\ _ stop.sh and tars\ _ start.sh, that can directly start and stop the service as long as they have permission.
 
-### 问题: 请求部分tcp的方法可以,但是部分不可以,可能什么原因?
+### Q: Why part of methods to request tcp work, part cannot?
 
-答：一个可能的原因是你使用了format工具,破坏了server端自动生成的注释的结构\(比如examples下面的Tars-tcp-server/src/servant/PHPtest/PHPServer/obj/TestTafServiceServant.php\)。下载github上面最新的,或者用tars2php重新生成一下server的interface代码都可以解决这个问题。
+A: Maybe you use format tool, which hurt server format. (eg. examples/Tars-tcp-server/src/servant/PHPtest/PHPServer/obj/TestTafServiceServant.php\). Please download the lastest version in GitHub, or re-build interface of server by tars2php.
 
-### 问题: 调用Java服务, java接收不到参数,表现是报出illegalargumentException 如何解决?
+### Q: How to deal with it cannot get parameters, and it shows 'illegalargumentException' after calling java service, .
 
-答：之前java对tup的支持,没有放出,现在需要重新编译tars-core和maven-tars-plugin两个jar包, 并在项目的pom.xml中的 plugin配置里,添加true 的字样,这样生成之后就可以支持php调用默认的tup协议了。 重新生成后的接口文件会增加注解：@TarsMethodParameter,这样就能正常解析了。
+A: Java support for tup has not been released before. But now you need to recompile the two jar packages tars-core and maven-tars-plugin, and add the word true to the plugin configuration in the pom.xml of the project, so that you can support php to call the default tup protocol after generation. The regenerated interface file will be annotated: @ TarsMethodParameter, so that it can be parsed normally.
 
-### 注意点：
+### Attention
 
-请务必安装phptars扩展 如果使用server，请务必安装swoole扩展
+Make sure you install phptars extensions. If you use server, please install swoole extensions also.
 
