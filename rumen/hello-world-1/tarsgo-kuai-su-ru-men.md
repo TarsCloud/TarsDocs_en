@@ -36,9 +36,9 @@ After the command is executed, the code will be generated to gopath, and the dir
 >>>       $GOPATH/bin/tars2go *.tars
 ```
 
-## <a id="chapter-2"></a>C Define interface file
+## <a id="chapter-2"></a>Define interface file
 
-The interface document defines the request method, parameter field type, etc. for reference to the description of the interface definition document: 参考 kai-fa/tars_protocol.md
+The interface document defines the request method, parameter field type, etc. for reference to the description of the interface definition document, ref: kai-fa/tars_protocol.md
 
 n order to test our definition of an echoHello interface, the client request parameter is a short string such as "tars", and the service response is "Hello tars"
 
@@ -53,7 +53,7 @@ interface SayHello{
 
 **Note: the out modifier key in the parameter identifies the output parameter**
 
-## <a id="chapter-3"></a>C Server development
+## <a id="chapter-3"></a>Server development
 
 First, the tars protocol file is transformed into the form of golang language.
 
@@ -111,7 +111,7 @@ cd $GOPATH/src/TestApp/HelloGo/ && make && make tar
 
 The executable HelloGo and distribution package HelloGo.tgz will be generated
 
-## <a id="chapter-4"></a>C Client development
+## <a id="chapter-4"></a>Client development
 
 ```text
 package main
@@ -163,7 +163,7 @@ Compile:
 ret:  0 resp:  hello tars 
 ```
 
-## <a id="chapter-5"></a>C HTTP Server development
+## <a id="chapter-5"></a>HTTP Server development
 
 Tarsgo supports HTTP services. Follow the above steps to create a good service. The processing of HTTP requests in tarsgo is encapsulated in go native, so it is very easy to use.
 
