@@ -1,6 +1,6 @@
 # pb2tarsgo
 
-## 用法
+## Usage
 
 ```text
 go get github.com/TarsCloud/TarsGo/tars
@@ -17,9 +17,9 @@ install protoc
 	export PATH=$PATH:$GOPATH/bin
 ```
 
-## 示例
+## example
 
-* proto 文件
+* proto file
 
 ```text
 syntax = "proto3";
@@ -42,13 +42,13 @@ message HelloReply {
 }
 ```
 
-* 生成代码
+* generate the code 
 
 ```text
 protoc --go_out=plugins=tarsrpc:. helloworld.proto
 ```
 
-* 服务端
+* server
 
 ```text
 package main
@@ -77,7 +77,7 @@ func main() { //Init servant
 	
 ```
 
-* 客户端
+* client
 
 ```text
 package main
