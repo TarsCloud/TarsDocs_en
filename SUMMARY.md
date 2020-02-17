@@ -70,9 +70,10 @@
   * [tars-spring-server](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-server) 
 
 ## TarsGo <a id="TarsGo"></a>
-* [Guide for Use](https://github.com/TarsCloud/TarsGo/blob/master/README.md)
+* [Guide for Use](kai-fa/tarsgo/README.md)
 * [pb2tarsgo](kai-fa/tarsgo/pb2tarsgo.md)
 * [Performance](kai-fa/tarsgo/xing-neng-ce-shi.md)
+* [Quick Start](kai-fa/tarsgo/tars_go_quickstart_en.md)
 * [Example](an-li/tarsgo.md)
   * [Server Context](https://github.com/TarsCloud/TarsGo/tree/master/_examples/ContextTestServer) 
   * [Tars Client](https://github.com/TarsCloud/TarsGo/tree/master/_examples/EchoClientServer)
