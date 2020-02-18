@@ -37,19 +37,19 @@
   * [TarsCPP Helloworld](rumen/hello-world-1/tarscpp-kuai-su-ru-men.md)
   * [TarsPHP Helloworld](rumen/hello-world-1/tarsphp-kuai-su-ru-men.md)
   * [Tars.js Helloworld](rumen/hello-world-1/tars.js-kuai-su-ru-men.md)
-* [Tars Protocol](kai-fa/tars_protocol.md)
-* [Tup Protocol](kai-fa/tarstup.md)
+* [Tars Protocol](kai-fa/tars-protocol.md)
+* [Tup Protocol](kai-fa/tars-tup.md)
 
 
 ## TarsCPP <a id="TarsCPP"></a>
-* [Guide for Use](kai-fa/tarscpp/tarscpp-kuang-jia-shi-yong-zhi-nan.md)
-* [Development Specification](kai-fa/tarscpp/kai-fa-gui-fan.md)
-* [Service Thread Description](kai-fa/tarscpp/fu-wu-xian-cheng-shuo-ming-wen-dang.md)
-* [Protobuf Support](kai-fa/tarscpp/protobuf-xie-yi-zhi-chi-wen-dang.md)
-* [HTTP 1/2](kai-fa/tars-http12.md)
-* [TLS Support](kai-fa/tars-tls-tong-xin-zhi-chi.md)
-* [Performance](kai-fa/tarscpp/xing-neng-shu-ju.md)
-* [Example](an-li/tarscpp/README.en.md)
+* [Guide for Use](kai-fa/tarscpp/tars-guide.md)
+* [Development Specification](kai-fa/tarscpp/tars-spec.md)
+* [Service Thread Description](kai-fa/tarscpp/tars-server-thread.md)
+* [Protobuf Support](kai-fa/tarscpp/tars-protobuf.md)
+* [HTTP2](kai-fa/tars-http2.md)
+* [TLS Support](kai-fa/tars-tls.md)
+* [Performance](kai-fa/tarscpp/tars-performance.md)
+* [Example](an-li/tarscpp/README.md)
   * [Tars C++ QuickStart](an-li/tarscpp/tars_cpp_quickstart.md) 
   * [Tars C++ Http Demo](an-li/tarscpp/tars_cpp_http_demo.md)  
   * [Tars C++ Push Demo](an-li/tarscpp/tars_push.md) 
@@ -125,14 +125,14 @@
 
 ## Other Important Features <a id="important"></a>
 
-* [Business configuration](kai-fa/ye-wu-pei-zhi.md)
-* [Service monitoring](kai-fa/fu-wu-jian-kong.md)
-* [Template configuration](kai-fa/mo-ban-pei-zhi.md)
-* [Guidelines for Web's User System](kai-fa/tars-yong-hu-ti-xi-mo-kuai-shi-yong-zhi-yin.md)
-* [Web Management platform API](kai-fa/guan-li-ping-tai-api.md)
-* [Call chain](kai-fa/tars-tiao-yong-lian.md)
+* [Business configuration](kai-fa/tars-config.md)
+* [Service monitoring](kai-fa/tars-monitor.md)
+* [Template configuration](kai-fa/tars-template.md)
+* [Guidelines for Web's User System](kai-fa/tars-web-user.md)
+* [Web Management platform API](kai-fa/tars-web-api.md)
+* [Call chain](kai-fa/tars-call-chain.md)
 * [IDC Set](kai-fa/tars-idc-set.md)
-* [Auth](kai-fa/tars-jian-quan-gong-neng.md)
+* [Auth](kai-fa/tars-auth.md)
 
 ## FAQ <a id="question"></a>
 * [Install](chang-jian-wen-ti/Install_faq-en.md)
