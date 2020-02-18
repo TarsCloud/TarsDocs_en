@@ -27,7 +27,7 @@ Right now, thousands of services in Tencent have been developed with TAF, runnin
 Tars manages services in microservice style.
 Tars partitions the system into abstraction layers:
 
-![tars](assets/tars-en.png)
+![tars](../assets/tars-en.png)
 
 As shown in the picture, the bottom layer is the protocol layer which unifies bussiness communication protocols by providing an IDL (Interface Definition Language) file. 
 The goal of the protocol layer is the interoperability of diverse communication with standard protocols.
@@ -49,7 +49,7 @@ The top layer is operation layer. It provides tools for SRE(Site Reliability Eng
 # 3. <a id="main-chapter-3"></a>Architecture
 ## 3.1. Topology
 
-![tars](assets/tars_top_en.png)
+![tars](../assets/tars_top_en.png)
 
 A platform built with Tars can be divided into two major parts: Service nodes and common framework nodes.
 
@@ -92,7 +92,7 @@ In summary, in order to deploy and operate a server, tarsnode on every service n
 
 ## 3.2. service interaction flow chart
 
-![tars](assets/tars_jiaohu.png)
+![tars](../assets/tars_jiaohu.png)
 
 When the platform is in operation, servers cooperate with each other. Interaction among servers can be classified into two categories: a) Interaction among servers; b) Interaction between servers and common framework services.
 
@@ -108,7 +108,7 @@ Client visit server: When a client try to visit a service, it needs to connect t
 
 ## 3.3. web management system( tarsweb )
 
-![tars](assets/tars_web_system_en.png)
+![tars](../assets/tars_web_system_en.png)
 
 It contains function as below:
 
@@ -119,7 +119,7 @@ It contains function as below:
 
 The core server and client architecture:
 
-![tars](assets/tars_server_client.png)
+![tars](../assets/tars_server_client.png)
 
 Server side:
 
@@ -160,7 +160,7 @@ Composite type include: enum, const, struct, vector, and map.
 
 For example:
 
-![tarsproto](assets/tars_tarsproto.png)
+![tarsproto](../assets/tars_tarsproto.png)
 
 
 ## 4.2. invoke mode
@@ -176,13 +176,13 @@ The framework uses name service for service register and discovery. Client gets 
 
 The supported load balance policies are round-robin, hash, weighted policy.
 
-![tars](assets/tars_junheng_en.png)
+![tars](../assets/tars_junheng_en.png)
 
 
 ## 4.4. Fault tolerance
 It's implemented with two ways: name service excluded and client shielding.
 
-![tars](assets/tars_rongcuo_en.png)
+![tars](../assets/tars_rongcuo_en.png)
 
 name service excluded:
 Servers send heartbeat to name service, if some server failed, name service will exclude it from address list.
@@ -199,28 +199,28 @@ In order to exclude failed server more timely, client shields servers based on r
 To avoid overloading the system because of burst requests or machine fault, tars handles this scenario in the framework. In order to improve system throughput, server uses request queue to process request asynchronously. Server monitors the length of the queue. If the length exceeds a threshold, the server refuses new requests. If a request stays in the queue for a long time, the server drops the request, too.
 
 
-![tars](assets/tars_overload_en.png)
+![tars](../assets/tars_overload_en.png)
 
 ## 4.6. Request tracing
  The framework provided functions for tracing a specific request of a service, the traced request is labeled. The label is forwarded to server which is called because of the labeled request. Servers report logs for traced request to log server. User can analysis logs for traced request and diagnose problems.
 
-![tars](assets/tars_dye_en.png)
+![tars](../assets/tars_dye_en.png)
 
 
 ## 4.7. IDC group
 In order to reduce response time of calls among servers and minimize influence of network failure,
 tars groups server according to their locations. When a client queries servers of a service, tars return servers in nearest locations.
 
-![tars](assets/tars_idc_en.png)
+![tars](../assets/tars_idc_en.png)
 
-See details in [tars_idc_set.md](docs-en/tars_idc_set.md#1-idc-grouping-logic-introduction-).
+See details in [tars_idc_set.md](../kai-fa/tars-idc-set.md).
 
 ## 4.8. SET group
 To facilitate service management, tars groups servers into sets. Clients in a set can only send request to servers in the same set. Thus, servers in different sets can be isolated and operators can manage user requests in a finer way.
 
-![tars](assets/tars_set_en.png)
+![tars](../assets/tars_set_en.png)
 
-See details in [tars_idc_set.md](docs-en/tars_idc_set.md#2-set-grouping-logic-introduction-).
+See details in [tars_idc_set.md](../kai-fa/tars-idc-set.md).
 
 ## 4.9. Monitor data
 
@@ -228,15 +228,15 @@ The framework supports following data report function in order to monitor the qu
 
 1.It reports invoke statistics among servers to let user check flow, delay, timeout, exception about services.
 
-![tars](assets/tars_stat_en.png)
+![tars](../assets/tars_stat_en.png)
 
 2. It reports user-defined properties to tarsproperty. Thus developer can check the status of a server or service. The user-defined properties can be memory use, queue length, cache hit rate, etc.
 
-![tars](assets/tars_property_en.png)
+![tars](../assets/tars_property_en.png)
 
 3.It reports server status change and exception. Developers can check the time a server is published, restarted, crashed.
 
-![tars](assets/tars_notify.png)
+![tars](../assets/tars_notify.png)
 
 ## 4.10. Centralized configuration
 Server configurations are managed by tarsweb. Developer can change configurations in a webpage making the change easily and the change is safer. Developer can check history of configuration changes and rollback to previous version. 
@@ -251,4 +251,4 @@ Service configuration is for all server of a specific service, it can refer to a
 
 Server configuration is a specified server. Service configuration and server configuration are combined together and use by the server.
 
-See details in [tars_config.md](https://github.com/TarsCloud/TarsFramework/blob/master/docs-en/tars_config.md).
+See details in [tars_config.md](../kai-fa/ye-wu-pei-zhi.md).

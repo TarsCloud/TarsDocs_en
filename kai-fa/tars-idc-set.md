@@ -28,7 +28,7 @@
 
 ## 1.4. 示例
 
-![tars](images/tars_idc_pic.png)
+![tars](../assets/tars_idc_pic.png)
 
 某服务A(A1,A2,A3,A4,A5,A6,A7)在各个地区各个IDC的部署情况如上图。
 
@@ -59,17 +59,17 @@
 
 没有Set分组之前，如下图：
 
-![tars](images/tars_set_pic1.png)
+![tars](../assets/tars_set_pic1.png)
 
 有Set分组后，如下图：
 
-![tars](images/tars_set_pic2.png)
+![tars](../assets/tars_set_pic2.png)
 
 ## 2.3. Set分组的调用逻辑规则
 
 以下图为例：
 
-![tars](images/tars_set_pic3.png)
+![tars](../assets/tars_set_pic3.png)
 
 具体部署情况如下表：
 
