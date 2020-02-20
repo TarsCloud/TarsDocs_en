@@ -24,22 +24,7 @@ node version: | 12.13.0 or later（Dependent web management system, auto install
   
 Hardware requirements: a machine running Linux.  
 
-## 1.2. MySQL dependency library installation
-
-The compilation of tars code depends on MySQL header file and static library, and the path is as follows:
-
-- Include: /usr/local/mysql/include
-- Lib: /usr/local/mysql/lib
-
-If MySQL header file and static library already exist in the system, you can skip the next step, otherwise it is recommended to:
-
-```
-rpm -ivh https://repo.mysql.com/mysql57-community-release-el7.rpm
-yum install -y mysql-devel 
-mkdir -p /usr/local/mysql && ln -s /usr/lib64/mysql /usr/local/mysql/lib && ln -s /usr/include/mysql /usr/local/mysql/include && echo "/usr/local/mysql/lib/" >> /etc/ld.so.conf && ldconfig 
-```
-
-## 1.3. MySQL client installation
+## 1.2. MySQL client installation
 
 Deployment of tars environment depends on MySQL client
 
@@ -54,7 +39,7 @@ rpm -ivh https://repo.mysql.com/mysql57-community-release-el7.rpm
 yum install -y mysql 
 ```
 
-## 1.4. Mysql installation
+## 1.3. Mysql installation
 
 Tars framework installation needs to read and write data in mysql, so you need to install mysql. If you already have mysql, you can ignore this step.
 
@@ -81,10 +66,7 @@ chmod u+x build.sh
 ./build.sh all
 ```
 
-**MySQL development library path used by default at compile time:include path: /usr/local/mysql/include，lib path: /usr/local/mysql/lib/**
-
-
-Be aware that the default mysql lib path that Tars use is /usr/local/mysql/ . If mysql is installed in a different path, please modify the files `TarsFramework/CMakeLists.txt` and `TarsFramework/tarscpp/CMakeLists.txt` directory before compiling. (You might change the mysql paths to:"/usr/include/mysql";"/usr/lib64/mysql")  
+By default, compiling tars will automatically download MySQL source code (currently the default is mysql-5.6.26), and compile libmyqlclient.a
 
 Recompile if needed.  
 ```
@@ -106,10 +88,12 @@ cd ${source_folder}/build
 ```  
 
 **The default install path is /usr/local/tars/cpp。**  
-  
+
+After install, the dependent libraries (MySQL static library) and header files will also be installed in this directory. If SSL or nghttp2 is enabled, install is the same
+
 If you want to install on different path:  
 ```  
-**modify tarscpp/CMakeLists.txt**  
+**modify tarscpp/cmake/Common.cmake**  
 **modify TARS_PATH in tarscpp/servant/makefile/makefile.tars**  
 **modify DEMO_PATH in tarscpp/servant/script/create_tars_server.sh**  
 ```  
