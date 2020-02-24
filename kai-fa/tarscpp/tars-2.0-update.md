@@ -10,6 +10,7 @@ Tarscpp2.0 has made major updates for version 1.X, mainly including the followin
 - Modify the interface of the protocol resolver to greatly improve the efficiency of the network parsing package, [thirdparty protocol support](tars-thirdparty-protocol.md), Note: the interface is no longer downward compatible
 - Modify the implementation of TC_ThreadPool to make it more convenient to use
 - Improve SSL support, reduce memory copy times, improve efficiency, and the server and client can specify different ports to use different certificates
+- Modify the encryption algorithm of authentication to 3DES, which is the basis for multi platform support
 - Improve http2 support and fix bugs
 - To improve various demos, see: cpp/examples
 

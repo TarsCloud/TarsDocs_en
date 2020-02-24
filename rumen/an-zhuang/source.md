@@ -24,6 +24,15 @@ node version: | 12.13.0 or later（Dependent web management system, auto install
   
 Hardware requirements: a machine running Linux.  
 
+## 1.1. download and install build package dependency and tools
+
+Source compilation needs to be installed :gcc, glibc, bison, flex, cmake, which, psmisc, ncurses-devel zlib-devel
+
+for example in CentoOS:
+```
+yum install glibc-devel gcc gcc-c++ bison flex cmake which psmisc ncurses-devel zlib-devel
+```
+
 ## 1.2. MySQL client installation
 
 Deployment of tars environment depends on MySQL client
