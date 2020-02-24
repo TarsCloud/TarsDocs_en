@@ -1,8 +1,8 @@
 # Directory
-> * [Group Intro] (#main-chapter-1)
-> * [IDC Group Intro] (#main-chapter-2)
-> * [Set Group Intro] (#main-chapter-3)
-> * [IDC and Set Group Call Rule] (#main-chapter-4)
+> * [Group Intro](#main-chapter-1)
+> * [IDC Group Intro](#main-chapter-2)
+> * [Set Group Intro](#main-chapter-3)
+> * [IDC and Set Group Call Rule](#main-chapter-4)
 
 # 1. Group Intro <a id="main-chapter-1"></a>
 
