@@ -113,9 +113,9 @@ cd TarsCpp;
 mkdir vs_build;
 cd vs_build;
 cmake .. -G "Visual Studio 16 2019"
-cmake --build .. --config release
+cmake --build . --config release
 #install
-cmake --build .. --config release --target install
+cmake --build . --config release --target install
 ```
 
 Note: "Visual Studio 16 2019", You can select the version you need and view it with cmake.. -G
