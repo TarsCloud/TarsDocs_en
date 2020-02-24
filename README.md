@@ -46,10 +46,6 @@ tup               |source code implementation of tup group protocol in each lang
 web               |manage tars web source implementation
 docker            |build tars docker script
 
-## Developer's documentation
-
-See [docs](https://github.com/TarsCloud/TarsDocs_en).
-
 ## License
 
 The open-source protocol Tars used is BSD-3-Clause, see [LICENSE.md](LICENSE.md).
