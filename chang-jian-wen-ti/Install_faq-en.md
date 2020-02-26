@@ -25,11 +25,11 @@ If mysql is installed in different path, please modify the CMakeLists.txt (`fram
 
 ## 7. If you haven't set sql_mode in file my.cnf which mysql used, then when deploy tars web management system, you'll see the tips `Deploy failed! Contact admin please.`.
 
-![tars](docs/question_images/mysql_sqlmode.png)
+![tars](../assets/mysql_sqlmode.png)
 
 ## 8. You should compile tars java framework at first, because web management system depends on some jar package offered by tars java framework.
 
-![tars](docs/question_images/tars-java-jar.png)
+![tars](../assets/tars-java-jar.png)
 
 ## 9. There are two kinds of framework services: core services(required), must be deployed and updated by yourself. The others are general services, can be update via management system.
 
@@ -80,17 +80,17 @@ For example, there will be a log file named `Test.HelloServer.log` in directory 
 
 ## 12. When deploy java service, please select tars.tarsjava.default as template.
 
-![tars](docs/question_images/java_server_deploy.png)
+![tars](../assets/java_server_deploy.png)
 
 ## 13. If you upload file which size is larger than 50MB, modify spring-context-mvc.xml as below:
 
-![tars](docs/question_images/50MB.png)
+![tars](../assets/50MB.png)
 
 The source path is web/src/main/resources/conf-spring, deploy path is WEB-INF/classes.
 
 ## 14. Check query conditon if you have problem with monitor data.
 
-![tars](docs/question_images/stat.png)
+![tars](../assets/stat.png)
 
 ## 15. messy code in resin.
 
@@ -98,14 +98,14 @@ No such problem in English environment.
 
 
 ## 16. Can not find dependents when compile mvn.
-![tars](docs/question_images/tars_not_resolve.png)
+![tars](../assets/tars_not_resolve.png)
 
 Compile framework first.
 
 
 ## 17. Failed because can't connect to registry.
 
-![tars](docs/question_images/registry_not_founded.png)
+![tars](../assets/registry_not_founded.png)
 
 Check the core services are alive, ie, tarsregistry、tarsAdminRegistry、tarsnode、tarsconfig、tarspatch. Such as use the command to check:
 ```sh
@@ -117,15 +117,15 @@ Then check whether rsync process exists.
 
 Finally check error logs of tarsnode.
 
-![tars](docs/question_images/registry_not_invoker.png)
+![tars](../assets/registry_not_invoker.png)
 
 **Check section 4.3 of Install.md about web management system installation, the correct configuration is as following:**
 
-![tars](docs/question_images/registry_web_endpoint.png)
+![tars](../assets/registry_web_endpoint.png)
 
 **one of the error configurations is as following:**
 
-![tars](docs/question_images/registry_web_empty.png)
+![tars](../assets/registry_web_empty.png)
 
 ## 18. Failed and find the size of tars java war is different
 
