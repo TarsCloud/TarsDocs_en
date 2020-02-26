@@ -113,12 +113,9 @@
 * Advanced applications
   * [How PHP's Swoole Framework Accesses Tars](TARSPHP/Advanced/swoole-suport-tars.md)
   * [Use with thinkphp](TARSPHP/Advanced/thinkphp.md)
-  * Combined with Phalcon
   * [Use with Swoft](TARSPHP/Advanced/swoft.md)
   * [Combined with Laravel](TARSPHP/Advanced/laravel.md)
   * [Combined with Yii2](TARSPHP/Advanced/yii2.md)
-  * java client calls phpserver
-  * Build java server
   * [Continuous Integration Solution](TARSPHP/Advanced/ci.md)
 * Other
   * [Frequently Asked Questions](TARSPHP/Question/index.md)
