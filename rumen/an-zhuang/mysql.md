@@ -226,5 +226,5 @@ docker run --name mysql --net=host -e MYSQL_ROOT_PASSWORD='root@appinside' -d -p
         -v /data/mysql-data:/var/lib/mysql mysql:5.6
 ```
 
-**注Note: --net=host indicates that the docker network is the same as the local one**
+**Note: --net=host indicates that the docker network is the same as the local one**
 
