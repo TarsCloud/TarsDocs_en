@@ -414,9 +414,10 @@ include /usr/local/tars/cpp/makefile/makefile.tars
 ```
 Make the target file and upload it to the environment that can access the server for running test
 
-## 6 <a id="chapter-6"></a> 其它 
+## 6 <a id="chapter-6"></a> Others
 
-其他你可能需要知道的重点:
-- examples下有几个非常重要的调用例子:同步, 异步, 协程, 代理模式, push模式, HTTP服务支持等, 建议仔细读一读
-- 代码中的Communicator是管理客户端资源的, 建议做成全局, 如果不是独立的Client客户端, 而是在服务框架中, 直接获取框架提供好的Communicator, 参见ProxyServer
-- 上述Client例子中`comm.stringToProxy("TestApp.HelloServer.HelloObj@tcp -h 10.120.129.226 -p 20001" , prx);`  指定了HelloServer的ip:port, 实际情况下, 当你的服务部署在框架上, 需要调用另外一个服务时, 只需要: `comm.stringToProxy("TestApp.HelloServer.HelloObj")`即可, 框架会自动寻址后端的HelloServer服务, 并自动完成容灾切换
+- There are several very important calling examples under *examples*, including synchronous, asynchronous, coroutine, proxy mode, push mode, HTTP service support, etc.
+
+- The Communicator in the code manages client resources. It is recommended to make it global. If it is not an independent Client, but in the service framework, directly obtain the good Communicator provided by the framework. See ProxyServer
+
+- In the above Client example, `comm.stringToProxy (" TestApp.HelloServer.HelloObj@tcp -h 10.120.129.226 -p 20001 ", prx);` specifies the HelloServer's ip: port. In practice, when your service is deployed On the framework, when you need to call another service, you only need to: `comm.stringToProxy (" TestApp.HelloServer.HelloObj ")`, the framework will automatically address the HelloServer service on the back end and automatically complete the disaster recovery switch.
