@@ -28,14 +28,14 @@ set the installation directory, switch to user root.
 ```text
 cd /usr/local
 mkdir mysql-5.6.26
-chown ${普通用户}:${普通用户} ./mysql-5.6.26
+chown ${owner}:${owner} ./mysql-5.6.26
 ln -s /usr/local/mysql-5.6.26 /usr/local/mysql
 ```
 
 Download mysql source (mysql-5.6.26), set charset to utf-8.  
 
 ```text
-cd ${mysql安装目录}
+cd ${mysql dir}
 wget https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.26.tar.gz
 tar -zxvf mysql-5.6.26.tar.gz
 cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql-5.6.26 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DMYSQL_USER=mysql -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci
