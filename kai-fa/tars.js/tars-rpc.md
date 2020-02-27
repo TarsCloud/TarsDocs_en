@@ -382,12 +382,12 @@ Tars.server.getServant ("./ TRom.NodeJsTestServer.config.conf"). ForEach (functi
 
 ## Tars client implementation principle
 
-![Client System Architecture](../assets/client_en.png)
+![Client System Architecture](../../assets/client_en.png)
 
 
 ## Tars server implementation
 
-![Server-side system architecture](../assets/server_en.png)
+![Server-side system architecture](../../assets/server_en.png)
 
 
 ## Tars calls a third-party protocol service as a client
