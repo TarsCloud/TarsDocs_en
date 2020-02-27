@@ -26,13 +26,17 @@ Hardware requirements: a machine running Linux.
 
 ## 1.1. download and install build package dependency and tools
 
-Source compilation needs to be installed :gcc, glibc, bison, flex, cmake, which, psmisc, ncurses-devel zlib-devel
+Source compilation needs to be installed :gcc, glibc, bison, flex, cmake, which, psmisc, ncurses-devel zlib
 
 for example in CentoOS:
 ```
-yum install glibc-devel gcc gcc-c++ bison flex cmake which psmisc ncurses-devel zlib-devel
+yum install glibc-devel gcc gcc-c++ bison flex cmake psmisc ncurses-devel 
 ```
 
+在ubuntu下执行:
+```
+sudo apt-get install build-essential bison flex cmake psmisc libncurses5-dev 
+```
 ## 1.2. MySQL client installation
 
 Deployment of tars environment depends on MySQL client
