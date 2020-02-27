@@ -37,7 +37,7 @@ The core process is as follows:
 
 ## 2.4. Examples
 
-![tars](../assets/tars_idc_pic.png)
+![tars](../assets/tars_idc_pic_en.png)
 
 Server A has seven services (A1,A2,A3,A4,A5,A6,A7) The deployment of IDC in each region is shown in the figure above。
 
@@ -67,11 +67,11 @@ Client B call server A: if A3,A4,A5,A2,A1,A7 stoped，it can callA6
 
 Before set grouping, see the following figure:
 
-![tars](../assets/tars_set_pic1.png)
+![tars](../assets/tars_set_pic1_en.png)
 
 After set grouping, see the following figure:
 
-![tars](../assets/tars_set_pic2.png)
+![tars](../assets/tars_set_pic2_en.png)
 
 ## 3.3. Call logic rules for set grouping
 

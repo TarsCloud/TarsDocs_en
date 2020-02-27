@@ -18,7 +18,7 @@ Priority: Node Configuration > Service Configuration > Set Application Configura
 
 As shown below:
 
-![tars-config](../assets/tars_config_jiegoutu.png)
+![tars-config](../assets/tars_config_jiegoutu_en.png)
 
 The Tars framework maintains these configuration information through two data tables, t_config_files and t_config_references.
 
@@ -52,11 +52,11 @@ Note that the set configuration has a higher priority than the application confi
 
 The main logic is as follows:
 
-![tars-config](../assets/tars_config_appconfig.png)
+![tars-config](../assets/tars_config_appconfig_en.png)
 
 The result of pulling the application configuration is as follows:
 
-![tars-config](../assets/tars_config_appconfig_result.png)
+![tars-config](../assets/tars_config_appconfig_result_en.png)
 
 ###1.2.2. Acquire service level configuration
 
@@ -70,7 +70,7 @@ Obtaining service level configuration information is mainly divided into three s
 
 2.Secondly, the relation of obtaining corresponding configuration information index id (reference_id) which is referenced by index id in (1) from data table (t_config_referencses) is as follows:
 
-![tars-config](../assets/tars_config_references.png)
+![tars-config](../assets/tars_config_references_en.png)
 
 If there is reference information, the configuration information corresponding to the references_id in the data table t_config_files is retrieved, and the configuration file corresponding to the references_id is retrieved whether it contains "set level configuration information", and if so, the set level configuration information is acquired.
 
