@@ -101,7 +101,7 @@ To enable the call chain function, user do not need to rewrite a line of busines
 
 Description of the operation steps:
 
-1. On the tars management platform, select the service which need to open the call chain and click "Edit".
+1. On the tars management platform, select the service which need to open the call chain and click "update".
  
    ![1](https://github.com/TarsCloud/TarsJava/blob/master/docs/images/trace_1.png)
 
