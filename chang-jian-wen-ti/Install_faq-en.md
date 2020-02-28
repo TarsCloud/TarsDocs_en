@@ -25,7 +25,7 @@ If mysql is installed in different path, please modify the CMakeLists.txt (`fram
 
 ## 7. If you haven't set sql_mode in file my.cnf which mysql used, then when deploy tars web management system, you'll see the tips `Deploy failed! Contact admin please.`.
 
-![tars](../assets/mysql_sqlmode.png)
+![tars](../assets/mysql_sqlmode_en.png)
 
 ## 8. You should compile tars java framework at first, because web management system depends on some jar package offered by tars java framework.
 
@@ -105,7 +105,7 @@ Compile framework first.
 
 ## 17. Failed because can't connect to registry.
 
-![tars](../assets/registry_not_founded.png)
+![tars](../assets/registry_not_founded_en.png)
 
 Check the core services are alive, ie, tarsregistry、tarsAdminRegistry、tarsnode、tarsconfig、tarspatch. Such as use the command to check:
 ```sh
@@ -117,7 +117,7 @@ Then check whether rsync process exists.
 
 Finally check error logs of tarsnode.
 
-![tars](../assets/registry_not_invoker.png)
+![tars](../assets/registry_not_invoker_en.png)
 
 **Check section 4.3 of Install.md about web management system installation, the correct configuration is as following:**
 
