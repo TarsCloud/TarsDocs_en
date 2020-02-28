@@ -11,17 +11,17 @@ You can find demo: cpp/examples/AuthDemo.
 
 The use of tar authentication is very simple. You don't need to modify one line of code, just change the configuration file. Just follow these three steps:
 
-### 修Modify the endpoint of the server and enable the authentication mechanism
+### Modify the endpoint of the server and enable the authentication mechanism
 
 In the tars service platform, select the service to enable authentication, edit the service, modify the endpoint, add -e 1,  -e indicate whether authentication is enabled. If it is 0 by default, it is not enabled. If it is 1, it is enabled
 
-![](../assets/tars_auth_endpoint.png)
+![](../assets/tars_auth_endpoint_en.png)
 
 ### Modify the configuration file of the server to add the account password
 
 Note that the server can have multiple adapters(ip port), and each adapter requiring authentication has its own account password. As shown in the figure, set the account Bert and password 123456 for test.oko.bertobjadapter
 
-![](../assets/tars_auth_server.png)
+![](../assets/tars_auth_server_en.png)
 
 Due to incomplete screenshots, the actual private template content is as follows:
 
@@ -44,7 +44,7 @@ Now, restart the service on the web platform.
 
 Note that the client can access multiple objs. Each obj that needs authentication has its own account password. As shown in the figure, set the account bert for test.oko.bertobj, password 123456:
 
-![](../assets/tars_auth_client.png)
+![](../assets/tars_auth_client_en.png)
 
 Due to incomplete screenshots, the actual private template content is as follows:
 

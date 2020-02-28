@@ -86,21 +86,21 @@ If there is reference information, the configuration information corresponding t
 
 Select the corresponding application (service) in the service tree, and select the "Application Configuration" page on the management interface opened on the right to add configuration, edit configuration, and so on. As shown below:
 
-![tars-config](../assets/tars_config_app1.png)
+![tars-config](../assets/tars_config_app1_en.png)
 
 Add the application configuration Test.conf as shown below:
 
-![tars-config](../assets/tars_config_app2.png)
+![tars-config](../assets/tars_config_app2_en.png)
 
 ## 2.2. Set configuration
 
 Select the corresponding Set group on the service tree, and select the “Set Configuration” page on the management interface opened on the right side to add configuration, edit configuration, etc., as shown below:
 
-![tars-config](../assets/tars_config_set1.png)
+![tars-config](../assets/tars_config_set1_en.png)
 
 Add the application configuration Test.conf as shown below:
 
-![tars-config](../assets/tars_config_set2.png)
+![tars-config](../assets/tars_config_set2_en.png)
 
 > * Note: The corresponding Set configuration can only be added if the corresponding application profile is added.
 
@@ -108,14 +108,14 @@ Add the application configuration Test.conf as shown below:
 
 In the service tree on the left, select the service which need to be maintained. Click the “Service Configuration” page in the management interface on the left to add, edit, and delete the service configuration. As shown below:
 
-![tars-config](../assets/tars_config_server1.png)
+![tars-config](../assets/tars_config_server1_en.png)
 
 Add the application configuration Test.conf as shown below:
 
-![tars-config](../assets/tars_config_server2.png)
+![tars-config](../assets/tars_config_server2_en.png)
 
 In the service configuration, you can refer to the configuration content of the upper level (that is, the content of the application configuration of the application (business) and the configuration content of the set) as shown below:
 
-![tars-config](../assets/tars_config_server3_ref1.png)
+![tars-config](../assets/tars_config_server3_ref1_en.png)
 
-![tars-config](../assets/tars_config_server3_ref2.png)
+![tars-config](../assets/tars_config_server3_ref2_en.png)

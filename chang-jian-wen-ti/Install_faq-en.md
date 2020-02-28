@@ -80,7 +80,7 @@ For example, there will be a log file named `Test.HelloServer.log` in directory 
 
 ## 12. When deploy java service, please select tars.tarsjava.default as template.
 
-![tars](../assets/java_server_deploy.png)
+![tars](../assets/java_server_deploy_en.png)
 
 ## 13. If you upload file which size is larger than 50MB, modify spring-context-mvc.xml as below:
 
@@ -90,7 +90,7 @@ The source path is web/src/main/resources/conf-spring, deploy path is WEB-INF/cl
 
 ## 14. Check query conditon if you have problem with monitor data.
 
-![tars](../assets/stat.png)
+![tars](../assets/stat_en.png)
 
 ## 15. messy code in resin.
 
@@ -121,11 +121,11 @@ Finally check error logs of tarsnode.
 
 **Check section 4.3 of Install.md about web management system installation, the correct configuration is as following:**
 
-![tars](../assets/registry_web_endpoint.png)
+![tars](../assets/registry_web_endpoint_en.png)
 
 **one of the error configurations is as following:**
 
-![tars](../assets/registry_web_empty.png)
+![tars](../assets/registry_web_empty_en.png)
 
 ## 18. Failed and find the size of tars java war is different
 

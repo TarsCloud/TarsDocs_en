@@ -103,7 +103,7 @@ Description of the operation steps:
 
 1. On the tars management platform, select the service which need to open the call chain and click "update".
  
-   ![1](https://github.com/TarsCloud/TarsJava/blob/master/docs/images/trace_1.png)
+   ![1](../assets/trace_1_en.png)
 
 2.Select and edit the private template and fill the following:
 
@@ -194,13 +194,13 @@ trace_html=zipkin_address(include http://)
 - The final result is shown below
 
 
-![2](https://github.com/TarsCloud/TarsJava/blob/master/docs/images/trace_2.png)
+![2](../assets/trace_2_en.png)
 
-![3](https://github.com/TarsCloud/TarsJava/raw/master/docs/images/trace_3.png)
+![3](../assets/trace_3_en.png)
 
 Click on a single call chain to view details:
 
-![5](https://github.com/TarsCloud/TarsJava/blob/master/docs/images/trace_4.png)
+![5](../assets/trace_4_en.png)
 
 
 
@@ -223,5 +223,5 @@ Call chain key-value information description:
 
 Dependency analysis display:
 
-![6](https://github.com/TarsCloud/TarsJava/blob/master/docs/images/trace_5.png)
+![6](../assets/trace_5_en.png)
 
