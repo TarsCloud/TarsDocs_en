@@ -126,61 +126,61 @@ After executing the make statement above, / usr / local / APP / tarsframework / 
   
 By default, tarsnofity is ready when install core basic service:  
   
-![tars](../../assets/tars_tarsnotify_bushu_en.png)  
+![tars](../assets/tars_tarsnotify_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarsnotify_patch_en.png)  
+![tars](../assets/tars_tarsnotify_patch_en.png)  
   
 ### 5.2 Deploy and patch tarsstat  
   
 Deploy message:  
   
-![tars](../../assets/tars_tarsstat_bushu_en.png)  
+![tars](../assets/tars_tarsstat_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarsstat_patch_en.png)  
+![tars](../assets/tars_tarsstat_patch_en.png)  
   
 ### 5.3 Deploy and patch tarsproperty  
   
 Deployment message:  
   
-![tars](../../assets/tars_tarsproperty_bushu_en.png)  
+![tars](../assets/tars_tarsproperty_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarsproperty_patch_en.png)  
+![tars](../assets/tars_tarsproperty_patch_en.png)  
   
 #### 5.4 Deploy and patch tarslog  
   
 Deployment message:  
   
-![tars](../../assets/tars_tarslog_bushu_en.png)  
+![tars](../assets/tars_tarslog_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarslog_patch_en.png)  
+![tars](../assets/tars_tarslog_patch_en.png)  
   
 ### 5.5 Deploy and patch tarsquerystat  
   
 Deployment message:  
 **Pay attention: please select non-Tars protocol, because web platform use json protocol to get service monitor info.**  
   
-![tars](../../assets/tars_tarsquerystat_bushu_en.png)  
+![tars](../assets/tars_tarsquerystat_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarsquerystat_patch_en.png)  
+![tars](../assets/tars_tarsquerystat_patch_en.png)  
   
 #### 5.6 Deploy and patch tarsqueryproperty  
   
 Deployment message:  
 **Pay attention: please select non-Tars protocol, because web platform use json protocol to get service monitor info.**  
   
-![tars](../../assets/tars_tarsqueryproperty_bushu_en.png)  
+![tars](../assets/tars_tarsqueryproperty_bushu_en.png)  
   
 Upload patch package：  
   
-![tars](../../assets/tars_tarsqueryproperty_patch_en.png)  
+![tars](../assets/tars_tarsqueryproperty_patch_en.png)  
 
