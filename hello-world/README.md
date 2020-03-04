@@ -8,7 +8,7 @@
 
 After successful login, the user will enter the tars management system, as shown in the following figure:
 
-![](../../assets/tars_web_index_en.png)
+![](../assets/tars_web_index_en.png)
 
 Under the menu tree of tars management system, there are the following functions:
 
@@ -37,7 +37,7 @@ Service deployment can also be done after service development, but it is recomme
 
 Click "operation" - & gt; "deployment" in the main menu, as shown below：
 
-![](../../assets/tars_go_quickstart_bushu1_en.png)
+![](../assets/tars_go_quickstart_bushu1_en.png)
 
 * “APP” Which application does your service belong to ，例如：“TestApp”. 
 * “Server Name” Refers to the ID name of your service program，例如：“HelloServer”. 
@@ -57,7 +57,7 @@ Click "operation" - & gt; "deployment" in the main menu, as shown below：
 
 Click "submit". After success, the name of HelloServer will appear in the TestApp application under the menu number, and the information of your new service program will be seen on the right side, as shown below:
 
-![](../../assets/tars_go_quickstart_service_inactive_en.png)
+![](../assets/tars_go_quickstart_service_inactive_en.png)
 
 The deployment on the management system is here for the time being. So far, it only makes your service occupy a place on the management system. The real program has not been released.
 
@@ -67,12 +67,12 @@ Under the menu tree of the management system, find the service you deployed and 
 
 Select publish management, select the node to publish, click publish selected node, click upload publish package, and select the compiled publish package, as shown in the following figure:
 
-![](../../assets/tars_go_quickstart_release_en.png)
+![](../assets/tars_go_quickstart_release_en.png)
 
 After uploading the release package, click the "select release version" drop-down box to display the service program you uploaded, and select the top one (the latest one uploaded).
 
 Click "publish" to publish the service. After successful publishing, the following interface appears, as shown below:
 
-![](../../assets/tars_go_quickstart_service_ok_en.png)
+![](../assets/tars_go_quickstart_service_ok_en.png)
 
 If it fails, it could be naming issues, upload issues, and other environmental issues. Welcome to issue for discussion.
