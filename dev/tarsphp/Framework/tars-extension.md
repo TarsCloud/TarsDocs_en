@@ -133,7 +133,7 @@ $value = \TUPAPI::getMap($nameOrTagNum, TARS_Map $clazz, $buf, $isRequire = fals
 // Need to put the above packed data together for encoding
 $inbuf_arr[$nameOrTagNum] = $buf
 ```
-#### 编码解码
+#### encode & decode
 ```php
 // For the case of the tup protocol (iVersion = 3):
 // In this case, the client sends the packet using encode function encoding, the server receives the packet using decode function decoding, the server returns the packet using encode function encoding, the client receives the packet using decode function decoding, and encodes the tup protocol. The returned results can be used for transmission and persistence.
