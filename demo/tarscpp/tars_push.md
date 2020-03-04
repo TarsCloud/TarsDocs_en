@@ -18,7 +18,7 @@ For example, see examples/pushDemo/.
 ## Flow chart of the push mode
 Here's a flow chart of the push mode
 
-![tars](../../assets/tars_flow.PNG)
+![tars](../../assets/tars_flow.png)
 
 - The black line represents the data flow : data(client) -〉 request packet encoder(client) -〉 protocol parser(server) -〉 doRequest protocol processor(server) -〉 return data generation(server) -〉 response packet decoder(client) -〉 response data (client)
 - The yellow line represents the client access server
@@ -38,7 +38,7 @@ Here's a flow chart of the push mode
 First we deploy a TestPushServant service in accordance with the code of the third-party protocol. 
 Deploy a server on the management platform as shown below
 
-![tars](../../assets/tars_push_deploy.PNG)
+![tars](../../assets/tars_push_deploy.png)
 
 Refer to the code that Tars supports third-party protocols:
 
@@ -676,7 +676,7 @@ void RecvThread::run(void)
 
 If the server pushes to the client successfully, the result is as follows:
 
-![tars](../../assets/tars_result.PNG)
+![tars](../../assets/tars_result.png)
 
 
 
