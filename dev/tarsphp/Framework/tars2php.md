@@ -46,19 +46,19 @@ If you only have the requirements for packaging and unpacking, then the use proc
         namespace Server\servant\PHPTest\PHPServer\obj\classes;    
             
         class SimpleStruct extends \TARS_Struct {    
-           const ID = 0; //tars协议中的tag    
+           const ID = 0; //tag in tars protocol   
            const COUNT = 1;    
            const PAGE = 2;    
                
-           public $id; //元素的实际值    
+           public $id; //read value of the element    
            public $count;     
            public $page;     
                
            protected static $_fields = array(    
               self::ID => array(    
-                 'name'=>'id', //tars协议中没个元素的name    
-                 'required'=>true, //tars协议中是require或者optional    
-                 'type'=>\TARS::INT64, //类型    
+                 'name'=>'id', //names of elements in tars protocol    
+                 'required'=>true, //require / optinal inn tars protocol     
+                 'type'=>\TARS::INT64, //type
                  ),    
               self::COUNT => array(    
                  'name'=>'count',    
