@@ -7,12 +7,12 @@ This module provides the main control addressing capability (service discovery) 
 ## Instructions
 
 ```php
-        //从tarsregistry服务寻找服务地址
+        //find server address from tarsregistry
         $wrapper = new \Tars\registry\QueryFWrapper("tars.tarsregistry.QueryObj@tcp -h 172.16.0.161 -p 17890",1,60000);
         $result = $wrapper->findObjectById("PHPTest.PHPServer.obj");
         var_dump($result);
 
-        //优先从内存寻找服务地址，其次从主控寻址
+        //find server address from memory firstly. find from registry then.
         \Tars\registry\RouteTable::getInstance();
         $result = \Tars\registry\RouteTable::getRouteInfo("PHPTest.PHPServer.obj");
         echo "result:\n";
