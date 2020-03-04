@@ -48,7 +48,7 @@ docker            |build tars docker script
 
 ## License
 
-The open-source protocol Tars used is BSD-3-Clause, see [LICENSE.md](LICENSE.md).
+The open-source protocol Tars used is BSD-3-Clause, see [LICENSE.md](license.md).
 
 ## Contacts
 
