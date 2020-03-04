@@ -15,14 +15,14 @@ When the first worker process is started, a timer will be started to periodicall
         $serverInfo->pid = $masterPid;
 
         $serverF = new ServerFSync($host, $port, $objName);
-        $serverF->keepAlive($serverInfo); //主进程存活
+        $serverF->keepAlive($serverInfo); //main server keeps alive
 
         $adminServerInfo = new ServerInfo();
         $adminServerInfo->adapter = 'AdminAdapter';
         $adminServerInfo->application = 'PHPTest';
         $adminServerInfo->serverName = 'test';
         $adminServerInfo->pid = $masterPid;
-        $serverF->keepAlive($adminServerInfo);//管理进程存活
+        $serverF->keepAlive($adminServerInfo);//admin server keeps alive
 ```
 
 ## Other
