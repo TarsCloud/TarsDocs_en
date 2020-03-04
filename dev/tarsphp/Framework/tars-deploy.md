@@ -12,8 +12,8 @@
 
 ```php
 return array(
-    'appName' => 'APPNAME', //app名称 如tars.tarsconfig中的tars
-    'serverName' => 'SERVERNAME', //服务名 如tars.tarsconfig中的tarsconfig
+    'appName' => 'APPNAME', //app name. e.g tars of tars.tarsconfig
+    'serverName' => 'SERVERNAME', //server name. e.g tarsconfig of tars.tarsconfig
     //...
 );
 ```
