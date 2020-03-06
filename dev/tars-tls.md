@@ -24,7 +24,7 @@ rebuild tarscpp.
 
 In the tars service platform, select the corresponding service, edit the service, modify the endpoint protocol, and change the original tcp or udp to ssl
 
-![](../../assets/tars_ssl_endpoint.png)
+![](../assets/tars_ssl_endpoint.png)
 
 ### Modify server's profile add certificate configuration
 

@@ -2,7 +2,7 @@
 
 The configuration of our test machine is shown in the figure below. We have three machines with the same configuration, two of which are clients and one is server:：
 
-![](../assets/tars_performance.png)
+![](../../assets/tars_performance.png)
 
 The machine is configured as follows
 
