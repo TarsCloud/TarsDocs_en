@@ -1,111 +1,128 @@
-# Table of Contents
-> * Naming convention
-> * Tars File Directory Specification
-> * Makefile specification
+# Directory
+> * [Intro](#main-chapter-1)
+> * [cmake spec](#main-chapter-2)
+> * [Makefile spec](#main-chapter-3)
 
-# 1. Naming convention
+# Intro
 
-## 1.1. Service naming
+Before reading this article, you must read [basic concepts](../../base/tars-concept.md)
 
-APP: The application name, which identifies a small collection of services. In the Tars system, the application name must be unique. For example: TestApp.
+There are two ways to manage C + + development services: makefile and cmake management
 
-Server: service name, the name of the process that provides the service. The server name is named according to the service service function. It is generally named: XXServer, such as LogServer, TimerServer, etc.
+In tarscpp >= 2.1.0, cmake management is recommended as the main mode, and makefile mode is no longer supported by default
 
-Servant: A service provider that provides an interface or instance of a specific service. For example: HelloImp
+## 1. <a id="main-chapter-1"></a> cmake spec
 
-Description:
+### 1.1. cmake use
 
-A Server can contain multiple Servant, the system will use the service's App + Server + Servant, combined to define the routing name of the service in the system, called routing Obj, its name must be unique in the whole system, so that when you serve externally, you can uniquely identify yourself.
+For services implemented with tars, it is highly recommended to use the cmake specification.
 
-Therefore, when defining an APP, you need to pay attention to the uniqueness of the APP.
+The tars framework provides a basic tars-tools.cmake (/usr/local/tars/cpp/makefile/tars-tools.cmake), CMakelists.txt of business service can reference this file
 
-For example: Comm.TimerServer.TimerObj, Comm.LogServer.LogServerObj, etc.;
+The tars framework also provides scripts \(/usr/local/tars/cpp/script/create\_tars\_server.sh\) can create empty bussiness server and CMakeLists.txt
 
-## 1.2. Namespace naming
+CMakeLists.txt examples:
 
-Each business has a different name, the Application name, which is also used as the namespace for all code under the Application.
-
-Therefore, the namespace is generally the name of the business, for example:
 ```
-namespace Comm
-```
-## 1.3. Class name (interface name)
+cmake_minimum_required(VERSION 2.8)
 
-The name of the class must consist of one or more words or abbreviations that express the meaning of the class. The first letter of the word is capitalized.
+project(Demo-DemoServer)
 
-E.g:
-```
-class HelloWorldApp
-```
+option(TARS_MYSQL "option for mysql" ON)
+option(TARS_SSL "option for ssl" OFF)
+option(TARS_HTTP2 "option for http2" OFF)
 
-## 1.4. Method naming
+if(WIN32)
+    include (c:\\tars\\cpp\\makefile\\tars-tools.cmake)
+else()
+    include (/usr/local/tars/cpp/makefile/tars-tools.cmake)
+endif()
 
-The naming of functions is based on the principle of expressing the action of a function. It is usually started by a verb and then followed by a noun that represents the action object. Beginning with a lowercase letter, the first letter of each word is capitalized.
+set(TARS_WEB_HOST "http://127.0.0.1:4001")
 
-In addition, there are some general function naming rules.
+include_directories(/usr/local/taf/cpp/thirdparty/include)
+link_directories(/usr/local/taf/cpp/thirdparty/lib)
 
-Get number start with 'get', then keep up with the name of the object to be fetched;
+#include_directories(/home/tarsprotol/App/OtherServer)
 
-Setting start with 'set', and then keep up with the name of the object to be set;
+add_subdirectory(src)
 
-The function that responds to the message in the object, starting with 'on', and then the name of the corresponding message;
+#add_subdirectory(other)
 
-The function that performs the active action can start with 'do', and then the corresponding action name;
+#link_libraries(mysqlclient)
 
-Use 'has' or 'can' instead of the 'is' prefix of the boolean get function, the meaning is more clear.
-
-E.g:
-```
-getNumber();
-
-setNumber();
-
-onProcess();
-
-doAddFile();
-
-hasFile();
-
-canPrint();
-
-sendMessage();
 ```
 
-## 1.5. Variable naming rules
+server source code is in src directory,CMakeLists.txt as follow:
+```
+cmake_minimum_required(VERSION 2.8)
 
-For the definition of various variables, there is one thing in common, that is, you should use meaningful English words or English word abbreviations, do not use simple meaningless strings, try not to use Arabic numerals, and should not use the initial of Chinese Pinyin.
+project(Test-HelloServer)
 
-Names like this are not recommended: Value1, Value2, Value3, Value4....
+gen_server(Test HelloServer)
 
-The general rule is: lowercase letters begin, followed by each word whose first letter is uppercase, usually a noun. (if there is only one word, lowercase)
+```
 
-userNo (mobile number), station (province), destNo (destination number), srcNo (source number), etc.
+compiler:
+```
+mkdir build
+cd build 
+cmake ..
+make -j4
+```
 
-Other: For some more important numbers, it is best to use constant substitution instead of writing numbers directly. The constants are all uppercase, and multiple words are separated by underscores.
+### 1.2. Manage multiple services
 
-NUMBER_OF_GIRLFRIENDS
+With cmake management service, you can manage multiple services in one directory, one directory for each service. In the root cmakelists.txt, call:
 
-# 2. Tars file directory specification
+```
+add_subdirectory(other)
+```
 
-The Tars file is the protocol communication interface of the TARS service, so it is very important to be managed in accordance with the following specifications:
+### 1.3. Include tars protocol
 
-The tars file is in principle placed with the corresponding server;
+When you need to include the tars files of other services, you can reference the tars directory of the corresponding services in CMakelists.txt, for example:
 
-Each server creates a /home/tarsproto/[namespace]/[server] subdirectory on the development machine;
+```text
+include_directories(/home/tarsprotol/App/OtherServer)
+```
 
-All tars files need to be updated to the corresponding server directory under /home/tarsproto;
+### 1.4. Include library
 
-When using other server tars files, you need to use them in /home/tarsproto, you can't copy them to this directory, see Makefile specification;
+When you need to reference the Lib library, such as MySQL:
 
-The tars interface can only be added in principle and cannot be reduced or modified.
+```
+link_libraries(mysqlclient)
+```
 
-Run 'make release' inside the makefile will automatically complete the relevant operations, see the Makefile specification;
+If other services in the directory refer to different libraries, you can modify each service's own CMakeLists.txt
 
-Description:
+### 1.5. release tars protocol
 
-'make release' will copy the tars file to /home/tarsproto/[namespace]/[server] directory, generate tars2cpp to generate .h, and generate a [server].mk file; When others call this service, include this mk file at the bottom of the makefile.
+In order to make it convenient for other services to use the tars file of the current service, you can execute the following command (note that it is executed in the build directory):
 
-# 3. Makefile specification
+```
+make HelloServer-release
+```
+
+### 1.5. Package and upload services
+
+You can package and upload services with one click:
+
+```
+make HelloServer-tar
+make HelloServer-upload
+```
+
+Upload service needs to set the web address correctly
+
+```
+set(TARS_WEB_HOST "http://127.0.0.1:4001")
+```
+
+And open the upload configuration of the web (usually done by the test environment), refer to [basic concepts](../../base/tars-concept.md)
+
+# 2. Makefile specification
 
 It is highly recommended to use the Makefile specification when use service that realized with Tars.
 
@@ -113,7 +130,7 @@ The TARS framework provides a basic Makefile for makefile.tars. The service writ
 
 The TARS framework also provides a script (installation directory /script/create_tars_server.sh) to automatically generate an empty service framework and Makefile;
 
-## 3.1. Makefile usage principle
+## 2.1. Makefile usage principle
 
 In principle, a directory can only be a Server or a program, that is, a Makefile can only have one Target;
 
@@ -126,7 +143,7 @@ include /usr/local/tars/cpp/makefile/makefile.tars
 ```
 Makefile.tars must be included.
 
-## 3.2. Makefile template explanation
+## 2.2. Makefile template explanation
 
 APP: the name space of the program (ie Application)
 
@@ -164,7 +181,7 @@ CONFIG: The name of the configuration file. In fact, you can add the files you n
 ```
 For other variables, please read makefile.tars.
 
-## 3.3. Makefile use
+## 2.3. Makefile use
 
 make help: You can see all the functions of the makefile.
 

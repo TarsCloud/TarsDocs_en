@@ -28,6 +28,8 @@ The framework installed in the form of docker can be operated through the overal
 
 **Note: do not set REBUILD to true, the database will be reset!!!**
 
+It is recommended to use docker deployment mode in the formal environment. The future version upgrade of the framework is more simple and convenient!
+
 ## 3 Tarsnode update and update
 
 After the successful installation of core infrastructure services, if you need to be able to deploy services based on the tars framework on other machines, you need to install tarsnode on other node machines and connect to the framework before expanding and deploying services through the management platform.
@@ -68,6 +70,8 @@ Configure a process monitoring in crontab to ensure that the tars framework serv
 
 ## 4 Tars-web Update
 
+Note that it is not recommended to update the tars web alone. Tarsweb may depend on the version of other components!!!
+
 **Update Step**
 - Download the latest tars web code, overwrite: /usr/local/app/web
 - Modify web config: web/config/webConf.js, web/config/tars.conf, Modify the IP of DB to the current MySQL IP, and the IP of tar to the current environment registry IP
@@ -78,6 +82,8 @@ Configure a process monitoring in crontab to ensure that the tars framework serv
 - restart module: pm2 restart tars-node-web; pm2 restart tars-user-system
 
 ## 5 Framework basic service update
+
+Note that it is not recommended to update each component independently, because each component has a version relationship that depends on each other, and the related configuration needs to be updated for the corresponding template configuration!!!
 
 There are two types of framework service installation:
 

@@ -25,6 +25,7 @@
   * [TarsNode Deploy](installation/node.md)
   * [Tars Upldate & Expand](installation/expand.md)
   * [TarsWeb](installation/web.md)
+* [Base Concept](base/tars-concept.md)
 * [Development Environment Setup](env/README.md)
   * [TarsCPP](env/tarscpp.md)
   * [TarsGo](env/tarsgo.md)
