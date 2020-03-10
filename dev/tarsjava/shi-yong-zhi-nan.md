@@ -1,12 +1,3 @@
-# contents #
-> * Server development
-> * Client development
-> * Service configuration
-> * Service logs
-> * Service management
-> * Abnormally report
-> * Attribute statistics
-
 # Guidelines for the use of the tars framework #
 
 ## Server development ##
