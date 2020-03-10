@@ -13,7 +13,7 @@ This section mainly introduces the use of docker to complete the deployment of t
 - framework: The tars framework docker makes scripts, and the docker contains the framework core services and web management platform
 - tars: The tars framework docker makes scripts. Compared with the framework, it adds Java, nodejs and other runtime support, that is, it can publish Java, nodejs services to the docker (the docker is installed with JDK, node, PHP environment)
 
-First, make sure you have installed the docker environment on your service. If not, please refer to[docker install](docker-huan-jing-an-zhuang.md)
+First, make sure you have installed the docker environment on your service. If not, please refer to [docker install](docker-install.md)
 
 ## 2 <a id="chapter-2"></a>Deploy Tars framework by Docker
 
