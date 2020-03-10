@@ -223,7 +223,7 @@ mkdir -p /data/log/tars
 
 Visit `${your machine ip}:3000` in your browser，then you can see the web management interface. If you can’t access it, please try to close the firewall.
 
-![alt text](https://github.com/TarsCloud/Tars/raw/master/docs/images/tars_web_system_index.png)
+![alt text](../../../assets//tars_web_system_index.png)
 
 ##### 6.5 Install common basic services
 
@@ -233,11 +233,11 @@ The deployment information of the common basic service has been initialized whil
 
 Click `Operations Management` => `Service Deployment`
 
-![alt_text](https://github.com/TarsCloud/Tars/raw/master/docs/images/tars_tarsstat_bushu.png)
+![alt_text](../../../assets/tars_tarsstat_bushu.png)
 
 Click `service management` => select a service => `release management`, upload the release package, which is the basic release package generated in 6.2, and click release.
 
-![alt_text](https://github.com/TarsCloud/Tars/raw/master/docs/images/tars_tarsnotify_patch.png)
+![alt_text](../../../assets/tars_tarsnotify_patch.png)
 
 Deploy tarsnotify, tarsproperty, tarslog, tarsquerystat, tarsqueryproperty one by one in this way.
 

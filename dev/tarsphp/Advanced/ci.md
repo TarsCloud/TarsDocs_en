@@ -96,8 +96,8 @@ Take 'QD. Acthttpserver' as an example from [github examples](https://github.com
                 }
     ```
 4. Execution Construction
-    ![PNG](../image/build_with_parameters.png)
+    ![PNG](../../../assets/build_with_parameters.png)
 5. View build results (mail notification)
-    ![PNG](../image/stage_view.png)
+    ![PNG](../../../assets/stage_view.png)
 5. tars web
-    ![PNG](../image/tars_web.png)
+    ![PNG](../../../assets/tars_web.png)
