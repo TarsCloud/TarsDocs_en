@@ -14,7 +14,7 @@ Tarscpp2.0 has made great changes to protocol parsing, the main purpose is to re
 
 ## 3 Protocol Parse on server side
 
-We know that we can quickly implement an HTTP service through tarscpp. See[http server](../../an-li/tarscpp/tars_cpp_http_demo.md), the core of it is:
+We know that we can quickly implement an HTTP service through tarscpp. See[http server](https://github.com/TarsCloud/TarsDocs_en/blob/master/demo/tarscpp/tars_cpp_http_demo.md), the core of it is:
 
 ```
 void HttpServer::initialize()
@@ -174,7 +174,7 @@ typedef std::function<vector<char> (const RequestPacket &, Transceiver *)> reque
 
 About:
 - RequestPacket is the underlying request structure of the tars service. For details, see
-[tars_protorol](../tars_protocol.md)
+[tars_protorol](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-protocol.md)
 - The purpose of Protocol parser is to serialize requestpacket into vector<char>
 - Transceiver is a connection class, which usually does not need to be managed. However, for some protocols that may be related to the current connection (such as http2), you can obtain the related info through this object
 - The member function of _prx agent: rpc_call & rpc_call_async is used to send the data of custom protocol to the server. Its function prototype is as follows
@@ -219,7 +219,7 @@ typedef std::function<PACKET_TYPE(TC_NetWorkBuffer &, ResponsePacket &)> respons
 ```
 
 About:
-- ResponsePacket is the underlying response structure of the tars service. For details, see [tars_protorol](../tars_protocol.md)
+- ResponsePacket is the underlying response structure of the tars service. For details, see [tars_protorol](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-protocol.md)
 - The purpose of Protocol parser is to parse the input buffer into ResponsePacket
 
 Take customResponse in CustomClient as example:
