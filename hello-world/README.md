@@ -8,7 +8,7 @@
 
 After successful login, the user will enter the tars management system, as shown in the following figure:
 
-![](../assets/tars_web_index_en.png)
+![1](../assets/tars_web_index_en.png)
 
 Under the menu tree of tars management system, there are the following functions:
 
