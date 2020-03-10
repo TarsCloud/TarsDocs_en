@@ -6,7 +6,7 @@
 - Go's goroutine concurrency mechanism means Go is very suitable for large-scale high-concurrency back-end server program development. The Go language has near C/C++ performance and near Python productivity.
 - At Tencent, part of the existing C++ development team has gradually turned into Go developers. Tars, a widely used RPC framework, supports C++, Java, NodeJS, and PHP, and now Go. The combination with Go language has become a general trend. Therefore, in the voice of users, we launched Tarsgo, and we have applied to Tencent map application, YingYongbao application, Internet plus and other projects.
 
-- Learn more about the whole Tars architecture and design at [Introduction](https://github.com/TarsCloud/TarsDocs_en/blob/master/begin/introduction.md).
+- Learn more about the whole Tars architecture and design at [Introduction](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-intro.md).
 
 
 ## Function & features
@@ -17,23 +17,22 @@
 - The support of local logging and remote logging.
 - The support of statistical reporting,  property statistics,and anormaly reporting.
 - The support of set division.
-- The support of protocol buffers. See more in [pb2tarsgo](https://github.com/TarsCloud/TarsDocs_en/blob/master/kai-fa/tarsgo/pb2tarsgo.md)
+- The support of protocol buffers. See more in [pb2tarsgo](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tarsgo/pb2tarsgo.md)
 - The support of filter.
 - The support of zipkin opentracing.
 
 
 ## Install
-- For install OSS and other basic servers, see the [Installation](https://github.com/TarsCloud/TarsDocs_en/blob/master/begin/installation/step-by-step.md) document.
-For quick install OSS and other basic servers, see more about [Deploy](https://github.com/TarsCloud/TarsDocs_en/blob/master/begin/installation/automatic-script.md)
+- Install [Tars](https://github.com/TarsCloud/TarsDocs_en/tree/master/installation)
 - Requires Go 1.9.x or above (see https://golang.org/doc/install for help installing Go)
 - go get -u github.com/TarsCloud/TarsGo/tars
 
 
 ## Quickstart
-- For quickstart, see [tars_go_quickstart_en.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/kai-fa/tarsgo/tars_go_quickstart_en.md)
+- For quickstart, see [tars_go_quickstart_en.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tarsgo/tars_go_quickstart_en.md)
 
 ## Performance
-- For performance, see [tars_go_performance.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/kai-fa/tarsgo/xing-neng-ce-shi.md)
+- For performance, see [tars_go_performance.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tarsgo/xing-neng-ce-shi.md)
 
 ## Usage
 ### 1 server
@@ -43,7 +42,7 @@ For quick install OSS and other basic servers, see more about [Deploy](https://g
 
 Create a tars file, like hello.tars, under $GOPATH/src (for example, $GOPATH/src/TestApp/TestServer/hello.tars).
 
-For more detail about tars protocol, see [tars_protocol](https://github.com/TarsCloud/TarsProtocol/blob/master/docs-en/tars_protocol.md)
+For more detail about tars protocol, see [tars_protocol](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-protocol.md)
 Tars protocol is a binary ,IDL-based protocol similar to protocolbuffers.
 	
 ```go
