@@ -18,7 +18,7 @@ Initialize the project like any other nodejs project.
 
 ### 1.1 tars protocol 
 
-Firstly, the protocol file is compiled with reference to [tars protocol language document](https://tarscloud.github.io/TarsDocs_en/kai-fa/tars_protocol.html) to specify the data structure and calling interface of the communication between the two sides.
+Firstly, the protocol file is compiled with reference to [tars protocol language document](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-protocol.md) to specify the data structure and calling interface of the communication between the two sides.
 
 This example implements a simple: Hello.tars：  
 ```
