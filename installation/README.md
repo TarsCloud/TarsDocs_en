@@ -31,13 +31,16 @@ The deployment of tars includes:
 
 There are several ways to deploy tars:
 > [Source compilation deployment](#chapter-2)
+
 > [Framework docker deployment](#chapter-3)
+
 > [K8s Docker deployment](#chapter-4)
+
 > [K8s integrated deployment](#chapter-5)
 
 # 2 <a id="chapter-2"></a>Source compilation deployment
 
-Source deployment is a very good way to understand tars. For details of source deployment, see [here](https://github.com/TarsCloud/Tars/blob/master/Install.zh.md), Reading is highly recommended.
+Source deployment is a very good way to understand tars. For details of source deployment, see [here](source.md), Reading is highly recommended.
 
 The main steps are as follows:
 - Install mysql
@@ -60,8 +63,8 @@ In this case, you can choose the framework docker deployment: in short, you can 
 
 There are three modes of docker making in the tars framework:
 - Make docker through source code, See [Install](source.md) 
-- Auto make docker(not include run environment), See [docker](docker.md) tarscloud/framework 
-- Auto make docker(include run environment), See [docker](docker.md) tarscloud/tars
+- Auto make docker(not include run environment), See [here](docker.md/#chapter-2)
+- Auto make docker(include run environment), See [docker](docker.md)
 
 The differences between the source code make and auto make:
 - Make docker through source code
