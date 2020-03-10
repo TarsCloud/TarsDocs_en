@@ -26,7 +26,7 @@ These files already contain the basic service framework and the default test int
 
 ### tars protocol file
 
-Firstly, the protocol file is compiled with reference to [tars protocol language document](https://tarscloud.github.io/TarsDocs_en/kai-fa/tars_protocol.html) to specify the data structure and calling interface of the communication between the two sides
+Firstly, the protocol file is compiled with reference to [tars protocol language document](https://github.com/TarsCloud/TarsDocs_en/blob/master/base/tars-protocol.md) to specify the data structure and calling interface of the communication between the two sides
 
 如下：
 
