@@ -8,7 +8,7 @@ There are four RPC methods for generating your custom interface in the .h file:
 *   Future/Promise;
 *   Coroutine(coro);
 
-There is sync/async method in the document[samples for use](https://github.com/Tencent/Tars/blob/master/docs/tars_cpp_quickstart.md). 
+There is sync/async method in the document[samples for use](https://github.com/TarsCloud/TarsDocs_en/blob/master/hello-world/tarscpp.md#chapter-5). 
 It may be helpful to see this article for students who don't meet sync/async and then want to use Future/Promise under Tars.
 The content and examples in the article are based on the Future/Promise provided under the Tars framework, which is not exactly
 the same as the Future/Promise provided by boost, C++11, and other languages.
