@@ -12,7 +12,7 @@ The installation steps are the same as those of the tars management platform, wh
 2）Default permission module: there are three fields in the permission module database table, which are flag, role and uid, respectively corresponding to flags (in the tars platform, "application + service" means a flag), roles and users.
 
 
-The permission module provides six interfaces, [detail](../rumen/an-zhuang/web.md)
+The permission module provides six interfaces, [detail](../installation/web.md)
 
 ```text
     /auth/addAuth： Add permission interface in batch, the input parameter is [{flag: “”，role: “”，uid: “”}],
