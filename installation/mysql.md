@@ -214,7 +214,7 @@ flush privileges;
   
 ## 4 Install by docker <a id="chapter-4"></a>
 
-For CentOS installation of docker, please refer to[docker](docker.md)
+For CentOS installation of docker, please refer to [docker](docker.md)
 
 Use docker installation to install MySQL \(currently only Linux is considered, time and local synchronization \)
 
