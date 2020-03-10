@@ -2,7 +2,7 @@
 
 ## Environment construction
 
-Tars base component installation reference [Deploy](https://github.com/TarsCloud/Tars/tree/master/deploy)
+Tars base component installation reference [Deploy](https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/README.md)
 
 Golang environment ready, tarsgo requires the golang version to be 1.9.x and above.。
 
