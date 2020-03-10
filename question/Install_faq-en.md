@@ -1,5 +1,3 @@
-[点我查看中文版](Install_faq.zh.md)
-
 ## 1. You can't deploy service on IP `127.0.0.1` for the following reasons:
 
 1. each service has at least one obj to serve foreign clients;
@@ -14,9 +12,9 @@ The C++ stuff only supports run on linux, the Java's supports run on linux & win
 
 The basic framework is developed by C++, on linux.
 
-## 3. The software and tools that Tars depends must be prepared before deploy Tars, see [Install.md](Install.md).
+## 3. The software and tools that Tars depends must be prepared before deploy Tars, see [Install.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/source.md).
 
-## 4. The steps of deploying Tars must follow the specified order described in [Install.md](Install.md)
+## 4. The steps of deploying Tars must follow the specified order described in [Install.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/source.md)
 
 ## 5. Mysql can be installed from source code or by yum. Be care that Tars will search mysql library at the path `/usr/local/mysql/` by default .
 If mysql is installed in different path, please modify the CMakeLists.txt (`framework/tarscpp/CMakeLists.txt`, `framework/CMakeLists.txt`) before compiling.
