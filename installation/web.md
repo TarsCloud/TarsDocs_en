@@ -16,7 +16,7 @@ The main functions of tars-web are as follows:
 - View service log (click service name)
 - Privilege management
 
-Tars-web installation usually follows the one click installation script or is automatically installed in the docker container. For the source code installation, please refer to [tar source code installation](source.md)
+Tars-web installation usually follows the one click installation script or is automatically installed in the docker container. For the source code installation, please refer to [tars source code installation](source.md)
 
 ## 2 <a id="chapter-2"></a>Module description
 
