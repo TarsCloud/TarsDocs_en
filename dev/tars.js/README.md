@@ -2,7 +2,7 @@
 
 With the development of the Internet, more and more services can be carried by not only a single node (or a single language), but also multi-language distributed collaborative development (such as the access layer is completed by Node.js, ) Layer is implemented by C ++ / GO / Python) and from this form a large heterogeneous system.
 
-We developed Tars.js based on the [Tars](http://tars.tencent.com) system so that users can quickly build (migrate) Node.js services without changing the overall architecture of heterogeneous systems, and it is very convenient Split the original single service into multiple (logical) subservices.
+We developed Tars.js based on the [Tars](http://tarscloud.org) system so that users can quickly build (migrate) Node.js services without changing the overall architecture of heterogeneous systems, and it is very convenient Split the original single service into multiple (logical) subservices.
 
 ![Tars.js](https://github.com/tars-node/Tars.js/blob/master/docs/images/tarsjs_architecture.png?raw=true)
 
