@@ -223,7 +223,7 @@ mkdir -p /data/log/tars
 
 Visit `${your machine ip}:3000` in your browser，then you can see the web management interface. If you can’t access it, please try to close the firewall.
 
-![alt text](../../../assets//tars_web_index_en.png)
+![alt text](../../../assets//tars_web_system_index_en.png)
 
 ##### 6.5 Install common basic services
 
