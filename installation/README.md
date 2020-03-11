@@ -1,5 +1,3 @@
-[查看中文版本](Deploy.zh.md)
-
 # Directory
 > * [Deployment Brief](#chapter-1)
 > * [Source compilation deployment](#chapter-2)
