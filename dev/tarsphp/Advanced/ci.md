@@ -98,6 +98,6 @@ Take 'QD. Acthttpserver' as an example from [github examples](https://github.com
 4. Execution Construction
     ![PNG](../../../assets/build_with_parameters_en.png)
 5. View build results (mail notification)
-    ![PNG](../../../assets/stage_vie.png)
+    ![PNG](../../../assets/stage_view_en.png)
 5. tars web
     ![PNG](../../../assets/tars_web_en.png)
