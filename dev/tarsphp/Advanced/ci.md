@@ -100,4 +100,4 @@ Take 'QD. Acthttpserver' as an example from [github examples](https://github.com
 5. View build results (mail notification)
     ![PNG](../../../assets/stage_view.png)
 5. tars web
-    ![PNG](../../../assets/tars_web.png)
+    ![PNG](../../../assets/tars_web_en.png)
