@@ -246,11 +246,11 @@ Deploy tarsnotify, tarsproperty, tarslog, tarsquerystat, tarsqueryproperty one b
 **Note that the protocol of tarsquerystat and tarsqueryproperty is non-TARS, and other options are TARS.**
 
 ## Appendix
-* Please prepare software according to this page before installing: https://github.com/TarsCloud/Tars/tree/master/build
-* It is recommended to read this page first: https://github.com/TarsCloud/Tars/blob/master/build/install.sh
+* Please prepare software according to this page before installing: https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/README.md
+* It is recommended to read this page first: https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/source.md
     (In fact, dependencies of some software are automatically installed in scripts to avoid repeated labor, but it is better to familiar with the general script installation process)
-* You also can install TARS with this installation instructions: https://github.com/TarsCloud/Tars/blob/master/Install.zh.md
-* For common problems and precautions encountered during installation, please read: https://github.com/TarsCloud/Tars/blob/master/Install_faq.zh.md
+* You also can install TARS with this installation instructions: https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/README.md
+* For common problems and precautions encountered during installation, please read: https://github.com/TarsCloud/TarsDocs_en/blob/master/question/Install_faq-en.md
 * Installation instruction video: https://www.bilibili.com/video/av47290510/
     
 # Quick installation
