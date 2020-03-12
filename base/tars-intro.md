@@ -251,4 +251,4 @@ Service configuration is for all server of a specific service, it can refer to a
 
 Server configuration is a specified server. Service configuration and server configuration are combined together and use by the server.
 
-See details in [tars_config.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tars-config.md).
+See details in [tars_config.md](../dev/tars-config.md).

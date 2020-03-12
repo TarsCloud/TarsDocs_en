@@ -52,7 +52,7 @@ The tars file is the protocol communication interface of the tars service, espec
 - In principle, the interface of tar can only be added, not reduced or modified;
 - The tars service framework provided by each language provides quick release tars files to: /home/tarsproto/\[namespace\]/\[server\]
 
-## <a id="main-chapter-5"></a> Server development mode
+## 5 <a id="main-chapter-5"></a> Server development mode
 
 The development mode of tars server and client in any language is basically the same:
 - Determine the name of App, Server and Servant ;
@@ -61,6 +61,28 @@ The development mode of tars server and client in any language is basically the 
 - Implement the tars service (refer to the documents of different languages), inherit the servant class in the generated file, and implement the interface of servant
 - Compile the service and publish it on the management platform (APP, Server, Servant obj name, etc.) need to be configured on the management platform). Please refer to the following chapters
 - Of course, your service can also run locally. After you start the service on the platform , ```ps -ef```After you see the start mode of the service, you can execute it locally (note that there may be a configuration file, and you need to modify the port and other information)
+
+Under normal circumstances, the services are ultimately running on each node server of the tars platform through tarsweb publishing, but in the process of debugging, you want to run on the local machine, how to deal with it?
+
+Service startup is actually a command line. For example, C + + service is:
+```
+HelloServer --config=xxxxx.conf
+```
+Here, config indicates the configuration file for service startup. On the tars platform, tarsnode generated the config through template config and helloserver is pulled up. If you want to run the service locally, you must have this configuration file locally.
+
+**Note that this configuration file is not a business configuration, but a service framework configuration, corresponding to the templates on the tars platform!**
+
+How do I get this profile?
+
+You can first publish the service to a node of the platform, and then log in to the node server to run:
+
+```
+ps -efww | grep ${your server name}
+```
+
+You can see the command line of the service startup, copy the corresponding configuration file to the local, open the configuration file, modify the corresponding IP port and related path in the configuration file, and then use the same command line to run locally!
+
+Other languages are similar!
 
 ## 6. <a id="main-chapter-6"></a> Client development mode
 
@@ -113,7 +135,7 @@ If in the development process, it needs to be manually published to the web plat
 - After the framework is installed, modify the web configuration: web/config/webConf.js, set uploadLogin to true, and restart the web
 - You can use curl command on Linux to upload and publish services. Take Test/HelloServer as an example:
 ```
-curl http://${your-web-host}/pages/server/api/upload_and_publish -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev)\n")
+curl http://${your-web-host}/pages/server/api/upload_and_publish -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev
 ```
 
 The C++ version of cmake has embedded the command line in CMakeLists.txt of the service. The user only needs to:
@@ -121,3 +143,6 @@ The C++ version of cmake has embedded the command line in CMakeLists.txt of the 
 make HelloServer-upload
 ```
 complete upload and publish the service.
+
+Note:
+- HelloServer.tgz is the release package of C + +, Java is the war package, and other languages are similar, corresponding to the release package you uploaded to the web platform

@@ -8,19 +8,30 @@
 
 ## 1 <a id="chapter-1"></a> Create Server
 
+Before you start, please must read [concept](../../base/tars-concept.md) and [spec](tars-spec.md)
+
 ```text
-/usr/local/tars/cpp/script/create_tars_server.sh [App] [Server] [Servant]
+/usr/local/tars/cpp/script/cmake_tars_server.sh [App] [Server] [Servant]
 ```
 
-In this example: /usr/local/tars/cpp/script/create\_tars\_server.sh TestApp HelloServer Hello
+In this example: /usr/local/tars/cpp/script/cmake\_tars\_server.sh TestApp HelloServer Hello
 
-After execute, It will create files in TestApp/HelloServer/:
+After execute, It will create files in TestApp/HelloServer/src:
 
 ```text
-HelloServer.h HelloServer.cpp Hello.tars HelloImp.h HelloImp.cpp makefile
+HelloServer.h HelloServer.cpp Hello.tars HelloImp.h HelloImp.cpp CMakeLists.txt
 ```
 
 These files already contain the basic service framework and the default test interface implementation.
+
+You can build server like this:
+```
+cd build
+cmake ..
+make -j4
+```
+
+You can also add other server in this directory.
 
 ## 2 <a id="chapter-3"></a> Server Implement
 
@@ -213,9 +224,9 @@ main(int argc, char* argv[])
 enter server directory:
 
 ```text
-make cleanall
-make	
-make tar
+cd build
+cmake ..
+make -j4
 ```
 
 ## <a id="chapter-4"></a> Extension 
@@ -405,10 +416,9 @@ TARGET      :=TestHelloClient
 CONFIG      :=
 STRIP_FLAG  := N
 
-INCLUDE     += 
+INCLUDE     += -I/home/tarsproto/TestApp/HelloServer/
 LIB         +=
 #-----------------------------------------------------------------------
-include /home/tarsproto/TestApp/HelloServer/HelloServer.mk
 include /usr/local/tars/cpp/makefile/makefile.tars
 #-----------------------------------------------------------------------
 ```

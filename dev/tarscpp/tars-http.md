@@ -17,7 +17,7 @@ The encoder of the request packet (client) is responsible for packaging the data
 ## 	Server Http protocol instance
 
 
-/usr/local/tars/cpp/script/create_tars_server.sh TestApp HttpServer Http
+/usr/local/tars/cpp/script/cmake_http_server.sh TestApp HttpServer Http
 
 Six files will be generated in the directory, delete http.tars (because it is not a tars protocol), and then some methods are manually implemented.
 

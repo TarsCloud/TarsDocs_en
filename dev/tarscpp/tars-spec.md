@@ -124,7 +124,9 @@ And open the upload configuration of the web (usually done by the test environme
 
 # 2. Makefile specification
 
-It is highly recommended to use the Makefile specification when use service that realized with Tars.
+It is highly recommended to use the cmake specification when use service that realized with Tars.
+
+But if you use makefile, you can use specification as follows.
 
 The TARS framework provides a basic Makefile for makefile.tars. The service written in Tars contains the Makefile to help you maintain the Makefile.
 

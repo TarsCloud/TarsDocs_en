@@ -1,6 +1,10 @@
 # Other protocol support
  
 ## Overview
+
+Before you start, please must read [concept](../../base/tars-concept.md) and [spec](../../dev/tarscpp/tars-spec.md)
+
+
 The TARS service framework only supports TARS's own tars protocol by default. However, in actual application scenarios, other protocols, such as HTTP, need to be supported in the TARS service framework. In this case, the communicator cannot be used to send data. The business itself need to implement this part of the code. For custom protocols, the processing is similar.
 
 For specific program examples, see examples/httpDemo/.
@@ -17,7 +21,7 @@ The encoder of the request packet (client) is responsible for packaging the data
 ## 	Server Http protocol instance
 
 
-/usr/local/tars/cpp/script/create_tars_server.sh TestApp HttpServer Http
+/usr/local/tars/cpp/script/cmake_http_server.sh TestApp HttpServer Http
 
 Six files will be generated in the directory, delete http.tars (because it is not a tars protocol), and then some methods are manually implemented.
 

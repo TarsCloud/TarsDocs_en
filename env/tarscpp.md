@@ -30,24 +30,7 @@ for example，in Centos7:
 yum install glibc-devel gcc gcc-c++ bison flex cmake
 ```
 
-## 2.2. MySQL dependency library installation
-
-The compilation of tars code depends on MySQL header file and static library, and the path is as follows:
-
-- Include: /usr/local/mysql/include
-- Lib: /usr/local/mysql/lib
-
-If MySQL header file and static library already exist in the system, you can skip the next step, otherwise it is recommended to:
-
-```
-rpm -ivh https://repo.mysql.com/mysql57-community-release-el7.rpm
-yum install -y mysql-devel 
-mkdir -p /usr/local/mysql && ln -s /usr/lib64/mysql /usr/local/mysql/lib && ln -s /usr/include/mysql /usr/local/mysql/include && echo "/usr/local/mysql/lib/" >> /etc/ld.so.conf && ldconfig 
-```
-
-**Note: Tars uses MySQL static link by default to avoid requiring MySQL dynamic library on each machine**
-
-# <a id="chapter-3"></a>Construction of development environment
+# 3 <a id="chapter-3"></a>Construction of development environment
 
 ```text
 git clone https://github.com/TarsCloud/TarsCpp.git --recursive
