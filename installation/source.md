@@ -16,9 +16,8 @@ linux kernel version: | 2.6.18 or later (Dependent OS)
 gcc version: | 4.8.2 or later、glibc-devel（Dependent c++ framework tools）  
 bison version: | 2.5 or later（Dependent c++ framework tools）  
 flex version: | 2.5 or later（Dependent c++ framework tools）  
-cmake version: | 2.8.8 or later（Dependent c++ framework tools）  
+cmake version: | 3.2 or later（Dependent c++ framework tools）  
 mysql version: | 4.1.17 or later（dependency of framework running）  
-rapidjson version: | 1.0.2 or later（dependency of C++ framework）  
 nvm version: | 0.35.1 or later（Dependent web management system, auto install while deploying）  
 node version: | 12.13.0 or later（Dependent web management system, auto install while deploying）  
   
@@ -73,18 +72,20 @@ git clone https://github.com/TarsCloud/TarsFramework.git --recursive
 Then enter the build source directory:
 
 ```
-cd ${source_folder}/TarsFramework/build
-chmod u+x build.sh
-./build.sh prepare
-./build.sh all
+cd TarsFramework
+git submodule update --remote --recursive
+cd build
+cmake ..
+make -j4
 ```
 
-By default, compiling tars will automatically download MySQL source code (currently the default is mysql-5.6.26), and compile libmyqlclient.a
+By default, compiling tars will automatically download MySQL client source code, and compile libmyqlclient.a
 
 Recompile if needed.  
 ```
-./build.sh cleanall
-./build.sh all
+cd build
+make clean
+make -j4
 ```
 
 Change to user root and create the installation directory.  
@@ -96,8 +97,8 @@ chown ${normal user}:${normal user} ./tars/
 Installation:
   
 ```  bash
-cd ${source_folder}/build  
-./build.sh install or make install  
+cd build
+make install 
 ```  
 
 **The default install path is /usr/local/tars/cpp。**  
