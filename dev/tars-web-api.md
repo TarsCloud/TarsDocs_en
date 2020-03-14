@@ -1,14 +1,81 @@
 # Tars Web API
+> * [Auth](#auth)
+> * [Tree](#tree)
+> * [Server](#server)
+>- * [Deploy Server](#deploy-server)
+>- * [Modify Server](#modify-server)
+>- * [Get Server](#get-server)
+>- * [Get Server List](#get-server-list)
+>- * [Get Inactive Server List](#get-inactive)
+>- * [Get Server Notify Log List](#get-notify-server)
+>- * [Get server realtime state](#get-server-status)
+>- * [Load Server](#load-server)
+>- * [Pre Expend](#pre-expand)
+>- * [Expand](#expand)
+>- * [Add Adapter](#add-adapter)
+>- * [Delete Adapter](#delete-adapter)
+>- * [Modify Adapter](#modify-adapter)
+>- * [Get Adapter](#get-adapter)
+>- * [Get Adapter List](#get-adapter-list)
+> * [Server Config](#config)
+>- * [Add Config](#add-config)
+>- * [Delete Config](#del-config)
+>- * [Modify Config](#modify-config)
+>- * [Get Config](#get-config)
+>- * [Get Config List](#get-config-list)
+>- * [Get Node Config List](#get-node-config-list)
+>- * [Get Config Modify List](#get-config-modify-history)
+>- * [Get Config Modify content](#get-config-modify-list)
+>- * [Add Ref](#add-ref)
+>- * [Delete Ref](#del-ref)
+>- * [Ref List](#ref-list)
+>- * [Merge Node Config](#merge-node-config)
+>- * [Push Config](#push-config)
+> * [Task Manage](#task)
+>- * [Add Task](#add-task)
+>- * [Get Task and Sub Task Info ](#get-task)
+>- * [Get Task List](#get-task-list)
+> * [Publish Package](#publish)
+>- * [Upload Package](#upload-publish)
+>- * [Get Publish Version list](#get-publish-list)
+> * [Template](#template)
+>- * [Add Template](#add-template)
+>- * [Delete Template](#del-template)
+>- * [Modify Template](#modify-template)
+>- * [Get Template](#get-template)
+>- * [Query Template](#query-template)
+> * [Monitor](#monitor)
+>- * [Get tarsstat Monitor Data](#get-tarsstat)
+>- * [Get tarsproperty monitor data](#get-tarspropery)
+> * [Dict](#dict)
+>- * [Get Server Type List](#get-server-type)
+>- * [Get Template List](#get-template-list)
+>- * [Select Server](#choose-server)
+> * [Resource](#resource)
+>- * [Install Tars Node](#install-tarsnode)
+>- * [Uninstall Tars Node](#uninstall-tarsnode)
+> * [Other](#other)
+>- * [Send Custom Command to Server](#send-command)
+>- * [Get Unused Port](#get-port)
 
-## Interface call description
+## <a id="auth"></a>Auth
 
-Suppose it is deployed in localhost, port 80, and the interface is **tree** and the URL address accessed is:
+Please use web>=2.0.0.
 
-```text
-http://localhost/pages/tree
+Create a new token in the user center, and use the web API after obtaining the token
+
+The usage of Web API is as follows:
+
+```
+http://xx.xx.xx.xx/api/[command]?ticket=[token]
+
 ```
 
-## Application Tree
+Ticket: token generated in Web Platform
+
+## <a id="tree"></a>Tree
+
+/api/tree
 
 ### tree
 
@@ -31,11 +98,11 @@ None
 }
 ```
 
-## Server
+## <a id="server"></a>Server
 
-### server/api/deploy\_server
+### <a id="deploy-server"></a>Deploy Server
 
-Deploy Server
+/api/deploy\_server
 
 #### Parameter
 
@@ -108,9 +175,9 @@ Deploy Server
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/update\_server
+### <a id="modify-server"></a>Modify Server
 
-修改Server
+/api/update\_server
 
 #### Parameter
 
@@ -169,9 +236,9 @@ Only Support POST method，in Header set Content-Type:application/json
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/server
+### <a id="get-server"></a>Get Server
 
-Get Server
+/api/server
 
 #### Parameter
 
@@ -210,9 +277,9 @@ id // Server ID
 }
 ```
 
-### server/api/server\_list
+### <a id="get-server-list"></a>Get Server List
 
-Get Server List
+/api/server\_list
 
 #### Parameter
 
@@ -251,9 +318,10 @@ tree_node_id // tree ID
 }]
 ```
 
-### server/api/inactive\_server\_list
 
-Get Server List where Set State equal inactive
+### <a id="get-inactive"></a>Get Inactive Server List
+
+/api/inactive\_server\_list
 
 #### Parameter
 
@@ -294,9 +362,9 @@ node_name   // Node Name
 }]
 ```
 
-### server/api/server\_notify\_list
+### <a id="get-notify-server"></a>Get Server Notify Log List
 
-Get Servernotify Log list
+/api/server\_notify\_list
 
 #### Parameter
 
@@ -323,9 +391,10 @@ tree_node_id // Tree ID
 
 yes
 
-### server/api/get\_realtime\_state
 
-Get server realtime state
+### <a id="get-server-status"></a>Get server realtime state
+
+/api/get\_realtime\_state
 
 #### Parameter
 
@@ -341,9 +410,9 @@ id // Server ID
 }
 ```
 
-### server/api/load\_server
+### <a id="load-server"></a>Load Server
 
-Load Server
+/api/load\_server
 
 #### Parameter
 
@@ -359,9 +428,9 @@ node_name    // Node Name
 "" // Execute result
 ```
 
-### server/api/expand\_server\_preview
+### <a id="pre-expand"></a>Pre Expend
 
-Pre Expend
+/api/expand\_server\_preview
 
 #### Parameter
 
@@ -400,9 +469,9 @@ Pre Expend
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/expand\_server
+### <a id="expand"></a>Expand
 
-Expand
+/api/expand\_server
 
 #### Parameter
 
@@ -469,9 +538,10 @@ Expand
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/add\_adapter\_conf
 
-Add Adapter
+### <a id="add-adapter"></a>Add Adapter
+
+/api/add\_adapter\_conf
 
 #### Parameter
 
@@ -518,9 +588,10 @@ Add Adapter
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/delete\_adapter\_conf
 
-Delete Adapter
+### <a id="delete-adapter"></a>Delete Adapter
+
+/api/delete\_adapter\_conf
 
 #### Parameter
 
@@ -534,9 +605,9 @@ id // Adapter ID
 [0] // Deleted Adapter ID
 ```
 
-### server/api/update\_adapter\_conf
+### <a id="modify-adapter"></a>Modify Adapter
 
-Modify Adapter
+/api/update\_adapter\_conf
 
 #### Parameter
 
@@ -581,9 +652,10 @@ Modify Adapter
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/adapter\_conf
 
-Get Adapter
+### <a id="get-adapter"></a>Get Adapter
+
+/api/adapter\_conf
 
 #### Parameter
 
@@ -613,9 +685,9 @@ id // Adapter ID
 }
 ```
 
-### server/api/adapter\_conf\_list
+### <a id="get-adapter-list"></a>Get Adapter List
 
-Get Adapter List
+/api/adapter\_conf\_list
 
 #### Parameter
 
@@ -645,11 +717,11 @@ id // Server ID
 }]
 ```
 
-## Server Config
+## <a id="config"></a>Server Config
 
-### server/api/add\_config\_file
+### <a id="add-config"></a>Add Config
 
-Add Config
+/api/add\_config\_file
 
 #### Parameter
 
@@ -684,9 +756,9 @@ Add Config
 }
 ```
 
-### server/api/delete\_config\_file
+### <a id="del-config"></a>Delete Config
 
-Delete Config
+/api/delete\_config\_file
 
 #### Parameter
 
@@ -700,9 +772,9 @@ id // ConfigID
 [0] // Delete ConfigID
 ```
 
-### server/api/update\_config\_file
+### <a id="modify-config"></a>Modify Config
 
-Modify Config
+/api/update\_config\_file
 
 #### Parameter
 
@@ -735,9 +807,9 @@ Modify Config
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/config\_file
+### <a id="get-config"></a>Get Config
 
-Get Config
+/api/config\_file
 
 #### Parameter
 
@@ -762,9 +834,9 @@ id // ConfigID
 }
 ```
 
-### server/api/config\_file\_list
+### <a id="get-config-list"></a>Get Config List
 
-Get Config List
+/api/config\_file\_list
 
 #### Parameter
 
@@ -794,9 +866,9 @@ set_group   // Set Group
 }]
 ```
 
-### server/api/node\_config\_file\_list
+### <a id="get-node-config-list"></a>Get Node Config List
 
-Get Node Config List
+/api/node\_config\_file\_list
 
 #### Parameter
 
@@ -830,9 +902,9 @@ config_id   // ConfigID
 
 Only Support POST method，in Header set Content-Type:application/json
 
-### server/api/config\_file\_history
+### <a id="get-config-modify-history"></a>Get Config Modify List
 
-gGt Config Modify List
+/api/config\_file\_history
 
 #### Parameter
 
@@ -852,9 +924,9 @@ id  // ID
 }
 ```
 
-### server/api/config\_file\_history\_list
+### <a id="get-config-modify-list"></a>Get Config Modify content
 
-Get Config Modify content
+/api/config\_file\_history\_list
 
 #### Parameter
 
@@ -881,9 +953,9 @@ config_id // ConfigID
 
 yes
 
-### server/api/add\_config\_ref
+### <a id="add-ref"></a>Add ref
 
-add ref
+/api/add\_config\_ref
 
 #### Parameter
 
@@ -902,9 +974,9 @@ reference_id // ref ConfigID
 }
 ```
 
-### server/api/delete\_config\_ref
+### <a id="del-ref"></a>Delete Ref
 
-Delete Ref
+/api/delete\_config\_ref
 
 #### Parameter
 
@@ -918,9 +990,9 @@ id // Ref ID
 [0] // Deleted Ref ID
 ```
 
-### server/api/config\_ref\_list
+### <a id="ref-list"></a>Ref list
 
-ref list
+/api/config\_ref\_list
 
 #### Parameter
 
@@ -949,9 +1021,9 @@ config_id // ConfigID
 }]
 ```
 
-### server/api/merged\_node\_config
+### <a id="merge-node-config"></a>Merge Node Config
 
-merge node config
+/api/merged\_node\_config
 
 #### Parameter
 
@@ -965,9 +1037,9 @@ id // Config ID
 "" // Config content
 ```
 
-### server/api/push\_config\_file
+### <a id="push-config"></a>Push Config 
 
-push node config 
+/api/push\_config\_file
 
 #### Parameter
 
@@ -987,13 +1059,13 @@ ids // config ID, sep by ;
 }]
 ```
 
-## Task Manage
+## <a id="task"></a> Task Manage
 
 > Include Start, Stop, Publish, Offline
 
-### server/api/add\_task
+### <a id="add-task"></a>Add Task
 
-Add Job
+/api/add\_task
 
 #### Parameter
 
@@ -1028,9 +1100,9 @@ when command=patch_tars时，parameter:
 
 Only support POST，http Header set: Content-Type:application/json
 
-### server/api/task
+### <a id="get-task"></a>Get Task and Sub Task Info 
 
-Get Task and Sub Task Info 
+/api/task
 
 #### Parameter
 
@@ -1064,9 +1136,9 @@ task_no // Task ID
 
 #### 
 
-### server/api/task\_list
+### <a id="get-task-list"></a>Get Task List
 
-Get Task List
+/api/task\_list
 
 #### Parameter
 
@@ -1102,11 +1174,11 @@ to          // End Time
 }]
 ```
 
-## Publish Package
+## ## <a id="publish"></a>Publish Package
 
-### server/api/upload\_patch\_package
+### <a id="upload-publish"></a>Upload Package
 
-Upload Package
+/api/upload\_patch\_package
 
 #### Parameter
 
@@ -1131,9 +1203,10 @@ md5         // package md5（empty not check）
 }
 ```
 
-### server/api/server\_patch\_list
 
-Get Publish Version list
+### <a id="get-publish-list"></a>Get Publish Version list
+
+/api/server\_patch\_list
 
 #### Parameter
 
@@ -1161,11 +1234,11 @@ module_name // Module Name
 
 Yes
 
-## Template
+## <a id="template"></a>Template
 
-### server/api/add\_profile\_template
+### <a id="get-template"></a>Add Template
 
-Add Template
+/api/add\_profile\_template
 
 #### Parameter
 
@@ -1189,9 +1262,10 @@ Add Template
 }
 ```
 
-### server/api/delete\_profile\_template
 
-Modify Template
+### <a id="del-template"></a>Delete Template
+
+/api/delete\_profile\_template
 
 #### Parameter
 
@@ -1205,9 +1279,9 @@ id  // Template ID
 [0] // Delete Template
 ```
 
-### server/api/update\_profile\_template
+### <a id="modify-template"></a>Modify Template
 
-Modify Template
+/api/update\_profile\_template
 
 #### Parameter
 
@@ -1232,9 +1306,9 @@ Modify Template
 }
 ```
 
-### server/api/profile\_template
+### <a id="get-template"></a>Get Template
 
-Get Template
+/api/profile\_template
 
 #### Parameter
 
@@ -1254,9 +1328,10 @@ template_name // Template Name
 }
 ```
 
-### server/api/query\_profile\_template
 
-Query Template
+### <a id="query-template"></a>Query Template
+
+/api/query\_profile\_template
 
 #### Parameter
 
@@ -1277,11 +1352,11 @@ parents_name   // Parent Template Name
 }]
 ```
 
-## Monitor
+## <a id="monitor"></a>Monitor
 
-### server/api/tarsstat\_monitor\_data
+### <a id="get-tarsstat"></a>Get tarsstat Monitor Data
 
-Get tarsstat Monitor Data
+/api/tarsstat\_monitor\_data
 
 #### Parameter
 
@@ -1321,9 +1396,9 @@ group_by        // Group
 }]
 ```
 
-### server/api/tarsproperty\_monitor\_data
+### <a id="get-tarsproperty"></a>Get tarsproperty monitor data
 
-Get tarsproperty monitor data
+/api/tarsproperty\_monitor\_data
 
 #### Parameter
 
@@ -1353,11 +1428,11 @@ policy          // policy
 }]
 ```
 
-## Dict
+## <a id="dick"></a>Dict
 
-### server/api/server\_type\_list
+### <a id="get-server-type"></a>Get Server Type List
 
-Get Server Type List
+/api/server\_type\_list
 
 #### Parameter
 
@@ -1369,9 +1444,9 @@ None
 ["tars_cpp"]
 ```
 
-### server/api/template\_name\_list
+### <a id="get-template-list"></a>Get Template List
 
-Get Template List
+/api/template\_name\_list
 
 #### Parameter
 
@@ -1383,9 +1458,9 @@ None
 ["tars.default"]
 ```
 
-### server/api/cascade\_select\_server
+### <a id="choose-server"></a>Select Server
 
-Select Server
+/api/cascade\_select\_server
 
 #### Parameter
 
@@ -1402,11 +1477,58 @@ set          // Set，level>3，:Set Name.Set Region.Set Group
 [""] server list
 ```
 
-## Other
 
-### server/api/send\_command
+## <a id="resource"></a>Resource
 
-Send Custom Command to Server
+### <a id="install-tarsnode"></a>Install Tars Node
+
+/server/api/install\_tars\_node
+
+#### Parameter
+
+```text
+ips	//tarsnode machine ip
+```
+
+#### Return Value
+
+```text
+[
+	{
+        "ip": "",  
+        "rst": true, 
+		"msg":"" 
+    }
+]
+```
+
+### <a id="uninstall-tarsnode"></a>Uninstall Tars Node
+
+/api/uninstall\_tars\_node
+
+#### Parameter
+
+```text
+ips	//tarsnode machine ip
+```
+
+#### Return Value
+
+```text
+[
+	{
+        "ip": "",  //机器IP
+        "rst": true, //卸载结果
+		"msg":"" //卸载结果信息
+    }
+]
+```
+
+## <a id="other"></a>Other
+
+### <a id="send-command"></a>Send Custom Command to Server
+
+/api/send\_command
 
 #### Parameter
 
@@ -1427,9 +1549,9 @@ command    // Command
 }]
 ```
 
-### server/api/auto\_port
+### <a id="get-port"></a>Get Unused Port
 
-Get Unused Port
+/api/auto\_port
 
 #### Parameter
 
