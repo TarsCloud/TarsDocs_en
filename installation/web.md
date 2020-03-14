@@ -5,7 +5,8 @@
 > * [Permission specification](#chapter-3)
 > * [Module call](#chapter-4)
 > * [Inspection problem](#chapter-5)
-> * [Web development](#chapter-6)
+> * [Token Manage](#chapter-6)
+> * [Web development](#chapter-7)
 
 # 1 <a id="chapter-1"></a>Intro
 
@@ -95,7 +96,7 @@ export COOKIE_DOMAIN=.tars.com
 
 **Pay attention: COOKIE_DOMAIN has .**
 
-## 5 <a id="chapter-4"></a>Inspection problem
+## 5 <a id="chapter-5"></a>Inspection problem
 
 If the tars web runs abnormally, for example, the page cannot be opened, you can check it in the following ways:
 
@@ -122,7 +123,11 @@ Two important web logs:
 - The logs in the running process of ARS node web module will be output in /usr/local/app/web/log/ directory for easy location
 - The logs in the running process of the tar user system module will be output in the directory /usr/local/app/web/demo/log, which is convenient to locate the problem.
 
-## 6 <a id="chapter-5"></a>Web development
+## 6 <a id="chapter-6"></a>Token Manage
+
+The user module of Web provides the function of token management, that is, you can create token, and call and obtain relevant data through web API, [See](../dev/tars-web-api.md)
+
+## 7 <a id="chapter-7"></a>Web development
 
 If you are a nodejs developer, you can also participate in the development of the web in the following ways:
 
