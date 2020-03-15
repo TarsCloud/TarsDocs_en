@@ -29,14 +29,31 @@ Source compilation needs to be installed :gcc, glibc, bison, flex, cmake, which,
 
 for example in CentoOS:
 ```
-yum install glibc-devel gcc gcc-c++ bison flex cmake psmisc ncurses-devel 
+yum install glibc-devel gcc gcc-c++ bison flex cmake psmisc ncurses-devel zlib-devel
 ```
 
 在ubuntu下执行:
 ```
 sudo apt-get install build-essential bison flex cmake psmisc libncurses5-dev zlib1g-dev
 ```
-## 1.2. MySQL client installation
+
+For Mac installation, please install brew first (how to install brew on mac, please search by yourself)
+
+```
+brew install bison flex cmake
+```
+
+## 1.2. Mysql installation
+
+when deploy the tars, your MySQL can be installed on other machines.
+
+Tars framework installation needs to read and write data in mysql, so you need to install mysql. If you already have mysql, you can ignore this step.
+
+For MySQL installation, please refer to[mysql installation](mysql.md)
+
+## 1.3. MySQL client installation
+
+**Please ensure that MySQL is in the directory of path environment variable**
 
 Deployment of tars environment depends on MySQL client
 
@@ -50,13 +67,6 @@ If the MySQL client does not exist, execute:
 rpm -ivh https://repo.mysql.com/mysql57-community-release-el7.rpm
 yum install -y mysql 
 ```
-
-## 1.3. Mysql installation
-
-Tars framework installation needs to read and write data in mysql, so you need to install mysql. If you already have mysql, you can ignore this step.
-
-For MySQL installation, please refer to[mysql installation](mysql.md)
-
 
 # 2. <a id="chapter-2"></a>Tars C + + development environment (required for source installation framework)
 
@@ -92,7 +102,7 @@ Change to user root and create the installation directory.
 ```
 cd /usr/local
 mkdir tars
-chown ${normal user}:${normal user} ./tars/  
+mkdir app
  
 Installation:
   
@@ -101,14 +111,16 @@ cd build
 make install 
 ```  
 
-**The default install path is /usr/local/tars/cpp。**  
+**The path of installation package after compilation is /usr/local/tars/cpp, that is, the compiled framework & the installation script is in this directory**
+**The default path after installation is / usr / local / APP, which is the path after installation**
 
-After install, the dependent libraries (MySQL static library) and header files will also be installed in this directory. If SSL or nghttp2 is enabled, install is the same
+After install, the dependent libraries (MySQL static library) and header files will also be installed in this directory(/usr/local/tars/cpp/thirdparty). If SSL or nghttp2 is enabled, install is the same
 
 If you want to install on different path:  
 ```  
 **modify tarscpp/cmake/Common.cmake**  
 **modify TARS_PATH in tarscpp/servant/makefile/makefile.tars**  
+**modify TARS_PATH in tarscpp/servant/makefile/tars-tools.cmake**
 **modify DEMO_PATH in tarscpp/servant/script/create_tars_server.sh**  
 ```  
 
@@ -118,7 +130,7 @@ If you want to install on different path:
 
 **There are two Installation modes of TarsFramework:**
 
-- centos7 automatic deploy, During the installation process, the network needs to download resources from the outside
+- centos/ubuntu/mac automatic deploy, During the installation process, the network needs to download resources from the outside
 - Make a docker image to complete the installation. The process of making a docker requires network download resources, but no external network is needed to start and run the docker image
 
 **Attentions:**
@@ -189,7 +201,7 @@ Open browser: http://xxx.xxx.xxx.xxx:3000/, If it goes well, you can see the web
 
 **If not, manually execute in centos: source ~/.bashrc or in ubuntu: source ~/.profile**
  
-## 3.3. (centos or ubuntu) deploy
+## 3.3. (centos/ubuntu/mac) deploy
 
 enter /usr/local/tars/cpp/deploy, run:
 ```
@@ -272,6 +284,7 @@ Map three directories to the host:
 **If you want to deploy multiple nodes, just execute docker run... On different machines. Pay attention to the parameter settings**
 
 **Here, you must use --net=host to indicate that the docker and the host are on the same network**
+**Note, mac not support --net=host**
 
 ## 3.5. mysql privilege
 
@@ -357,7 +370,7 @@ Output:
 └────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-**If PM2 cannot be found, the environment variable does not take effect. Please execute: CentOS: source ~ /. Bashrc or Ubuntu: source ~ /. Profile first. This file will be written during installation**
+**If PM2 cannot be found, the environment variable does not take effect. Please execute: CentOS: source ~/.bashrc or Ubuntu: source ~/.profile or Mac: source ~/.bash_profile first. This file will be written during installation**
 
 - tars-node-web: Tar Web homepage service, default binding 3000 port, Source code corresponding web directory
 
