@@ -62,4 +62,17 @@ For usage, please refer to [@tars/rpc](https://www.npmjs.com/package/@tars/rpc) 
 
 1. Install build-essential for the corresponding platform
 2. Install [CMake](https://cmake.org/)
-3. Execute `cmake ../ && make` in the source build directory
+
+linux & mac:
+```
+cd build
+cmake ..
+make -j4
+```
+
+windows:
+```
+cd build
+cmake ..
+cmake --build . --config Release
+``` 
