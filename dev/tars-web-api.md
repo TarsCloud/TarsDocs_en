@@ -37,6 +37,7 @@
 >- * [Get Task List](#get-task-list)
 > * [Publish Package](#publish)
 >- * [Upload Package](#upload-publish)
+>- * [Upload And Publish](#upload-and-publish)
 >- * [Get Publish Version list](#get-publish-list)
 > * [Template](#template)
 >- * [Add Template](#add-template)
@@ -1203,6 +1204,31 @@ md5         // package md5（empty not check）
 }
 ```
 
+
+### <a id="upload-and-publish"></a>Upload And Publish
+
+/api/upload\_and\_publish
+
+#### Parameter
+
+```text
+application // app
+module_name // name
+comment     // comment
+suse        // file
+```
+
+#### Reture Value
+
+```text
+msg
+```
+
+#### Demo(use curl)
+
+```
+curl http://${TARS_WEB_HOST}/api/upload_and_publish?ticket=${TARS_TOKEN} -Fsuse=@${TARGET}.tgz -Fapplication=${APP} -Fmodule_name=${ServerName} -Fcomment=developer-auto-upload
+```
 
 ### <a id="get-publish-list"></a>Get Publish Version list
 
