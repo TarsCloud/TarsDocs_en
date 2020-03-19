@@ -41,3 +41,18 @@ make install
 ```
 
 At this point, the compilation environment of tars CPP has been completed, and the next step is to implement the tars service of CPP.
+
+if you want open ssl & http2 support:
+
+```
+cmake .. -DTARS_SSL=ON -DTARS_HTTP2=ON
+make
+make install
+```
+
+close support:
+```
+cmake .. -DTARS_SSL=OFF -DTARS_HTTP2=OFF
+make
+make install
+```

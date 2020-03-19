@@ -131,18 +131,23 @@ Note that the template configuration files used in different languages are diffe
 
 If in the development process, it needs to be manually published to the web platform for debugging every time, the debugging efficiency is very low, so the tars platform provides a way to publish services to the tars framework with one click:
 
-- This requires a version of Web >= 2.0.0 to support
-- After the framework is installed, modify the web configuration: web/config/webConf.js, set uploadLogin to true, and restart the web
-- You can use curl command on Linux to upload and publish services. Take Test/HelloServer as an example:
+- This requires a version of Web >= 2.0.0 and tarscpp > 2.1.0 to support
+- Login web, enter user center and create token
+- You can use curl command on Linux to upload and publish services. you cmake_tars_server.sh to create server, [see cmake spec(c++)](../dev/tarscpp/tars-spec.md), as Test/HelloServer as an example:
+
 ```
-curl http://${your-web-host}/pages/server/api/upload_and_publish -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev
+curl http://${your-web-host}/pages/server/api/upload_and_publish?ticket=${token} -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev
 ```
 
 The C++ version of cmake has embedded the command line in CMakeLists.txt of the service. The user only needs to:
 ```
+cd build
+cmake .. -DTARS_WEB_HOST=${WEB_HOST} -DTARS_TOKEN=${TOKEN}
+make HelloServer-tar
 make HelloServer-upload
 ```
 complete upload and publish the service.
 
 Note:
+- replace your WEB_HOST and token
 - HelloServer.tgz is the release package of C + +, Java is the war package, and other languages are similar, corresponding to the release package you uploaded to the web platform
