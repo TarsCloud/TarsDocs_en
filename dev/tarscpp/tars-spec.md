@@ -71,6 +71,18 @@ cmake ..
 make -j4
 ```
 
+Note:
+- TARS_SSL, TARS_HTTP2 other switches that need to match the tars compilation. If the tar compilation is not turned on, they should also be turned off here:
+```
+#off
+cmake .. -DTARS_SSL=OFF -DTARS_HTTP2=OFF
+#on
+cmake .. -DTARS_SSL=ON -DTARS_HTTP2=ON
+
+```
+
+Turning tars compilation on and off is similar, see [http2](tars-http2.md), [ssl](tars-tls.md)
+
 ### 1.2. Manage multiple services
 
 With cmake management service, you can manage multiple services in one directory, one directory for each service. In the root cmakelists.txt, call:

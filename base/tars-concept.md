@@ -70,6 +70,14 @@ HelloServer --config=xxxxx.conf
 ```
 Here, config indicates the configuration file for service startup. On the tars platform, tarsnode generated the config through template config and helloserver is pulled up. If you want to run the service locally, you must have this configuration file locally.
 
+Note:
+- It is recommended to make clear the meaning of the main configuration items of config, [refer to the development guide] (../dev/tarscpp/tars-guide.md)
+- bind IP in config should pay attention to providing cost machine
+- ```node=tars.tarsnode.ServerObj@xxxx```, Indicates the address of the connected tarsnode. If there is no tarsnode locally, this configuration can be removed
+- ```local=...```, Indicates the open port that the native machine connects to the tarsnode. If there is no tarsnode, this configuration can be dropped
+- ```locator=...```, Indicates the address (frame address) of the main control center, which is used to obtain the IP list according to the service name
+- If you are an independent client, with this configuration, you can access it without specifying other service addresses
+
 **Note that this configuration file is not a business configuration, but a service framework configuration, corresponding to the templates on the tars platform!**
 
 How do I get this profile?
