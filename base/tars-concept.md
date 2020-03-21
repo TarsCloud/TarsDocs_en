@@ -135,7 +135,7 @@ Note that the template configuration files used in different languages are diffe
 
 **It is strongly recommended that you do not need to modify the template provided by the framework, because the content of these templates may be modified in the subsequent framework upgrade. If you need to modify, you can inherit the template and let your service use the inherited template**
 
-## 8 <a id="main-chapter-9"></a> Development and debugging release
+## 8 <a id="main-chapter-8"></a> Development and debugging release
 
 If in the development process, it needs to be manually published to the web platform for debugging every time, the debugging efficiency is very low, so the tars platform provides a way to publish services to the tars framework with one click:
 
