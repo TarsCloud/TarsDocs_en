@@ -132,6 +132,15 @@ Upload service needs to set the web address correctly
 set(TARS_WEB_HOST "http://127.0.0.1:4001")
 ```
 
+may you should set like this:
+```
+cd build
+cmake .. -DTARS_WEB_HOST=http://xxx.xxx.xxx.xxx:3000
+```
+
+here, TARS_WEB_HOST is your web address
+
+
 And open the upload configuration of the web (usually done by the test environment), refer to [basic concepts](../../base/tars-concept.md)
 
 # 2. Makefile specification
