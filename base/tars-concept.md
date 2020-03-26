@@ -144,7 +144,7 @@ If in the development process, it needs to be manually published to the web plat
 - You can use curl command on Linux to upload and publish services. you cmake_tars_server.sh to create server, [see cmake spec(c++)](../dev/tarscpp/tars-spec.md), as Test/HelloServer as an example:
 
 ```
-curl http://${your-web-host}/pages/server/api/upload_and_publish?ticket=${token} -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev
+curl http://${your-web-host}/api/upload_and_publish?ticket=${token} -Fsuse=@HelloServer.tgz -Fapplication=Test -Fmodule_name=HelloServer -Fcomment=dev
 ```
 
 The C++ version of cmake has embedded the command line in CMakeLists.txt of the service. The user only needs to:
