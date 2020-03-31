@@ -12,36 +12,26 @@ If you use Tars for the production environment, the deployment steps are similar
   
 Software | Software requirements  
 ------|--------  
-linux kernel version: | 2.6.18 or later (Dependent OS)  
-gcc version: | 4.8.2 or later、glibc-devel（Dependent c++ framework tools）  
-bison version: | 2.5 or later（Dependent c++ framework tools）  
-flex version: | 2.5 or later（Dependent c++ framework tools）  
+windows: | >=win7  
 cmake version: | 3.2 or later（Dependent c++ framework tools）  
 mysql version: | 4.1.17 or later（dependency of framework running）  
-nvm version: | 0.35.1 or later（Dependent web management system, auto install while deploying）  
-node version: | 12.13.0 or later（Dependent web management system, auto install while deploying）  
+nvm version: | 0.35.1 or later
+node version: | 12.13.0 or later
   
-Hardware requirements: a machine running Linux or Mac.  
+Hardware requirements: a machine running Windows.  
 
 ## 1.1. download and install build package dependency and tools
 
-Source compilation needs to be installed :gcc, glibc, bison, flex, cmake, which, psmisc, ncurses-devel zlib
+- Install nodejs, nodejs web site: https://nodejs.org/en/
 
-for example in CentoOS:
-```
-yum install glibc-devel gcc gcc-c++ bison flex cmake psmisc ncurses-devel zlib-devel
-```
+- Install vs(vs2019), vs2019自带cmake, Vs2019 comes with its own cmake. For example, the cmake path of my machine is:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin
 
-在ubuntu下执行:
-```
-sudo apt-get install build-essential bison flex cmake psmisc libncurses5-dev zlib1g-dev
-```
+- If your vs is lower than vs2019, install cmake, cmake web site: https://cmake.org/
 
-For Mac installation, please install brew first (how to install brew on mac, please search by yourself)
+- Install git
 
-```
-brew install bison flex cmake
-```
+**Please make sure that your nodejs, cmake, git are in the system environment variables, that is, they can be run on the command line: : cmake, node, git**
 
 ## 1.2. Mysql installation
 
@@ -51,9 +41,13 @@ Tars framework installation needs to read and write data in mysql, so you need t
 
 For MySQL installation, please refer to[mysql installation](mysql.md)
 
+Install MySQL on windows, please search the tutorial by yourself.
+
 # 2. <a id="chapter-2"></a>Tars C + + development environment (required for source installation framework)
 
 **The source code installation framework needs to do this step. If you only write services in C + +, just download the tarscpp code**
+
+**Note that our operations are all performed on the command line. Please ensure that environment variables such as cmake git nodejs vs take effect**
 
 Download tarsframework source code
 
@@ -62,42 +56,23 @@ cd ${source_folder}
 git clone https://github.com/TarsCloud/TarsFramework.git --recursive
 ```
 
-Then enter the build source directory:
+Open the windows console (you may need to run as an administrator) and enter the build source directory
 
 ```
 cd TarsFramework
 git submodule update --remote --recursive
 cd build
 cmake ..
-make -j4
+cmake --build . --config RelWithDebInfo
+cmake --build . --config RelWithDebInfo  --target install
 ```
 
-By default, compiling tars will automatically download MySQL client source code, and compile libmyqlclient.a
+By default, compiling tars will automatically download MySQL client source code, and compile libmyql.dll
 
-Recompile if needed.  
-```
-cd build
-make clean
-make -j4
-```
+**The path of installation package after compilation is c:\tars\cpp, that is, the compiled framework & the installation script is in this directory**
+**The default path after installation is c:\tars-install, which is the path after installation**
 
-Change to user root and create the installation directory.  
-```
-cd /usr/local
-mkdir tars
-mkdir app
- 
-Installation:
-  
-```  bash
-cd build
-make install 
-```  
-
-**The path of installation package after compilation is /usr/local/tars/cpp, that is, the compiled framework & the installation script is in this directory**
-**The default path after installation is /usr/local/app, which is the path after installation**
-
-After install, the dependent libraries (MySQL static library) and header files will also be installed in this directory(/usr/local/tars/cpp/thirdparty). If SSL or nghttp2 is enabled, install is the same
+After install, the dependent libraries and header files will also be installed in this directory(/usr/local/tars/cpp/thirdparty). If SSL or nghttp2 is enabled, install is the same
 
 If you want to install on different path:  
 ```  
@@ -111,11 +86,6 @@ If you want to install on different path:
 
 ## 3.1. Installation
 
-**There are two Installation modes of TarsFramework:**
-
-- centos/ubuntu/mac automatic deploy, During the installation process, the network needs to download resources from the outside
-- Make a docker image to complete the installation. The process of making a docker requires network download resources, but no external network is needed to start and run the docker image
-
 **Attentions:**
 
 - During the installation process, because the tar web relies on nodejs, it will automatically download nodejs, NPM, PM2 and related dependencies, and set the environment variables to ensure that nodejs takes effect
@@ -124,33 +94,39 @@ If you want to install on different path:
 
 **Note: the compilation and installation of tarsframework needs to be completed**
 
-Download tarsweb and copy to /usr/local/tars/cpp/deploy  (change dir name TarsWeb to web)
+Download tarsweb and copy to c:\tars\cpp\deploy  (change dir name TarsWeb to web)
 
 ```
-git clone https://github.com/TarsCloud/TarsWeb.git
-mv TarsWeb web
-cp -rf web /usr/local/tars/cpp/deploy/
+cd c:\tars\cpp\deploy
+git clone https://github.com/TarsCloud/TarsWeb.git web
 ```
 
-for example, this is my files in /usr/local/tars/cpp/deploy:
+for example, this is my files in c:\tars\cpp\deploy
 ```
-[root@cb7ea6560124 deploy]# ls -l
-total 52
--rw-rw-r-- 1 tars tars 1923 Nov  2 17:31 centos7_base.repo
--rwxrwxr-x 1 tars tars 1515 Nov  5 18:21 Dockerfile
--rwxrwxr-x 1 tars tars 2844 Nov  5 18:21 docker-init.sh
--rwxrwxr-x 1 tars tars  215 Nov  5 18:21 docker.sh
--rw-rw-r-- 1 tars tars  664 Nov  2 17:31 epel-7.repo
-drwxrwxr-x 4 tars tars   30 Nov  2 17:31 framework
--rwxrwxr-x 1 tars tars 4599 Nov  8 09:41 linux-install.sh
--rw-rw-r-- 1 tars tars  191 Nov  2 17:31 MariaDB.repo
--rwxrwxr-x 1 tars tars  565 Nov  8 09:23 README.md
--rwxrwxr-x 1 tars tars  539 Nov  8 09:23 README.zh.md
--rwxrwxr-x 1 tars tars 9713 Nov  7 09:42 tars-install.sh
-drwxrwxr-x 2 tars tars   44 Nov  7 10:04 tools
-drwxr-xr-x 11 tars tars  4096 Oct 31 11:01 web
-```
+ C:\tars\cpp\deploy 的目录
 
+2020/03/31  17:20    <DIR>          .
+2020/03/31  17:20    <DIR>          ..
+2020/03/24  11:38           443,392 busybox.exe
+2020/03/24  11:38             1,981 centos7_base.repo
+2020/03/28  15:43             3,273 docker-init.sh
+2020/03/28  15:43               319 docker.sh
+2020/03/28  15:43             2,365 Dockerfile
+2020/03/28  14:33    <DIR>          framework
+2020/03/30  12:45         4,099,584 libmysql.dll
+2020/03/28  15:43             4,829 linux-install.sh
+2020/03/30  12:51           110,592 mysql-tool.exe
+2020/03/28  15:43             1,349 tar-server.sh
+2020/03/30  12:52           635,904 tars-client.exe
+2020/03/30  11:28            16,885 tars-install.sh
+2020/03/24  11:38               322 tars-stop.sh
+2020/03/30  14:23    <DIR>          tools
+2020/03/30  14:14    <DIR>          web
+2020/03/28  15:43             3,732 web-install.sh
+2020/03/28  15:43             1,543 windows-install.sh
+              14 个文件      5,326,070 字节
+               5 个目录 196,844,564,480 可用字节
+```
 ## 3.2. Basic description of TarsFramework
 
 The framework can be deployed on a single machine or multiple machines. Multiple machines are in the mode of one master and many slaves. Generally, one master and one slave are enough:
@@ -159,7 +135,7 @@ The framework can be deployed on a single machine or multiple machines. Multiple
 - The master node will install by default: tarsadminregistry, tarspatch, tarsweb, and tarslog. These services will not be installed on the slave node
 - The tarsAdminRegistry can only be a single point because it has publishing status)
 - The tarslog can only be a single point, otherwise the remote logs will be scattered on multiple machines
-- In principle, tarspatch and tarsweb can be multi-point. If they are deployed to multi-point, the /usr/local/app/patches directory needs to be shared among multiple computers (for example, through NFS). Otherwise, the service cannot be published normally
+- In principle, tarspatch and tarsweb can be multi-point. If they are deployed to multi-point, the c:\tars-install\patches directory needs to be shared among multiple computers (for example, through NFS). Otherwise, the service cannot be published normally
 - You can later deploy the tarslog to a large hard disk server
 - In practice, even if the master and slave nodes are hung, the normal operation of services on the framework will not be affected, only the publishing will be affected
 
@@ -182,94 +158,40 @@ Open browser: http://xxx.xxx.xxx.xxx:3000/, If it goes well, you can see the web
 
 **Note: after execution, you can check whether the nodejs environment variable is effective: node -- version. If the output is not v12.13.0, it means that the nodejs environment variable is not effective**
 
-**If not, manually execute in centos: source ~/.bashrc or in ubuntu: source ~/.profile**
- 
-## 3.3. (centos/ubuntu/mac) deploy
+## 3.3. deploy
 
-enter /usr/local/tars/cpp/deploy, run:
+enter c:\tars\cpp\deploy, run:
 ```
-chmod a+x linux-install.sh
-./linux-install.sh MYSQL_HOST MYSQL_ROOT_PASSWORD INET REBUILD(false[default]/true) SLAVE(false[default]/true) MYSQL_USER MYSQL_PORT
+busybox.exe sh ./windows-install.sh MYSQL_HOST MYSQL_ROOT_PASSWORD HOSTIP REBUILD(false[default]/true) SLAVE(false[default]/true) MYSQL_USER MYSQL_PORT
 ```
 
 MYSQL_HOST: mysql ip address
 
 MYSQL_ROOT_PASSWORD: mysql root password, note that root should not have special characters, for example: !, otherwise, there is a problem with shell script recognition, because it is a special character.
 
-INET: The name of the network interface (as you can see in ifconfig, such as eth0) indicates the native IP bound by the framework. Note that it cannot be 127.0.0.1
+HOSTIP: local host ip. Note that it cannot be 127.0.0.1
 
 REBUILD: Whether to rebuild the database is usually false. If there is an error in the intermediate installation and you want to reset the database, you can set it to true
 
 SLAVE: slave node
-
 
 For example, install three machines and one mysql(suppose: Master [192.168.7.151], slave [192.168.7.152], MySQL: [192.168.7.153])
 
 Execute on the master node (192.168.7.151)
 
 ```
-chmod a+x linux-install.sh
-./linux-install.sh 192.168.7.153 tars2015 eth0 false false
+busybox.exe sh ./windows-install.sh 192.168.7.153 tars2015 192.168.7.151 false false root 3306
 ```
 
 Execute on the slave node (192.168.7.152)
 
 ```
-chmod a+x linux-install.sh
-./linux-install.sh 192.168.7.153 tars2015 eth0 false true
+busybox.exe sh ./windows-install.sh 192.168.7.153 tars2015 192.168.7.152 false true root 3306
 ```
 
 Refer to screen output for errors during execution. If there is an error, it can be executed repeatedly (usually download resource error)
 
-## 3.4. Make docker
-
-Objective: make the framework into a docker, and start the docker
-
-make docker:
-```
-chmod a+x docker.sh
-./docker.sh v1
-```
-docker finished, you can see the docker:tar-docker:v1
-
-```
-docker ps
-```
-
-You can publish the docker image to your machine and execute:
-
-```
-docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
-        -e MYSQL_USER=root -e MYSQL_PORT=3306 \
-        -eREBUILD=false -eINET=enp3s0 -eSLAVE=false \
-        -v/data/tars:/data/tars \
-        -v/etc/localtime:/etc/localtime \
-        tars-docker:v1
-```
-
-MYSQL_HOST: mysql ip address
-
-MYSQL_ROOT_PASSWORD: mysql root password
-
-INET: The name of the network interface (as you can see in ifconfig, such as eth0) indicates the native IP bound by the framework. Note that it cannot be 127.0.0.1
-
-REBUILD: Whether to rebuild the database is usually false. If there is an error in the intermediate installation and you want to reset the database, you can set it to true
-
-SLAVE: slave node
-
-MYSQL_USER: mysql user
-
-MYSQL_PORT: mysql port
-
-Map three directories to the host:
-- -v/data/tars:/data/tars, include tars application log, web log, patch directory
-
-**If you want to deploy multiple nodes, just execute docker run... On different machines. Pay attention to the parameter settings**
-
-**Here, you must use --net=host to indicate that the docker and the host are on the same network**
-**Note, mac not support --net=host**
-
-## 3.5. mysql privilege
+## 3.4. mysql privilege
 
 The above installation of MySQL requires root permission by default, but in some scenarios without root user or when root user has to input password interactively (such as Tencent cloud CDB), you can install it as follows:
 
@@ -294,37 +216,30 @@ docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
         tars-docker:v
 ```
 
-**During the actual framework installation process, another user will be created and used to connect DB. Please refer to the tars-install.sh script**
+**During the actual framework installation process, another user will be created and used to connect dB. Please refer to the tars-install.sh script**
 
-
-## 3.6. Core module
+## 3.5. Core module
 
 Tars Framework is ultimately made up of several core modules, such as:
 ```
-[root@VM-0-7-centos deploy]# ps -ef | grep app/tars | grep -v grep
-root       368     1  0 09:20 pts/0    00:00:25 /usr/local/app/tars/tarsregistry/bin/tarsregistry --config=/usr/local/app/tars/tarsregistry/conf/tars.tarsregistry.config.conf
-root      9245 32687  0 09:29 ?        00:00:13 /usr/local/app/tars/tarsstat/bin/tarsstat --config=/usr/local/app/tars/tarsnode/data/tars.tarsstat/conf/tars.tarsstat.config.conf
-root     32585     1  0 09:20 pts/0    00:00:10 /usr/local/app/tars/tarsAdminRegistry/bin/tarsAdminRegistry --config=/usr/local/app/tars/tarsAdminRegistry/conf/tars.tarsAdminRegistry.config.conf
-root     32588     1  0 09:20 pts/0    00:00:20 /usr/local/app/tars/tarslog/bin/tarslog --config=/usr/local/app/tars/tarslog/conf/tars.tarslog.config.conf
-root     32630     1  0 09:20 pts/0    00:00:07 /usr/local/app/tars/tarspatch/bin/tarspatch --config=/usr/local/app/tars/tarspatch/conf/tars.tarspatch.config.conf
-root     32653     1  0 09:20 pts/0    00:00:14 /usr/local/app/tars/tarsconfig/bin/tarsconfig --config=/usr/local/app/tars/tarsconfig/conf/tars.tarsconfig.config.conf
-root     32687     1  0 09:20 ?        00:00:22 /usr/local/app/tars/tarsnode/bin/tarsnode --locator=tars.tarsregistry.QueryObj@tcp -h 172.16.0.7 -p 17890 --config=/usr/local/app/tars/tarsnode/conf/tars.tarsnode.config.conf
-root     32695     1  0 09:20 pts/0    00:00:09 /usr/local/app/tars/tarsnotify/bin/tarsnotify --config=/usr/local/app/tars/tarsnotify/conf/tars.tarsnotify.config.conf
-root     32698     1  0 09:20 pts/0    00:00:14 /usr/local/app/tars/tarsproperty/bin/tarsproperty --config=/usr/local/app/tars/tarsproperty/conf/tars.tarsproperty.config.conf
-root     32709     1  0 09:20 pts/0    00:00:12 /usr/local/app/tars/tarsqueryproperty/bin/tarsqueryproperty --config=/usr/local/app/tars/tarsqueryproperty/conf/tars.tarsqueryproperty.config.conf
-root     32718     1  0 09:20 pts/0    00:00:12 /usr/local/app/tars/tarsquerystat/bin/tarsquerystat --config=/usr/local/app/tars/tarsquerystat/conf/tars.tarsquerystat.config.conf
+C:\tars\cpp\deploy>busybox.exe ps | busybox.exe grep tars
+14592 14400  0:00  5:05   tarsAdminRegist
+ 8892 14520  0:00  5:02   tarsregistry.ex
+ 8524  7916  0:00  5:01   tarsconfig.exe
+ 9400  9624  0:01  4:59   tarsnode.exe
+10488  5348  0:00  4:57   tarsnotify.exe
+10460  8356  0:01  4:56   tarsproperty.ex
+ 8536  4384  0:00  4:48   tarsqueryproper
+ 1268 13708  0:00  4:45   tarsquerystat.e
+ 7308 10560  0:00  4:37   tarsstat.exe
+11760 14236  0:00  4:34   tarslog.exe
+ 4180 14428  0:00  4:32   tarspatch.exe
 ```
 
 - for master node: tarsnode tars-web must be alive, Other Tar services will be automatically pulled up by tarsnode
 - For the slave node: tarsnode to be alive, other Tars services will be pulled by tarsnode
 - Tars web is a service implemented by nodejs, which consists of two services. For details, see the following chapters
-- To ensure that the core service is started, it can be controlled through monitor.sh and configured in crontab
-
-add to contab
-
-```
-* * * * * /usr/local/app/tars/tarsnode/util/monitor.sh 
-```
+- To ensure that the core service is started, it can be controlled through c:\tars-install\tars\tarsnode\util\monitor.bat, Set to windows scheduled task
 
 **If you configure check.sh, you don't need to configure the tarsnode monitoring in the following chapters**
 
@@ -351,8 +266,6 @@ Output:
 └────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-**If PM2 cannot be found, the environment variable does not take effect. Please execute: CentOS: source ~/.bashrc or Ubuntu: source ~/.profile or Mac: source ~/.bash_profile first. This file will be written during installation**
-
 - tars-node-web: Tar Web homepage service, default binding 3000 port, Source code corresponding web directory
 
 - tars-user-system: The authority management service is responsible for managing all relevant authorities, and is bound to port 3001 by default, Source code corresponding web/demo directory
@@ -364,14 +277,14 @@ Both web and demo are implemented by nodejs + Vue. If the viewing module in PM2 
 **The web is implemented by nodejs + Vue. The final installation and operation directory is as follows:**
 
 ```
-/usr/local/app/web
+c:\tars-install\web
 ```
 
 If pm2 list shows that tars-node-web and tars-user-system fail to start, you can enter the directory to locate the problem:
 
 ```
-cd /usr/local/app/web/demo; npm run start
-cd /usr/local/app/web; npm run start
+cd c:\tars-install\web\demo; npm run start
+cd c:\tars-install\web; npm run start
 ```
 
 npm run start starts the service. You can observe the output of the console. If there is a problem, you will be prompted
