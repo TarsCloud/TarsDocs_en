@@ -51,6 +51,7 @@
 * [Thirdpart Protocol support](dev/tarscpp/tars-thirdparty-protocol.md)
 * [HTTP2](dev/tarscpp/tars-http2.md)
 * [TLS Support](dev/tarscpp/tars-tls.md)
+* [Cookie Support](dev/tarscpp/tars-cookie.md)
 * [Performance](dev/tarscpp/tars-performance.md)
 * [2.0 Update](dev/tarscpp/tars-2.0-update.md)
 * [Example](demo/tarscpp/README.md)
