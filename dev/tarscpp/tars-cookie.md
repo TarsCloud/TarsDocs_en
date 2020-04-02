@@ -27,8 +27,8 @@ The upper business layer can also report logs to retrieval platforms such as elk
 ## Usage example
 ### Setting cookies
 ```text
-#include "servant/TarsCookie.h"
-TarsCookieOp cookieOp;
+#include "servant/Cookie.h"
+CookieOp cookieOp;
 map<string, string> cookie;
 cookie["msgno"] = "12345";
 cookie["uid"] = "67890";
@@ -37,8 +37,8 @@ cookieOp.setCookie(cookie);
 ### Get cookies
 #### Get cookies from thread-specific data
 ```text
-#include "servant/TarsCookie.h"
-map<string, string> & cookie = TarsCookieOp::getCookie();
+#include "servant/Cookie.h"
+map<string, string> & cookie = CookieOp::getCookie();
 TLOGDEBUG("cookie:" << TC_Common::tostr(cookie.begin(), cookie.end()) << endl);
 TLOGDEBUG("msgno:" << cookie["msgno"] << endl);
 ```
@@ -54,9 +54,9 @@ TLOGDEBUG("msgno:" << cookie["msgno"] << endl);
 ### Access service setting cookie
 The access service sets msgno and uid in the cookie before the RPC
 ```text
-#include "servant/TarsCookie.h"
+#include "servant/Cookie.h"
 
-TarsCookieOp cookieOp;
+CookieOp cookieOp;
 map<string, string> cookie;
 cookie["msgno"] = genMsgNo();
 cookie["uid"] = uid;
@@ -74,7 +74,7 @@ LOG_ERROR("call DBProxy.getUserInfo failed, ret:" << ret);
 The LOG_ERROR macro is defined as follows
 ```text
 #define LOG_ERROR(msg) \
-    TLOGERROR(__FILENAME__ << ":" << __LINE__ << ":" << __FUNCTION__ << "|" << TarsCookieOp::getCookie()["msgno"] << "|" << TarsCookieOp::getCookie()["uid"] << "|" << msg << endl);
+    TLOGERROR(__FILENAME__ << ":" << __LINE__ << ":" << __FUNCTION__ << "|" << CookieOp::getCookie()["msgno"] << "|" << CookieOp::getCookie()["uid"] << "|" << msg << endl);
 ```
 
 

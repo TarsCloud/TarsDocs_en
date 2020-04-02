@@ -106,52 +106,48 @@ see demo: cpp/example/HttpDemo/Http2Client
 
 ```text
 CommunicatorPtr& comm = Application::getCommunicator();
-YourPrx prx = comm->stringToProxy<YourPrx>("test.server.yourobj");
+ServantPrx prx = comm->stringToProxy<ServantPrx>("test.server.yourobj");
 
 // set protocol
-ProxyProtocol proto;
-proto.requestFunc = ProxyProtocol::http2Request;
-proto.responseExFunc = ProxyProtocol::http2Response;
-prox->tars_set_protocol(proto);
+prox->tars_set_protocol(ServantProxy::PROTOCOL_HTTP2);
 ```
 
 ### sync call
 
 ```text
-map<string, string> headers;
-headers[":authority"] = "domain.com";
-headers[":scheme"] = "http";
+	shared_ptr<TC_HttpResponse> rsp;
+	shared_ptr<TC_HttpRequest> req = std::make_shared<TC_HttpRequest>();
+	req->setPostRequest("http://domain.com/hello", string("helloworld-") + TC_Common::tostr(i), true);
 
-map<string, string> rspHeaders;
-string rspBody;
-
-prx->http_call("GET", "/", headers, "", rspHeaders, rspBody);
+	prx->http_call("hello", req, rsp);
 ```
+
+Note: the first parameter of http_call here has no actual function, but is used for monitoring. That is to say, the function name is "hello" in the interface statistics of web management platform
 
 ### async call
 
 ```text
-// callback
+// 编写callback
 class MyHttpCb : public HttpCallback
 {
-    public:
-            int onHttpResponse(const map<string, string>& reqHeaders,
-                               const map<string, string>& rspHeaders,
-                               const vector<char>& rspBody)
-            {
-               // your process
-               return 0;
-            }
-            int onHttpResponseException(const map<string, string>& reqHeaders, int eCode)
-            {
-                //  process exception
-                return 0;
-            }
+public:
+	virtual int onHttpResponse(const shared_ptr<TC_HttpResponse> &rsp)
+	{
+		return 0;
+	}
+	virtual int onHttpResponseException(int expCode)
+	{
+		return 0;
+	}
 };
 
-// call
-header[":authority"] = "domain.com";
-header[":scheme"] = "http";
-prx->http_call_async("GET", "/", headers, "", new MyHttpCb());
+shared_ptr<TC_HttpRequest> req = std::make_shared<TC_HttpRequest>();
+
+string buff = string("helloworld-") + TC_Common::tostr(i);
+req->setPostRequest("http://domain.com/hello", buff, true);
+
+prx->http_call_async("hello", req, p);
+
 ```
 
+Note: the first parameter of http_call_async here has no actual function, but is used for monitoring. That is to say, the function name is "hello" in the interface statistics of web management platform
