@@ -120,7 +120,7 @@ If you want to install on different path:
 
 - During the installation process, because the tar web relies on nodejs, it will automatically download nodejs, NPM, PM2 and related dependencies, and set the environment variables to ensure that nodejs takes effect
 - The version of nodejs currently downloads v12.13.0 by default
-- If you have nodejs installed, you'd better uninstall it first
+- If you have lower version nodejs installed, you'd better uninstall it first
 
 **Note: the compilation and installation of tarsframework needs to be completed**
 
@@ -134,21 +134,23 @@ cp -rf web /usr/local/tars/cpp/deploy/
 
 for example, this is my files in /usr/local/tars/cpp/deploy:
 ```
-[root@cb7ea6560124 deploy]# ls -l
-total 52
--rw-rw-r-- 1 tars tars 1923 Nov  2 17:31 centos7_base.repo
--rwxrwxr-x 1 tars tars 1515 Nov  5 18:21 Dockerfile
--rwxrwxr-x 1 tars tars 2844 Nov  5 18:21 docker-init.sh
--rwxrwxr-x 1 tars tars  215 Nov  5 18:21 docker.sh
--rw-rw-r-- 1 tars tars  664 Nov  2 17:31 epel-7.repo
-drwxrwxr-x 4 tars tars   30 Nov  2 17:31 framework
--rwxrwxr-x 1 tars tars 4599 Nov  8 09:41 linux-install.sh
--rw-rw-r-- 1 tars tars  191 Nov  2 17:31 MariaDB.repo
--rwxrwxr-x 1 tars tars  565 Nov  8 09:23 README.md
--rwxrwxr-x 1 tars tars  539 Nov  8 09:23 README.zh.md
--rwxrwxr-x 1 tars tars 9713 Nov  7 09:42 tars-install.sh
-drwxrwxr-x 2 tars tars   44 Nov  7 10:04 tools
-drwxr-xr-x 11 tars tars  4096 Oct 31 11:01 web
+ubuntu@VM-0-14-ubuntu:/usr/local/tars/cpp/deploy$ ls -l
+total 10304
+-rw-r--r--  1 root root  443392 Apr  3 17:22 busybox.exe
+-rw-r--r--  1 root root    1922 Apr  3 17:22 centos7_base.repo
+-rw-r--r--  1 root root    1395 Apr  3 17:22 Dockerfile
+-rwxr-xr-x  1 root root    3260 Apr  4 11:31 docker-init.sh
+-rwxr-xr-x  1 root root     319 Apr  3 22:13 docker.sh
+drwxr-xr-x  7 root root    4096 Apr  3 17:57 framework
+-rwxr-xr-x  1 root root    4537 Apr  4 11:31 linux-install.sh
+-rwxr-xr-x  1 root root 9820288 Apr  3 22:16 mysql-tool
+-rwxr-xr-x  1 root root     811 Apr  4 11:31 tar-server.sh
+-rwxr-xr-x  1 root root   16449 Apr  3 17:22 tars-install.sh
+-rwxr-xr-x  1 root root     320 Apr  4 11:31 tars-stop.sh
+drwxr-xr-x  2 root root    4096 Apr  3 17:57 tools
+drwxr-xr-x 12 root root    4096 Apr  3 21:07 web
+-rwxr-xr-x  1 root root    3590 Apr  3 17:22 web-install.sh
+-rwxr-xr-x  1 root root    1476 Apr  3 17:22 windows-install.sh
 ```
 
 ## 3.2. Basic description of TarsFramework
@@ -182,8 +184,6 @@ Open browser: http://xxx.xxx.xxx.xxx:3000/, If it goes well, you can see the web
 
 **Note: after execution, you can check whether the nodejs environment variable is effective: node -- version. If the output is not v12.13.0, it means that the nodejs environment variable is not effective**
 
-**If not, manually execute in centos: source ~/.bashrc or in ubuntu: source ~/.profile**
- 
 ## 3.3. (centos/ubuntu/mac) deploy
 
 enter /usr/local/tars/cpp/deploy, run:
@@ -201,7 +201,6 @@ INET: The name of the network interface (as you can see in ifconfig, such as eth
 REBUILD: Whether to rebuild the database is usually false. If there is an error in the intermediate installation and you want to reset the database, you can set it to true
 
 SLAVE: slave node
-
 
 For example, install three machines and one mysql(suppose: Master [192.168.7.151], slave [192.168.7.152], MySQL: [192.168.7.153])
 
@@ -221,6 +220,12 @@ chmod a+x linux-install.sh
 
 Refer to screen output for errors during execution. If there is an error, it can be executed repeatedly (usually download resource error)
 
+
+**If it is ubuntu, you should: sudo linux-install.sh ...**
+**Note: after execution, you can check whether the nodejs environment variable is effective: node --version**
+**After installation, the nodejs related environment variables will be written in /etc/profile**
+**If it doesn't work, execute it manually: source /etc/profile. If it's Ubuntu, please pay attention to the permission**
+
 ## 3.4. Make docker
 
 Objective: make the framework into a docker, and start the docker
@@ -230,7 +235,7 @@ make docker:
 chmod a+x docker.sh
 ./docker.sh v1
 ```
-docker finished, you can see the docker:tar-docker:v1
+docker finished, you can see the docker: tarscloud/framework:v1
 
 ```
 docker ps
@@ -244,7 +249,7 @@ docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
         -eREBUILD=false -eINET=enp3s0 -eSLAVE=false \
         -v/data/tars:/data/tars \
         -v/etc/localtime:/etc/localtime \
-        tars-docker:v1
+        tarscloud/framework:v1
 ```
 
 MYSQL_HOST: mysql ip address
@@ -276,7 +281,7 @@ The above installation of MySQL requires root permission by default, but in some
 - First, create users in MySQL (which may be assigned to you by the administrator), such as:admin
 - The admin user has the following permissions :
 ```
-SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, PROCESS, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE
+GRANT, SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, PROCESS, REFERENCES, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE
 ```
 - execute install script
 
@@ -291,7 +296,7 @@ docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
         -eREBUILD=false -eINET=enp3s0 -eSLAVE=false \
         -v/data/tars:/data/tars \
         -v/etc/localtime:/etc/localtime \
-        tars-docker:v
+        tarscloud/framework:v
 ```
 
 **During the actual framework installation process, another user will be created and used to connect DB. Please refer to the tars-install.sh script**
@@ -315,7 +320,7 @@ root     32709     1  0 09:20 pts/0    00:00:12 /usr/local/app/tars/tarsquerypro
 root     32718     1  0 09:20 pts/0    00:00:12 /usr/local/app/tars/tarsquerystat/bin/tarsquerystat --config=/usr/local/app/tars/tarsquerystat/conf/tars.tarsquerystat.config.conf
 ```
 
-- for master node: tarsnode tars-web must be alive, Other Tar services will be automatically pulled up by tarsnode
+- for master node: tarsnode tars-web must be alive, Other Tars services will be automatically pulled up by tarsnode
 - For the slave node: tarsnode to be alive, other Tars services will be pulled by tarsnode
 - Tars web is a service implemented by nodejs, which consists of two services. For details, see the following chapters
 - To ensure that the core service is started, it can be controlled through monitor.sh and configured in crontab
@@ -326,15 +331,13 @@ add to contab
 * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh 
 ```
 
-**If you configure check.sh, you don't need to configure the tarsnode monitoring in the following chapters**
-
 # 4. <a id="chapter-4"></a>Tars-web Description
 
 ## 4.1 Module description
 
 After the tars framework is deployed, the tar web will be installed on the host node (the slave node will not be installed). The tar web is implemented by nodejs and consists of two services
 
-view the modules of the tar Web:
+view the modules of the tars Web:
 
 ```
 pm2 list
@@ -351,10 +354,18 @@ Output:
 └────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-**If PM2 cannot be found, the environment variable does not take effect. Please execute: CentOS: source ~/.bashrc or Ubuntu: source ~/.profile or Mac: source ~/.bash_profile first. This file will be written during installation**
+**If PM2 cannot be found, the environment variable does not take effect. Please execute: source /etc/profile. This file will be written during installation**
 
-- tars-node-web: Tar Web homepage service, default binding 3000 port, Source code corresponding web directory
+Due to permission problem under Ubuntu, if PM2 is executed in error (environment variable is not effective):
+```
+sudo -s source /etc/profile
+sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
+pm2 list
+```
 
+**Tars web consists of two modules**
+
+- tars-node-web: Tars Web homepage service, default binding 3000 port, Source code corresponding web directory
 - tars-user-system: The authority management service is responsible for managing all relevant authorities, and is bound to port 3001 by default, Source code corresponding web/demo directory
 
 tars-node-web calls tars-user-system to complete the relevant permission verification
@@ -377,6 +388,14 @@ cd /usr/local/app/web; npm run start
 npm run start starts the service. You can observe the output of the console. If there is a problem, you will be prompted
 
 **Suggestions for formal operation: pm2 start tars-node-web; pm2 start tars-user-system**
+
+Note that after restarting the machine, PM2 module will be lost. Please add the following statement to startup
+(for example: /etc/rc.local):
+```
+cd /usr/local/app/web/demo; npm run prd
+cd /usr/local/app/web; npm run prd
+```
+
 
 If the web page cannot be opened after installation, please refer to [web](web.md), check the problem section and locate the problem.
 
