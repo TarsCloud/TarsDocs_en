@@ -3,6 +3,8 @@
 > * [Install develop environment for C++](#chapter-2)  
 > * [Tars framework Installation](#chapter-3)  
 > * [Tars-web Description ](#chapter-4)
+> * [Scripts](#chapter-5)
+> * [Proposed deployment plan](#chapter-6)
 
 This document describes the steps to deploy, run, and test Tars framework.
 
@@ -399,3 +401,32 @@ Note that after restarting the machine, PM2 module will be lost. Please add the 
 If the web page cannot be opened after installation, please refer to [web](web.md), check the problem section and locate the problem.
 
 
+# 5. <a id="chapter-5"></a>Scripts
+
+The framework comes with scripts to control the start and stop of services, such as:
+
+- Start Tars Framework: /usr/local/app/tars/tars-start.sh
+- Stop Tars Framework: /usr/local/app/tars/tars-stop.sh
+- Start & Stop one server:
+>- * /usr/local/app/tars/xxxx/util/start.sh
+>- * /usr/local/app/tars/xxxx/util/stop.sh
+
+Note:
+- In the core service of the framework, tarsnode must be alive. It will monitor the life and death of other components. Once other components crash, it will automatically pull up
+- Web components are monitored by pm2
+- After the machine that deployed the framework restarts, it can execute ```/usr/local/app/tars/tars-start.sh``` to restart all servers
+- Tarsnode monitoring can be performed regularly in crontab : ```/usr/local/app/tars/tarsnode/util/check.sh```
+- The node machine with tarsnode deployed only needs to monitor tarsnode
+
+# 6. <a id="chapter-6"></a>Proposed deployment plan
+
+Although this chapter introduces the scheme of the source code deployment tar framework, in practice, it is not recommended to deploy the source code, which will lead to more trouble in upgrading and maintenance. The following describes the key deployment scheme in the actual use process:
+
+- Adopt docker deployment framework (refer to relevant documents), deploy two machines, master-slave mode, and enable --net=host mode
+- The physical deployment scheme is adopted for the node machine, and the tarsnode can be connected to the framework
+- In the case of upgrading the framework, you can upgrade the docker, stop the old docker, start the new docker, and pay attention not to select rebuild dB for participation!!!
+- Tarsnode can be upgraded remotely on the web. Normally, tarsnode does not need to be upgraded unless there is major function optimization (it will be upgraded automatically in the future)
+- Tarslog needs a large hard disk machine. After the framework is deployed, it is recommended to expand the tarslog service of the framework to the node machines of other large hard disks
+- If you use windows, you can consider using docker for framework deployment and tarsnode for windows node machine deployment
+
+If you are familiar with k8s, you can also deploy tars on k8s [see k8s deployment document](k8s-docker-1.md)
