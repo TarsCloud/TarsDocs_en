@@ -220,11 +220,11 @@ chmod a+x linux-install.sh
 
 Refer to screen output for errors during execution. If there is an error, it can be executed repeatedly (usually download resource error)
 
-
-**If it is ubuntu, you should: sudo linux-install.sh ...**
-**Note: after execution, you can check whether the nodejs environment variable is effective: node --version**
-**After installation, the nodejs related environment variables will be written in /etc/profile**
-**If it doesn't work, execute it manually: source /etc/profile. If it's Ubuntu, please pay attention to the permission**
+Note:
+- If it is ubuntu, you should: sudo linux-install.sh ...
+- Note: after execution, you can check whether the nodejs environment variable is effective: node --version
+- After installation, the nodejs related environment variables will be written in /etc/profile
+- If it doesn't work, execute it manually: source /etc/profile. If it's Ubuntu, please pay attention to the permission
 
 ## 3.4. Make docker
 
@@ -392,8 +392,7 @@ npm run start starts the service. You can observe the output of the console. If 
 Note that after restarting the machine, PM2 module will be lost. Please add the following statement to startup
 (for example: /etc/rc.local):
 ```
-cd /usr/local/app/web/demo; npm run prd
-cd /usr/local/app/web; npm run prd
+/usr/local/app/web/tars-start.sh
 ```
 
 
