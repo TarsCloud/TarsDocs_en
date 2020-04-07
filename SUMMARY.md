@@ -88,12 +88,7 @@
   * [zipkin Server](https://github.com/TarsCloud/TarsGo/tree/master/_examples/ZipkinTraceServer) 
 
 ## TarsPHP <a id="TarsPHP"></a>
-* [Introduction](dev/tarsphp/README.md)
-  * [TARS Introduction](dev/tarsphp/Introduction/tars.md)
-  * [TARSPHP Introduction](dev/tarsphp/Introduction/tarsphp.md)
-  * [TARS agreement and TUP agreement](dev/tarsphp/Introduction/protocol.md)
 * [Environment building]()
-  * [Building platform environment](dev/tarsphp/Environment/platform.md)
   * [Build php environment](dev/tarsphp/Environment/php.md)
   * [Use docker](dev/tarsphp/Environment/docker.md)
 * [Quick Start](dev/tarsphp/QuickStart/introduce.md)
