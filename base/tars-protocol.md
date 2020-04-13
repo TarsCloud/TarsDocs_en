@@ -161,7 +161,7 @@ Description:
 
 > * If the struct needs to be used as the map key, you should use key(defined in 2.4.3) to define the comparison order of the members in the struct;
 
-### 1.4.6. Array
+<!-- ### 1.4.6. Array
 
 The array type can be defined in the structure, and the array is defined by [], as follows:
 ```
@@ -193,9 +193,9 @@ Description:
 
 > * In non-c++ versions the pointer type will be translated to vector<type>
 
-> * BufferReader must use MapBufferReader when reading data with pointer type, and need to set pointer to memory buffer in advance.
+> * BufferReader must use MapBufferReader when reading data with pointer type, and need to set pointer to memory buffer in advance. -->
 
-### 1.4.8 Nesting
+### 1.4.7 Nesting
 
 Any struct, map, or vector can be nested;
 
