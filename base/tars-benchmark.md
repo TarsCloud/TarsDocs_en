@@ -1,15 +1,15 @@
 ## Introduction
 
-[tb(tars benchmark)](https://github.com/TarsCloud/TarsBenchmark) It is a non-code benchmark tool specially tailored for tars service, with the following characteristics:
+[tb(tars benchmark)](https://github.com/TarsCloud/TarsBenchmark) It is a non-code benchmark tool specially tailored for tars service, with the following features:
 
- - High network performance: 8-core machine TPS supports more than 20W/s;
- - Communication compatibility: The network layer supports TCP and UDP protocol;
- - Protocol scalability: the application layer supports http/tars service benchmark,  and open to third-protocol agreements
- - Perfect real-time monitoring support. Provide the number of requests / TPS / time-consuming /Success rate distribution within the cycle;
+ - High performance: 8-core machine TPS supports more than 20W/s;
+ - Network compatibility: The network layer supports TCP and UDP protocol;
+ - Protocol scalability: It supports http/tars service benchmark, open to third-protocol agreements
+ - Perfect real-time monitor. Provide the number of TPS/Success Rate/Cost time within the cycle;
 
 ## Framework
 
-The tb tool is designed in a multi-process model. The main process is responsible for resource scheduling and display, and the benchmark process is responsible for network transmission and reception and statistics. The network layer can flexibly choose TCP or UDP; adopts a protocol proxy factory mode to manage various service protocols, and supports http / by default The benchmark of the tars protocol supports automatic protocol discovery; the main process and the benchmark process exchange signals through control information, and the data interacts through the lock-free shared memory queue to achieve the lowest resource consumption. The main process periodically collects each The network statistics of the benchmark process are output to the console after a simple summary.
+The tb is designed in a multi-process model. The main process is responsible for resource scheduling and display, and the benchmark process is responsible for network transmission and reception and statistics. The network layer can flexibly choose TCP or UDP; adopts a protocol factory to manage various service protocols, supports http/tars by default; the main process and the benchmark process exchange signals through control information, and the data interacts through the lock-free shared memory queue to achieve the lowest resource consumption. The main process periodically collects each The network statistics of the benchmark process are output to the console after a simple summary.
 
 ![tb system](../assets/tb-platform.png)
 
@@ -29,10 +29,10 @@ Sample
   -p                   service protocol(tars|http)
   -t(optional)         overtime time，default 3 second
   -T(optional)         network protocol，default tcp
-  -I(optional)         continue time(by second)
-  -s(optional)         maximum tps
-  -i(optional)         view interval
+  -I(optional)         continue time(by second)，default 1h
+  -i(optional)         view interval(by second)，default 10s
+  -s(optional)         maximum tps limit per target server
   -n(optional)         maximum process
 ```
-See details in [tb README.md](../dev/tarsbenchmark/README.md)
+See details in [README.md](../dev/tarsbenchmark/README.md)
 

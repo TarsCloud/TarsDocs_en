@@ -43,12 +43,12 @@ make
 make install
 ```
 
-Now the compilation environment of TarsCpp has been completed, and the tb can be implemented in the next step.
+Now the compilation environment of TarsCpp has been completed, and the tb can be constructed in the next step.
 
 
-# 3 <a id="chapter-3"></a>Construction of tb tool
+# 3 <a id="chapter-3"></a>Construction of tb
 
-The main compilation steps are as follows:
+The main compilation steps are as follows, the tool is generated in the build/bin/tb directory.
 ```
 git clone https://github.com/TarsCloud/TarsBenchmark.git
 cd TarsBenchmark && mkdir build && cd build

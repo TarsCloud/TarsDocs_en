@@ -1,6 +1,6 @@
 ## Tars Case Instructions
 
-This is a complete example of how to use the tool to benchmark tars service.
+This is a example of how to use the tool to benchmark tars service.
 
 ### 1.1.  Tars interface file
 
@@ -31,7 +31,7 @@ module tars
 
 ### <a id="tb-chapter-1"></a>1.2. Case file generation
 
-Use the tars2case tool to automatically generate the use cases needed by the tb tool. The tars2case tool generates their each case of rpc functions. The values of the parameters can be modified according to the service needs.
+Use the tars2case tool to automatically generate the cases needed by the tb tool. The tars2case tool generates their each case of rpc functions. The values of the parameters can be modified according to the service needs.
 
 ```text
 /usr/local/tars/cpp/tools/tars2case Demo.tars --dir=benchmark
@@ -42,7 +42,7 @@ echo.case  test.case
 
 ### <a id="tb-chapter-2"></a> 1.3. Modified Cases
 
-The case file is divided into upper and lower parts, which are divided by the first line of "#". The upper part is the RPC parameter, and the lower part is the value of the RPC call parameter, which corresponds to the parameter one by one.
+The case file is divided into upper and lower parts, which are divided by the first line of "#". The upper part is the RPC parameter, and the lower part is the value of the RPC parameter, which corresponds to the parameter one by one.
 
 - **Parameter description**：
  1. The input parameter of rpc methed is divided by the "|" symbol,
@@ -83,9 +83,9 @@ tars protocol parameter description
 ```
 
 ### 1.2. Closing example
-Initiative stop： ctrl+C or killall tb，Wait a few seconds and then output the final statistical results.
-Passive stop： The default duration is 1 hour. After 1 hour, the benchmark tool will bt stopped and the statistical results are output. This time can be adjusted by the-I parameter.
+Initiative close: ctrl+C or killall tb，Wait a few seconds and then output the final statistical results.<br/>
+Passive close: The default duration is 1 hour. After 1 hour, the benchmark tool will bt stopped and the statistical results are output. This time can be adjusted by the-I parameter.
 
 
 ### 1.3. Display the results
-![results](assets/tb_http_result.jpg)
+![results](../../assets/tb_tars_result.png)

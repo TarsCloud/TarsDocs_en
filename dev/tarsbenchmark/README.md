@@ -1,9 +1,9 @@
 ## TarsBenchmark Instructions
 
-tb can [download source code compilation](../../env/tarsbenchmark.md)，[TARS Protocol](tars-guide.md) /[HTTP Protocol](http-guide.md) is supported by default，It can also flexibly support the development of the 3rd protocol.
+tb can download source code to [Compile](../../env/tarsbenchmark.md)[TARS Protocol], The tool supports to benchmark services of [Http Protocol](http-guide.md) and [Tars Protocol](tars-guide.md)  by default, It can also flexibly support the other third protocol development service.
 
-### 3rd protocol development
-If your service agreement is not TARS/HTTP, to adapt to develop a new service protocol according to the following specifications, you can also use the underlying mechanism of tb to achieve the target service high-performance and real-time feedback. The tool discovers new protocols through the dynamic registration mechanism. Developers do this by implementing {new} Protocol.h and {new} Protocol.cpp. Be sure to declare these two macros: DECLARE_DYNCREATE/IMPLEMENT_DYNCREATE (which must be declared in cpp), and complete the process in three steps:
+### Third protocol development
+If your service agreement is not Tars or Http, to adapt to develop a new service protocol according to the following specifications, you can also use the underlying mechanism of tb to achieve the target service high-performance and real-time feedback. The tool discovers new protocols through the dynamic registration mechanism. Developers do this by implementing {new} Protocol.h and {new} Protocol.cpp. Be sure to declare these two macros: DECLARE_DYNCREATE/IMPLEMENT_DYNCREATE (which must be declared in cpp), and complete the process in three steps:
 
  - 1.Refer to httpProtocol to inherit the Protocol protocol class.
  - 2.Implement the three function of input/encode/decode.
