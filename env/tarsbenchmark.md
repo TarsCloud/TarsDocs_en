@@ -1,4 +1,4 @@
-# 目录
+# TarsBenchmark
 > * [Intro](#chapter-1)
 > * [Dependent environment](#chapter-2)
 > * [Construction of tb tool](#chapter-3)
