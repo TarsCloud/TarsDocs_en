@@ -88,4 +88,4 @@ Passive close: The default duration is 1 hour. After 1 hour, the benchmark tool 
 
 
 ### 1.3. Display the results
-![results](../../assets/tb_tars_result.png)
+![results](../assets/tb_tars_result.png)

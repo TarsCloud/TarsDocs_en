@@ -6,16 +6,17 @@
 
 # Directory
 > * [Start](#rumen)
-> * [TarsCPP](#TarsCPP)
+> * [Benchmark](#benchmark)
+> * [TarsCpp](#TarsCPP)
 > * [TarsJava](#TarsJava)
 > * [TarsGo](#TarsGo)
 > * [Tarsjs](#Tars.js)
-> * [TarsPHP](#TarsPHP)
+> * [TarsPhp](#TarsPHP)
 > * [Other Important Features](#important)
 > * [FAQ](#question)
 
 ## Start <a id="rumen"></a>
-* [INTRODUCTION](base/tars-intro.md)
+* [Introduction](base/tars-intro.md)
 * [Tars Deploy](installation/README.md)
   * [Docker Installation](installation/docker-install.md)
   * [Mysql Installation](installation/mysql.md)
@@ -42,6 +43,12 @@
 * [Tars Protocol](base/tars-protocol.md)
 * [Tup Protocol](base/tars-tup.md)
 
+## benchmark tool <a id="benchmark"></a>
+* [Benchmark Tool](benchmark/README.md)
+* [Tool Build](benchmark/build.md)
+* [Http protocol benchmark](benchmark/http-guide.md)
+* [Tars protocol benchmark](benchmark/tars-guide.md)
+* [Develop](benchmark/develop.md
 
 ## TarsCPP <a id="TarsCPP"></a>
 * [Guide for Use](dev/tarscpp/tars-guide.md)

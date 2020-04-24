@@ -34,5 +34,5 @@ Sample
   -s(optional)         maximum tps limit per target server
   -n(optional)         maximum process
 ```
-See details in [README.md](../dev/tarsbenchmark/README.md)
+See details in [build.md](build.md)
 

@@ -38,7 +38,7 @@ git clone https://github.com/TarsCloud/TarsCpp.git --recursive
 cd TarsCpp
 mkdir build
 cd build
-cmake .. -DTARS_MYSQL=OFF
+cmake .. 
 make
 make install
 ```
