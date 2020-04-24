@@ -82,10 +82,10 @@ tars protocol parameter description
   -C                   Case file，See[Case file generation](#main-chapter-1)和[Modified Cases](#main-chapter-2)
 ```
 
-### 1.2. Closing example
+### 1.5. Closing example
 Initiative close: ctrl+C or killall tb，Wait a few seconds and then output the final statistical results.<br/>
 Passive close: The default duration is 1 hour. After 1 hour, the benchmark tool will bt stopped and the statistical results are output. This time can be adjusted by the-I parameter.
 
 
-### 1.3. Display the results
+### 1.6. Display the results
 ![results](../assets/tb_tars_result.png)

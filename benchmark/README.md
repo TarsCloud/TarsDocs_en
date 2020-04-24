@@ -22,17 +22,17 @@ Sample
 ```
 参数说明
 ```text
-  -h                   帮助信息
-  -c                   number of connections
-  -D                   target server address(ipv4)
-  -P                   target server port
-  -p                   service protocol(tars|http)
-  -t(optional)         overtime time，default 3 second
-  -T(optional)         network protocol，default tcp
-  -I(optional)         continue time(by second)，default 1h
-  -i(optional)         view interval(by second)，default 10s
-  -s(optional)         maximum tps limit per target server
-  -n(optional)         maximum process
+  -h                   Help infomation
+  -c                   Number of connections
+  -D                   Target server address(ipv4)
+  -P                   Target server port
+  -p                   Service protocol(tars|http)
+  -t(optional)         Overtime time，default 3 second
+  -T(optional)         Network protocol，default tcp
+  -I(optional)         Continue time(by second)，default 1h
+  -i(optional)         View interval(by second)，default 10s
+  -s(optional)         Maximum tps limit per target server
+  -n(optional)         Maximum process
 ```
-See details in [build.md](build.md)
+See details in [develop.md](develop.md)
 
