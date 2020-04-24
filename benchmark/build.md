@@ -21,7 +21,7 @@ This section mainly introduces the development environment required for tb tool 
 | cmake version： | >=2.8.8|
 | TarsCpp version: | >=2.4.0|
 
-# 2 <a id="chapter-2"></a>Download and install build package dependency
+## 2.1. Download and install build package dependency
 
 
 Source compilation needs to be installed: gcc, glibc, bison, flex, cmake
@@ -38,7 +38,7 @@ git clone https://github.com/TarsCloud/TarsCpp.git --recursive
 cd TarsCpp
 mkdir build
 cd build
-cmake .. 
+cmake ..
 make
 make install
 ```

@@ -11,10 +11,10 @@ The following step example describes how to start tb, then the tool continuously
 
 http protocol parameter description
 ```text
-  -H(Optional)             :Set Header. It is recommended to modify it with "".
-  -C(Optional)             :Set Cookie. It is recommended to modify it with "".
-  -F(Optional)             :The file of post content. Default is GET request.
-  -u(Optional)             :Destination URL address
+  -H(Optional)             Set Header. It is recommended to modify it with "".
+  -C(Optional)             Set Cookie. It is recommended to modify it with "".
+  -F(Optional)             The file of post content. Default is GET request.
+  -u(Optional)             Destination URL address
 ```
 
 ### 1.2. Closing example
