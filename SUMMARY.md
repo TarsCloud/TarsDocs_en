@@ -69,9 +69,8 @@
   * [Tars C++ Corotine Demo](demo/tarscpp/tars_co.md) 
 
 ## TarsJava <a id="TarsJava"></a>
-* [Guide for Use](dev/tarsjava/shi-yong-zhi-nan.md)
+* [Guide for Use](dev/tarsjava/tars-quick-start-server.md)
 * [Tars-Spring](dev/tarsjava/tarsspring-shi-yong-shuo-ming.md)
-* [Tars-Spring-boot](dev/tarsjava/tarsspringboot-shi-yong-shuo-ming.md)
 * [Tars-Spring-Cloud](dev/tarsjava/tarsspringcloud-shi-yong-shuo-ming.md)
 * [Example](demo/tarsjava.md)
   * [Quick Start Client](https://github.com/TarsCloud/TarsJava/tree/master/examples/quickstart-client) 
