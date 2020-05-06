@@ -3,7 +3,7 @@
 
 ## Tars deployment by Docker
 ### Docker installation
-Taking Ubuntu for example, the installation process of docker is as follows:
+Taking Ubuntu for example, the installation process of Docker is as follows:
 
 **1. Update package index**
 
@@ -272,7 +272,7 @@ public interface HelloServant {
 
 #### Interface implementation
 
-Create a new HelloServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the web management platform.
+Create a new HelloServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the name in the web management platform.
 
 ```java
 @TarsServant("HelloObj")
@@ -317,7 +317,7 @@ Configure as shown above, some parameters are as follows:
 - **Service Name**: the name of the process providing the service
 - **OBJ**: interface which provides the specific service
 
-The system defines the routing name of the service in the system through application name + service name + obj, for example, TestServer.HelloServer.HelloObj
+The system defines the routing name of the service in the system through application name + service name + OBJ, for example, TestServer.HelloServer.HelloObj
 
 - **Service type**: tars_java
 - **Template**: tars.springboot
@@ -338,7 +338,7 @@ Select the HelloServer service, switch to publish tag, select the node to publis
 
 ![tars-publication](images/tars-publication.png)
 
-Click the upload release package button, and upload the jar package:
+Click the upload release package button, and upload the jar:
 
 ![tars-uploadjar](images/tars-uploadjar.png)
 

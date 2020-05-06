@@ -206,7 +206,7 @@ public interface ClientServant {
 
 #### Interface implementation
 
-Create a new ClientServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the web management platform.
+Create a new ClientServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the name in the web management platform.
 
 By adding the @TarsClient annotation to the client properties, the corresponding service can be automatically injected. If only the Obj name is filled, the default value is used to inject the client. In addition, the client configuration can be customized in the annotation, such as setting the synchronous call timeout time.
 
@@ -314,7 +314,7 @@ Configure as shown above, some parameters are as follows:
 - **Service Name**: the name of the process providing the service
 - **OBJ**: interface which provides the specific service
 
-The system defines the routing name of the service in the system through application name + service name + obj, for example, TestClient.HelloClient.ClientObj
+The system defines the routing name of the service in the system through application name + service name + OBJ, for example, TestClient.HelloClient.ClientObj
 
 - **Service type**：tars_java
 - **Template**: tars.springboot
@@ -335,7 +335,7 @@ Select the HelloServer service, switch to publish tag, select the node to publis
 
 ![tars-publication](images/tars-publication.png)
 
-Click the upload release package button, and upload the jar package:
+Click the upload release package button, and upload the jar:
 
 ![tars-uploadjarclient](images/tars-uploadjarclient.png)
 
