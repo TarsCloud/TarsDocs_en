@@ -260,7 +260,7 @@ module TestApp
 
 #### Interface file compilation
 
-In the project root directory, execute mvn tars: tars2java to get HelloServant.java, the content is as follows:
+In the project root directory, execute `mvn tars: tars2java` to get HelloServant.java, the content is as follows:
 
 ```java
 @Servant
@@ -272,7 +272,7 @@ public interface HelloServant {
 
 #### Interface implementation
 
-Create a new HelloServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where HelloObj is the servant name, corresponding to the web management platform.
+Create a new HelloServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the web management platform.
 
 ```java
 @TarsServant("HelloObj")
@@ -301,7 +301,7 @@ public class QuickStartApplication {
 
 #### Service packaging
 
-通过spring-boot-maven-plugin，在根目录下执行mvn package即可打包为jar包。
+Using spring-boot-maven-plugin, execute `mvn package` in the root directory to package it as a jar.
 
 
 
@@ -321,7 +321,7 @@ The system defines the routing name of the service in the system through applica
 
 - **Service type**: tars_java
 - **Template**: tars.springboot
-- **Node**: select the active tars node IP
+- **Node**: select the active Tars node IP
 - **Port**: choose open ports
 
 
