@@ -31,5 +31,5 @@ systemctl enable docker
 
 After installation, check the docker version:
 
-```sh docker version``
+```sh docker version```
 
