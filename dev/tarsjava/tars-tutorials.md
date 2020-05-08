@@ -1,20 +1,200 @@
-# Quick Start To Tars Client
+# Tars Tutorials
+
+This tutorial provides a basic Tars development guide for  for Java developers, including the following aspects:
+
+- Add Tars dependency configuration.
+- Define Tars interface file.
+- Generate interface code using the tars-maven-plugin.
+- Use Tars to write simple server and client services.
 
 
-## Tars deployment by Docker
-If the Tars service has not been deployed, please refer to the deployment process in [tars-quick-start-server](./tars-quick-start-server.md).
+
+## Environmental requirements
+
+- JDK1.8 or above
+
+- Maven 3.5 or above
+
+- Spring Boot 2.0 or above
+
+  
+
+## Server development
+
+### Project structure
+
+```text
+├── pom.xml
+└── src
+   └── main
+       ├── java
+       │   └── tars
+       │       └── testapp
+       │          ├── HelloServant.java
+       │          ├── QuickStartApplication.java
+       │          └── impl
+       │                └── HelloServantImpl.java
+       └── resources
+           └── hello.tars
+       
+```
+
+
+
+### Dependency configuration
+
+The following configuration needs to be added in pom.xml:
+
+**Spring boot and Tars framework dependency**
+
+```xml
+    <properties>
+        <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tencent.tars</groupId>
+            <artifactId>tars-spring-boot-starter</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+    </dependencies>
+```
+
+**Plugin dependency**
+
+```xml
+<!--tars2java plugin-->
+<plugin>
+	<groupId>com.tencent.tars</groupId>
+	<artifactId>tars-maven-plugin</artifactId>
+	<version>1.7.0</version>
+	<configuration>
+		<tars2JavaConfig>
+			<!-- tars file location -->
+			<tarsFiles>
+				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
+			</tarsFiles>
+			<!-- Source file encoding -->
+			<tarsFileCharset>UTF-8</tarsFileCharset>
+			<!-- Generate server code -->
+			<servant>true</servant>
+			<!-- Generated source code encoding -->
+			<charset>UTF-8</charset>
+			<!-- Generated source code directory -->
+			<srcPath>${basedir}/src/main/java</srcPath>
+			<!-- Generated source code package prefix -->
+			<packagePrefixName>com.qq.tars.quickstart.server.</packagePrefixName>
+		</tars2JavaConfig>
+	</configuration>
+</plugin>
+<!--package plugin-->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+     <version>2.6</version>
+     <configuration>
+         <archive>
+             <manifestEntries>
+                 <Class-Path>conf/</Class-Path>
+             </manifestEntries>
+          </archive>
+     </configuration>
+</plugin>
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <!--set mainclass-->
+        <mainClass>com.qq.tars.quickstart.server.QuickStartApplication</mainClass>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>repackage</goal>
+             </goals>
+     </executions>
+</plugin>
+```
+
+
+
+### Service development
+
+#### Tars interface file definition
+
+Tars has its own interface file format. First, we need to define the Tars interface file. Create a new hello.tars file in the resources directory with the following content:
+
+```text
+module TestApp
+{
+	interface Hello
+	{
+	    string hello(int no, string name);
+	};
+};
+```
+
+#### Interface file compilation
+
+Then we need to convert the Tars interface file to the server interface code using the tars-maven-plugin. In the project root directory, execute `mvn tars: tars2java` to get HelloServant.java, the content is as follows:
+
+```java
+@Servant
+public interface HelloServant {
+
+	public String hello(int no, String name);
+}
+```
+
+#### Interface implementation
+
+Next we need to implement the generated server interface. Create a new HelloServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the name in the web management platform.
+
+```java
+@TarsServant("HelloObj")
+public class HelloServantImpl implements HelloServant {
+
+    @Override
+    public String hello(int no, String name) {
+        return String.format("hello no=%s, name=%s, time=%s", no, name, System.currentTimeMillis());
+    }
+}
+```
+
+#### Tars service enabling
+
+Finally, add @EnableTarsServer annotation in the spring boot startup class QuickStartApplication to enable Tars service:
+
+```java
+@SpringBootApplication
+@EnableTarsServer
+public class QuickStartApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(QuickStartApplication.class, args);
+    }
+}
+```
+
+#### Service packaging
+
+Using spring-boot-maven-plugin, execute `mvn package` in the root directory to package it into a jar.
 
 
 
 ## Client development
-
-### Environmental requirements
-
-- JDK1.8 or above
-- Maven 2.2.1 or above
-- Spring Boot 2.0 or above
-
-
 
 ### Project structure
 
@@ -80,7 +260,7 @@ The following configuration needs to be added in pom.xml:
 	<version>1.7.0</version>
 	<configuration>
 		<tars2JavaConfig>
-			<!-- tars文件位置 -->
+			<!-- tars file location -->
 			<tarsFiles>
 				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
 			</tarsFiles>
@@ -132,7 +312,7 @@ The following configuration needs to be added in pom.xml:
 
 #### Server interface file compilation
 
-Copy the hello.tars file on the server side to the resources directory, and execute `mvn tars: tars2java` in the project root directory to get HelloPrx.java. At this time, the proxy interface of the server service is obtained, and three calling methods are provided, namely synchronous call, asynchronous call and promise call.
+After the server service development is completed, we first need to obtain the client interface code of the server service. Copy the hello.tars file on the server side to the resources directory, and execute `mvn tars: tars2java` in the project root directory to get HelloPrx.java. At this time, the proxy interface of the server service is obtained, and three calling methods are provided, namely synchronous call, asynchronous call and promise call.
 
 ```java
 @Servant
@@ -152,7 +332,7 @@ public interface HelloPrx {
 
 #### Client interface file definition
 
-Create a new client.tars file in the resources directory with the following content:
+Then define the interface file of the client service. Create a new client.tars file in the resources directory with the following content:
 
 ```text
 module TestApp
@@ -166,7 +346,7 @@ module TestApp
 
 #### Client interface file compilation
 
-Modify the tars2java plugin dependency of pom.xml:
+Next, we need to use the tars-maven-plugin to generate client service interface code. Modify the tars2java plugin dependency of pom.xml as follows. Note that `<servant> </ servant>` is set to true.
 
 ```xml
 <!--tars2java plugin-->
@@ -176,7 +356,7 @@ Modify the tars2java plugin dependency of pom.xml:
 	<version>1.7.0</version>
 	<configuration>
 		<tars2JavaConfig>
-			<!-- tars文件位置 -->
+			<!-- tars file location -->
 			<tarsFiles>
 				<tarsFile>${basedir}/src/main/resources/client.tars</tarsFile>
 			</tarsFiles>
@@ -206,7 +386,7 @@ public interface ClientServant {
 
 #### Interface implementation
 
-Create a new ClientServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the name in the web management platform.
+We need to implement the generated client service interface. Create a new ClientServantImpl.java file, implement the HelloServant.java interface, and expose the service through the @TarsServant annotation, where 'HelloObj' is the servant name, corresponding to the name in the web management platform.
 
 By adding the @TarsClient annotation to the client properties, the corresponding service can be automatically injected. If only the Obj name is filled, the default value is used to inject the client. In addition, the client configuration can be customized in the annotation, such as setting the synchronous call timeout time.
 
@@ -220,10 +400,10 @@ public class ClientServantImpl implements ClientServant {
 
     @Override
     public String rpcHello(int no, String name) {
-        //sync
+        //sync call
         String syncres = helloPrx.hello(1000, "Hello World");
         res += "sync_res: " + syncres + " ";
-        //async
+        //async call
         helloPrx.async_hello(new HelloPrxCallback() {
 
             @Override
@@ -240,7 +420,7 @@ public class ClientServantImpl implements ClientServant {
 
             }
         }, 1000, "HelloWorld");
-        //promise
+        //promise call
         helloPrx.promise_hello(1000, "hello world").thenCompose(x -> {
             res += "promise_res: " + x;
             return CompletableFuture.completedFuture(0);
@@ -284,7 +464,7 @@ public @interface TarsClient {
 
 #### Tars service enabling
 
-Add @EnableTarsServer annotation in the spring boot startup class App to enable Tars service:
+Finally, add @EnableTarsServer annotation in the spring boot startup class App to enable Tars service:
 
 ```java
 @SpringBootApplication
@@ -298,69 +478,5 @@ public class App {
 
 #### Service packaging
 
-Using spring-boot-maven-plugin, execute `mvn package` in the root directory to package it as a jar.
+Using spring-boot-maven-plugin, execute `mvn package` in the root directory to package it into a jar.
 
-
-
-## Service release
-
-### Service deployment
-
-![tars-deployment-client](images/tars-deployment-client.png)
-
-Configure as shown above, some parameters are as follows:
-
-- **Application Name**: a collection of services
-- **Service Name**: the name of the process providing the service
-- **OBJ**: interface which provides the specific service
-
-The system defines the routing name of the service in the system through application name + service name + OBJ, for example, TestClient.HelloClient.ClientObj
-
-- **Service type**：tars_java
-- **Template**: tars.springboot
-- **Node**: select the active Tars node IP
-- **Port**: choose open ports
-
-
-
-### Node publication
-
-After the service is successfully deployed, refresh the main page to see the newly added service:
-
-![tars-testclient](images/tars-testclient.png)
-
-
-
-Select the HelloServer service, switch to publish tag, select the node to publish, and click the publish node button:
-
-![tars-publication](images/tars-publication.png)
-
-Click the upload release package button, and upload the jar:
-
-![tars-uploadjarclient](images/tars-uploadjarclient.png)
-
-After the upload is completed, a version number with a time stamp will be automatically generated. Select the version and click the publish button:
-
-![tars-pubjar-client](images/tars-pubjar-client.png)
-
-Back to the service management interface, you can see that the status is Active, which means success:
-
-![tars-state-client](images/tars-state-client.png)
-
-
-
-### Interface debugging
-
-Switch to Interface Debugger tag，click the add button and upload the client.tars file in the resources directory:
-
-![tars-uploadtars-client](images/tars-uploadtars-client.png)
-
-After the upload is completed, the newly added service will be displayed in the Tars file list. Click the debug button:
-
-![tars-tarstest-client](images/tars-tarstest-client.png)
-
-Select the function to be debugged, input the input parameter, and click the debug button to obtain the output parameter:
-
-![tars-test-client](images/tars-test-client.png)
-
-So far, the client deployment is complete.
