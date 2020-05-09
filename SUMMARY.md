@@ -13,6 +13,7 @@
 > * [Tarsjs](#Tars.js)
 > * [TarsPhp](#TarsPHP)
 > * [Other Important Features](#important)
+> * [Open Source Cooperation](#cooperation)
 > * [FAQ](#question)
 
 ## Start <a id="rumen"></a>
@@ -156,6 +157,9 @@
 * [Call chain](dev/tars-call-chain.md)
 * [IDC Set](dev/tars-idc-set.md)
 * [Auth](dev/tars-auth.md)
+
+## Open Source Cooperation <a id="cooperation">
+* [TarsFramework GitHub Cooperation Rules](cooperation/tars_framework_git_flows.md)
 
 ## FAQ <a id="question"></a>
 * [Install](question/Install_faq-en.md)
