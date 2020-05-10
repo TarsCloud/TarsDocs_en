@@ -71,20 +71,12 @@
 
 ## TarsJava <a id="TarsJava"></a>
 * [Quick Start](dev/tarsjava/tars-quick-start.md)
-* [Tutorials](dev/tarsjava/)
-  * [Guide for Use](dev/tarsjava/tars-quick-start-server.md)
-  * [Tars-Spring](dev/tarsjava/tarsspring-shi-yong-shuo-ming.md)
-  * [Tars-Spring-Cloud](dev/tarsjava/tarsspringcloud-shi-yong-shuo-ming.md)
-  * [Tars-Spring-Boot](dev/tarsjava/tars-tutorials.md)
-* [Reference](dev/tarsjava/tars-reference.md)
-* [Example](demo/tarsjava.md)
-  * [Quick Start Client](https://github.com/TarsCloud/TarsJava/tree/master/examples/quickstart-client) 
-  * [Quick Start Server](https://github.com/TarsCloud/TarsJava/tree/master/examples/quickstart-server) 
+* [Tutorials]
+  * [Tars Service Development](dev/tarsjava/tars-tutorials.md)
+  * [HTTP Service Development](dev/tarsjava/tars-http-server.md)
+  * [Tars File Reference](dev/tarsjava/tars-reference.md)
+* [Performance Test]
   * [Tars Java Stress ](https://github.com/TarsCloud/TarsJava/tree/master/examples/stress-server)
-  * [Spring Boot Server ](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-boot-server) 
-  * [Spring Cloud Client](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-cloud-client)
-  * [Spring Cloud Server](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-cloud-server) 
-  * [tars-spring-server](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-server) 
 
 ## TarsGo <a id="TarsGo"></a>
 * [Guide for Use](dev/tarsgo/README.md)
