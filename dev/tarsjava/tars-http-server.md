@@ -1,18 +1,20 @@
-# Tars HTTP Server Guide
+# HTTP Service Tutorials
 
-## Intro
+## Function Description
 
-HTTP service is well supported on Tars. You can easily mark a service as an HTTP service by using `@TarsHttpService` annotation.
+The Tars platform supports the deployment of HTTP services. You can use the @TarsHttpService annotation to mark the service as an HTTP service. After the HTTP service is published to the platform, it can be called directly using the HTTP request.
 
-## Examples
+
+
+## Demo
 
 [tars-spring-boot-http-server](https://github.com/TarsCloud/TarsJava/tree/master/examples/tars-spring-boot-http-server)
 
 
 
-## Development Guide
+## Service Development
 
-### Directories
+### Project structure
 
 ```text
 ├── pom.xml
@@ -33,11 +35,11 @@ HTTP service is well supported on Tars. You can easily mark a service as an HTTP
 
 
 
-### Dependency Configuration
+### Dependency configuration
 
-Add below configure into pom.xml:
+The following configuration needs to be added in pom.xml:
 
-**Spring Boot and Tars Framework dependency**
+**Spring boot and Tars framework dependency**
 
 ```xml
   <parent>
@@ -59,10 +61,10 @@ Add below configure into pom.xml:
   </dependencies>
 ```
 
-**Plugins Dependency**
+**Plugin dependency**
 
 ```xml
-<!--tars2java-->
+<!--tars2java plugin-->
 <plugin>
 	<groupId>com.tencent.tars</groupId>
 	<artifactId>tars-maven-plugin</artifactId>
@@ -73,20 +75,20 @@ Add below configure into pom.xml:
 			<tarsFiles>
 				<tarsFile>${basedir}/src/main/resources/hello.tars</tarsFile>
 			</tarsFiles>
-			<!-- file encoding format -->
+			<!-- Source file encoding -->
 			<tarsFileCharset>UTF-8</tarsFileCharset>
-			<!-- true for server code generating -->
+			<!-- Generate server code -->
 			<servant>false</servant>
-			<!-- code generating encoding format -->
+			<!-- Generated source code encoding -->
 			<charset>UTF-8</charset>
-			<!-- target direcotry of code generating -->
+			<!-- Generated source code directory -->
 			<srcPath>${basedir}/src/main/java</srcPath>
-			<!-- package prefix for code generating -->
+			<!-- Generated source code package prefix -->
 			<packagePrefixName>com.tencent.tars.client.</packagePrefixName>
 		</tars2JavaConfig>
 	</configuration>
 </plugin>
-<!--packaging plugins-->
+<!--package plugin-->
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-jar-plugin</artifactId>
@@ -103,7 +105,7 @@ Add below configure into pom.xml:
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-maven-plugin</artifactId>
     <configuration>
-        <!-- main class for packaging-->
+        <!--set mainclass-->
         <mainClass>com.tencent.tars.App</mainClass>
     </configuration>
     <executions>
@@ -115,9 +117,11 @@ Add below configure into pom.xml:
 </plugin>
 ```
 
-### Generating Server Code by Tars Plugin
 
-We should generate client code for the server interface at first. Please copy the file `hello.tars` to `resources` directory and execute `mvn tars:tars2java` at the project root directory. You will get the proxy interface code once the command was finished. There're three usable ways for you to call the server interfaces. Please see below:
+
+### Server interface file compilation
+
+After the server service development is completed, we first need to obtain the client interface code of the server service. Copy the hello.tars file on the server side to the resources directory, and execute `mvn tars: tars2java` in the project root directory to get HelloPrx.java. At this time, the proxy interface of the server service is obtained, and three calling methods are provided, namely synchronous call, asynchronous call and promise call.
 
 ```java
 @Servant
@@ -137,9 +141,9 @@ public interface HelloPrx {
 
 
 
-#### Coding Your Controller
+### Create controller
 
-Create your `HelloController.java` and add `@TarsHttpService` to the controller annotation for HTTP service.
+Then we need to create a controller. Create a new HelloController.java and use the @TarsHttpService annotation to enable the Tars HTTP service.
 
 ```java
 @TarsHttpService("HttpObj")
@@ -158,9 +162,9 @@ public class HelloController {
 
 
 
-#### Switch Tars Service On
+### Tars service enabling
 
-Add annotation `@EnableTarsServer` to switch on Tars Service in the boot class of Spring Boot.
+Finally, add @EnableTarsServer annotation in the spring boot startup class App to enable Tars service:
 
 ```java
 @SpringBootApplication
@@ -174,20 +178,22 @@ public class App {
 
 
 
-#### Service Packaging
+### Service packaging
 
-Execute `mvn package` to build a jar package for your service deploy.
+Using spring-boot-maven-plugin, execute `mvn package` in the root directory to package it into a jar.
 
-## Service Deploy
 
-The deployment of HTTP Service is similar to[Tars Service Deploy](dev/tarsjava/tars-quick-start.md). The only difference is that you should choose TARS protocol instead of Not Tars. See below：
+
+## Service release
+
+The process of HTTP service release is similar to that of [Tars service release](dev/tarsjava/tars-quick-start.md). The difference is that when the service is deployed, the protocol selects a non-TARS protocol. The specific settings are shown in the following figure:
 
 ![tars-deployment-http](images/tars-deployment-http.png)
 
 
 
-## Test Your Service
+## Service call
 
-You can test your service via any HTTP client. **Please make sure the IP you're using for testing is reachable (internal or external) in your current environment**
+After the service is published successfully, you can call the service through http call. **Note that the IP address is the public IP, not the set internal IP**:
 
 ![tars-http-call](images/tars-http-call.png)
