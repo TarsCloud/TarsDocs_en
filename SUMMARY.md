@@ -84,11 +84,6 @@
 * [Performance](dev/tarsgo/xing-neng-ce-shi.md)
 * [Quick Start](dev/tarsgo/tars_go_quickstart_en.md)
 * [Example](demo/tarsgo.md)
-  * [Server Context](https://github.com/TarsCloud/TarsGo/tree/master/_examples/ContextTestServer) 
-  * [Tars Client](https://github.com/TarsCloud/TarsGo/tree/master/_examples/EchoClientServer)
-  * [Tars Server](https://github.com/TarsCloud/TarsGo/tree/master/_examples/EchoTestServer) 
-  * [zipkin Client](https://github.com/TarsCloud/TarsGo/tree/master/_examples/ZipkinTraceClient) 
-  * [zipkin Server](https://github.com/TarsCloud/TarsGo/tree/master/_examples/ZipkinTraceServer) 
 
 ## TarsPHP <a id="TarsPHP"></a>
 * [Environment building]()
