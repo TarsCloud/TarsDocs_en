@@ -76,7 +76,7 @@
   * [HTTP Service Development](dev/tarsjava/tars-http-server.md)
   * [Tars File Reference](dev/tarsjava/tars-reference.md)
 * [Performance Test]
-  * [Tars Java Stress ](https://github.com/TarsCloud/TarsJava/tree/master/examples/stress-server)
+  * [Tars Java Stress ](dev/tarsjava/stress-testing.md)
 
 ## TarsGo <a id="TarsGo"></a>
 * [Guide for Use](dev/tarsgo/README.md)
