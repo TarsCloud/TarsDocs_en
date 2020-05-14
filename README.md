@@ -53,8 +53,10 @@ The open-source protocol Tars used is BSD-3-Clause, see [LICENSE.md](license.md)
 ## Contributing
 
 If you meet any problems never found in historical issues, please submit one!
+
 If you find any bugs or get any new ideas, please submit PR!
-**Note: Before you submit PR, please check whether you signed [CLA](cla.md)**
+
+**Note: Before you submit PR, please check whether you signed [CLA](cla.md)!!**
 
 ## Contacts
 
