@@ -2,7 +2,7 @@
 
 Tars protocol is a protocol based on IDL. Similar to Protocol Buffer, it is language-independent and is a C ++-like identifier language which is used to generate specific service interface files. At the same time, as a binary protocol, compared with common text protocols such as JSON, it has higher encoding and decoding efficiency and smaller network packet space.
 
-The Tars file uses .tars as the extension. For each service in the .tars file, a Java interface will be generated when generating the code. If the server interface code is generated, the Servant suffix will be added. If the code is generated for the client, the Prx suffix will be added. For the grammar rules of Tars language, please refer to [Tars protocol](/base/tars-protocol.md).
+The Tars file uses .tars as the extension. For each service in the .tars file, a Java interface will be generated when generating the code. If the server interface code is generated, the Servant suffix will be added. If the code is generated for the client, the Prx suffix will be added. For the grammar rules of Tars language, please refer to [Tars protocol](../../base/tars-protocol.md).
 
 
 
