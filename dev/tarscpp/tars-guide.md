@@ -349,7 +349,7 @@ void HelloServer::initialize ()
     //Add servant
     addServant<HelloImp>(ServerConfig::Application+“.”+ ServerConfig::ServerName + ".HelloObj");
 }
-```
+
 
 ## 1.6. Server startup
 
