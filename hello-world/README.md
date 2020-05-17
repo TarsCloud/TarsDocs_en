@@ -39,9 +39,9 @@ Click "operation" - & gt; "deployment" in the main menu, as shown below：
 
 ![](../assets/tars_go_quickstart_bushu1_en.png)
 
-* “APP” Which application does your service belong to ，例如：“TestApp”. 
-* “Server Name” Refers to the ID name of your service program，例如：“HelloServer”. 
-* “Server Type” What language is your service program written in，例如：java的选择“tars\_java”. 
+* “APP” Which application does your service belong to ，e.g.：“TestApp”. 
+* “Server Name” Refers to the ID name of your service program，e.g.：“HelloServer”. 
+* “Server Type” What language is your service program written in，e.g.：java uses “tars\_java”. 
 * “Template“ Refers to the name of the profile set by your service program when it starts.
 * “Node“ Refers to the machine IP of service deployment. 
 * “Set“ It refers to set grouping information of set service. Set information includes three parts: set name, set region and set group name. default not set.
