@@ -6,7 +6,7 @@
 # 1 <a id="chapter-1"></a>Intro
 
 This page introduces a scheme of deploying tars on K8. The main steps are as follows:
-- Container framework services, using docker: tarscloud/framework or tarscloud/tars
+- Container framework services, using docker: tarscloud/framework
 - The tarsnode node is also containerized, using the docker: tarscloud/tars-node
 - The tars framework and tarsnode nodes are deployed on k8s as pods, and the container that the pod runs as a virtual machine
 - Publish services to these containers through tars Web
