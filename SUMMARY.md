@@ -29,15 +29,15 @@
 ## Deploy <a id="deploy"></a>
 
 - [Tars Deploy](installation/README.md)
-  - [Docker Installation](installation/docker-install.md)
-  - [Mysql Installation](installation/mysql.md)
-  - [Tars Source Compiler & Deploy For Linux/Mac](installation/source.md)
-  - [Tars Source Compiler & Deploy For Windows](installation/source-windows.md)
-  - [Tars Deploy By Docker](installation/docker.md)
-  - [Tars Deploy In K8s](installation/k8s-docker-1.md)
-  - [TarsNode Deploy](installation/node.md)
-  - [Tars Upldate & Expand](installation/expand.md)
-  - [TarsWeb](installation/web.md)
+- [Docker Installation](installation/docker-install.md)
+- [Mysql Installation](installation/mysql.md)
+- [Linux/Mac Compiler & Deploy](installation/source.md)
+- [Windows Compiler & Deploy](installation/source-windows.md)
+- [Deploy By Docker](installation/docker.md)
+- [Deploy In K8s](installation/k8s-docker-1.md)
+- [TarsNode Deploy](installation/node.md)
+- [Tars Upldate & Expand](installation/expand.md)
+- [TarsWeb](installation/web.md)
 
 ## Start <a id="enter"></a>
 
