@@ -1,4 +1,4 @@
-# Tars Reference
+# Tars File Reference
 
 Tars protocol is a protocol based on IDL. Similar to Protocol Buffer, it is language-independent and is a C ++-like identifier language which is used to generate specific service interface files. At the same time, as a binary protocol, compared with common text protocols such as JSON, it has higher encoding and decoding efficiency and smaller network packet space.
 
@@ -104,6 +104,12 @@ The interface provides three calling modes:
 - Asynchronous call
 - Promise call
 
+### Synchronous call
+
+This is a blocking call method, the client will block until the server returns.
+
+### Asynchronous call
+
 In addition, HelloPrxCallback.java is also generated when the client code is generated, which is an abstract class for ordinary asynchronous callback processing:
 
 ```java
@@ -164,8 +170,34 @@ By implementing the callback_exception, callback_expired and callback_hello func
 - When receiving the return from the server, HelloPrxCallback's callback_hello will be responded.
 - If the call returns an exception or timeout, then callback_exception will be called.
 
+### Promise call
+
+The asynchronous promise call is a new feature of Tars v1.7.0. This method returns a CompletableFuture object. CompletableFuture is a newly added class in jdk1.8. It implements the Future \<T> and CompletionStage \<T> interfaces and provides very powerful asynchronous programming functions. Before jdk1.8, we mainly used Future or registered callback function to complete asynchronous programming. However, these two methods have certain defects. When Future calls get() to get the result, if the operation is not completed, it will wait all the time, which may cause a waste of CPU time. Furthermore, Future cannot complete chained calls, and cannot perform further operations on the results obtained from the previous Future.  For the callback method, with the continuous nesting of callback functions, it will cause the phenomenon of callback pyramid. Therefore, CompletableFuture was introduced in Tars v1.7.0, which can perform a series of subsequent operations in a callback manner by registering triggers.
+
+The API of CompletabileFuture generally has two forms: the one with Async suffix and the one without Async suffix. The method without the Async suffix will be executed by the current calling thread, and the method with the Async suffix is divided into two cases. If Executor is passed in the parameter, a thread will be obtained from the Executor to execute the task. Otherwise, a thread obtained from the global ForkJoinPool.commonPool () will perform these tasks.
+
+CompletableFuture provides processing operations when the calculation result is completed, and all return a CompletableFuture object, so you can perform chained calls. Common operations are as follows:
+
+- thenApply：The parameter is the result of the previous CompletableFuture, and it returns the CompletableFuture object holding the new result
+- thenRun：No parameters, returns a CompletableFuture object with no results
+- thenAccept：The parameter is the result of the last CompletableFuture, and it returns a CompletableFuture object with no result
+- handle：The parameters are the result of the last CompletableFuture (null when exception occurs) and throwable (null when operation completes normally), and it returns a CompletableFuture object holding the new result
+- whenComplete：The parameters are the result of the last CompletableFuture (null when exception occurs) and throwable (null when operation completes normally) and it returns the same result as the previous CompletableFuture
+
+A simple example is as follows:
+
+```java
+public static void main(String[] args) throws Exception {
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            return 10;
+        });
+        CompletableFuture<String> result = future.thenApply(i -> i + 10).thenApply(i-> String.valueOf(i));
+        System.out.println(result.get()); // 20
+    }
+```
 
 
-## Code generation
+
+## Java Code generation
 
 Run the `mvn tars: tars2java` command in the root directory of the project to generate the corresponding code.
