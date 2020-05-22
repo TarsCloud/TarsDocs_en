@@ -6,7 +6,8 @@
 > * [Module call](#chapter-4)
 > * [Inspection problem](#chapter-5)
 > * [Token Manage](#chapter-6)
-> * [Web development](#chapter-7)
+> * [Password Forget](#chapter-7)
+> * [Web development](#chapter-8)
 
 # 1 <a id="chapter-1"></a>Intro
 
@@ -127,7 +128,18 @@ Two important web logs:
 
 The user module of Web provides the function of token management, that is, you can create token, and call and obtain relevant data through web API, [See](../dev/tars-web-api.md)
 
-## 7 <a id="chapter-7"></a>Web development
+## 7 <a id="chapter-7"></a>Password Forget
+
+If the password of admin is forgotten, Now, it can only be solved by resetting the fields of related tables in the database at present:
+
+- login mysql
+- view db: db_user_system
+- modify table: t_user_info
+- Reset admin user record, reset password to empty
+
+When you log in to the web, you will be prompted to set the admin password.
+
+## 8 <a id="chapter-8"></a>Web development
 
 If you are a nodejs developer, you can also participate in the development of the web in the following ways:
 
