@@ -15,6 +15,8 @@ See the detailed introduction [SUMMARY.md](SUMMARY.md).
 For now it supports OS as below:
 
 - Linux
+- Windows
+- Mac
 
 ## Supported languages
 
