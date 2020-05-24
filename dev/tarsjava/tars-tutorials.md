@@ -432,6 +432,8 @@ public interface HelloPrx {
 }
 ```
 
+The promise call is a new feature of Tars v1.7.0. For specific use, please refer to the [Tars file reference](./tars-reference.md).
+
 ##### Client interface file definition
 
 Then define the interface file of the client service. Create a new client.tars file in the resources directory with the following content:

@@ -300,11 +300,11 @@ Asynchronous nesting represents the following:
 Normally, after receiving the request, B needs to return to A after the interface is processed, so it cannot be implemented if B also initiates an asynchronous request to C in the interface Therefore, it is necessary to declare startup asynchronism in the implementation interface method to achieve asynchronous calls across services.
 
 ​	
-	//Declarations start asynchronous context
-	AsyncContext context = AsyncContext.startAsync();
-	//Interface implementation
-	...
-	
+​	//Declarations start asynchronous context
+​	AsyncContext context = AsyncContext.startAsync();
+​	//Interface implementation
+​	...
+​	
 	//Back packet after asynchronous processing
 	context.writeResult(...);
 
@@ -652,6 +652,37 @@ Illustration:
 
 > - When the dyed log is opened, the parameter passed is recommended to fill in the service name. If it is null, the default name is default.
 > - The log level and log type of the dyed log are the same as the original log. If the original log is only local, the dyed log is only local, and the original log will be remote to play the long distance dyed log.
+
+Logback is used as the logging system in the new version of TarsJava, so MDC can be used to dye the logs. MDC is a technology provided by Logback to record logs in multiple threads. It holds a ThreadLocal object inside which stores a Map, so users can add key-value pairs to it as needed. By implementing Filter and using MDC, dyeing of logs can be achieved:
+
+```java
+public class MyFilter implements Filter {
+    private static final String TRACE_ID = "traceId"; 
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        ...
+        boolean success = putMDC(...);
+        ...
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            if(success) {
+                MDC.remove(TRACE_ID);
+            }
+        }
+    }
+
+    private boolean putMDC(...) {
+        if (...){
+            String traceId = ...
+            MDC.put(TRACE_ID, traceId);
+        	return true;
+        }
+        return false;
+    }
+```
+
+
 
 - Passive staining:
 
