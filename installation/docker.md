@@ -19,8 +19,6 @@ First, make sure you have installed the docker environment on your service. If n
 
 **If you want the source code to compile docker by yourself, see [Install](source.md)**
 
-Using docker to install the tars framework, there are two images to choose from: framework / tars .
-
 **Note: the difference is whether you want to deploy the business service in the image (not recommended, not convenient for upgrading the tars framework))**
 
 ### 2.1 create a docker network
@@ -52,8 +50,9 @@ docker run -d \
 1. Pull docker image
 
 ```sh
-docker pull tarscloud/framework:latest
+docker pull tarscloud/framework:v2.4.0
 ```
+We highly recommended you to use a specific framework version tags to deploy your environment. Thus you won't be influenced by remote image update.
 
 2. Run docker image
 
@@ -76,7 +75,7 @@ docker run -d \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
     -p 3001:3001 \
-    tarscloud/framework:latest
+    tarscloud/framework:v2.4.0
 ```
 
 You can access `http://${your_machine_ip}:3000` to enter Tars web management platform.
@@ -126,7 +125,7 @@ docker run -d \
     --ip="172.25.0.4" \
     -v /data/framework-slave:/data/tars \
     -v /etc/localtime:/etc/localtime \
-    docker.tarsyun.com/tarscloud/framework:latest
+    tarscloud/framework:v2.4.0
 ```
 
 **Attention: SLAVE environment is true**
@@ -179,7 +178,7 @@ docker --name=tars-framework \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
     -p 3001:3001 \
-    tarscloud/framework:latest
+    tarscloud/framework:v2.4.0
 ```
 
 - Check whether there is obvious problem with docker output
@@ -210,7 +209,7 @@ services:
       internal:
         ipv4_address: 172.25.1.2
   framework:
-    image: tarscloud/framework:latest
+    image: tarscloud/framework:v2.4.0
     container_name: tars-framework
     ports:
       - "3000:3000"
