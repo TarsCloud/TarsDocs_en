@@ -64,7 +64,7 @@ module TestApp
 
 TestApp is the namespace, and all structs and interfaces must be in the namespace.
 
-When generating the server code, you need to set the servant tag in the tars-maven-plugin dependency in the pom.xml file to true to obtain the interface file with the suffix Servant, HelloServant.java:
+When generating the server code, you need to set the servant tag in the tars-maven-plugin dependency in the pom.xml file to true and then run the `mvn tars: tars2java` command in the root directory of the project to obtain the interface file with the suffix Servant, HelloServant.java:
 
 ```java
 @Servant
@@ -80,7 +80,7 @@ After that, the interface can be implemented according to the business logic.
 
 ## Client Tars file
 
-When making a service call on the client, you first need to obtain the tars file on the server side, and then you need to set the servant tag in the tars-maven-plugin dependency in the pom.xml file to false when generating the client code to obtain the interface file with the suffix Prx, HelloPrx.java:
+When making a service call on the client, you first need to obtain the tars file on the server side, and then you need to set the servant tag in the tars-maven-plugin dependency in the pom.xml file to false when generating the client code. Finally run the `mvn tars: tars2java` command in the root directory of the project to obtain the interface file with the suffix Prx, HelloPrx.java:
 
 ```java
 @Servant
@@ -175,9 +175,3 @@ By implementing the callback_exception, callback_expired and callback_hello func
 The asynchronous promise call is a new feature of Tars v1.7.0. This method returns a CompletableFuture object. CompletableFuture is a newly added class in jdk1.8. It implements the Future \<T> and CompletionStage \<T> interfaces and provides very powerful asynchronous programming functions. Before jdk1.8, we mainly used Future or registered callback function to complete asynchronous programming. However, these two methods have certain defects. When Future invokes get() to get the result, if the operation is not completed, it will wait all the time, which may cause a waste of CPU time. Furthermore, Future cannot complete chained calls, and cannot perform further operations on the results obtained from the previous Future.  For the callback method, with the continuous nesting of callback functions, it will cause the phenomenon of callback pyramid. Therefore, CompletableFuture was introduced in Tars v1.7.0, which can perform a series of subsequent operations in a callback manner by registering triggers.
 
 The API of CompletabileFuture generally has two forms: the one with Async suffix and the one without Async suffix. The method without the Async suffix will be executed by the current calling thread, and the method with the Async suffix is divided into two cases. If Executor is passed in the parameter, a thread will be obtained from the Executor to execute the task. Otherwise, a thread obtained from the global ForkJoinPool.commonPool () will perform these tasks.
-
-
-
-## Java Code generation
-
-Run the `mvn tars: tars2java` command in the root directory of the project to generate the corresponding code.
