@@ -559,11 +559,11 @@ Illustration: remote log service must be pre applied before long log.
 
 ### Logback log system
 
-After TarsJava v1.7, Logback was used as the log system. The configuration of Logback is very flexible and can provide users with more powerful log functions.
+After TarsJava v1.7, Logback was used as the Tars log system. The configuration of Logback is very flexible and can provide users with more powerful log functions.
 
 #### Architecture
 
-Logback log system consists of three parts, namely Logger, Appenders, Layouts:
+Logback log system consists of three parts, namely Logger, Appender, Layout:
 
 - Logger: Each Logger is attached to a LoggerContext, which is used to generate Loggers and arrange them into a tree-like hierarchy. Logger is a named entity. Their names are case sensitive and follow hierarchical naming rules:
 
@@ -584,12 +584,12 @@ If no level is set for the Logger, then it will inherit an assigned level from i
 | X.Y         | none           | INFO            |
 | X.Y.Z       | none           | INFO            |
 
-- Appenders: The component for writing log events, you can specify the log output to the console, files, remote servers, and databases.
-- Layouts: Format and output log information.
+- Appender: The component for writing log events, you can specify the log output to the console, files, remote servers, and databases.
+- Layout: Format and output log information.
 
 #### Configuration
 
-Logback will first look for *logback-test.xml* and * logback.xml * configuration files in the class path. If it is not found, the default *BasicConfigurator* will be used. The basic structure of the configuration file can be described as, \<configuration\> element, containing zero or more \<appender\> elements, followed by zero or more \<logger\> elements, followed by at most one \<root\> element. The official document gives the struct of the configuration file as follows:
+Logback will first look for *logback-test.xml* and *logback.xml* configuration files in the class path. If it is not found, the default *BasicConfigurator* will be used. The basic structure of the configuration file can be described as, \<configuration\> element, containing zero or more \<appender\> elements, followed by zero or more \<logger\> elements, followed by at most one \<root\> element. The official document gives the structure of the configuration file as follows:
 
 ![Logback-config](images/Logback-config.png)
 
@@ -617,11 +617,11 @@ A typical logback.xml configuration file format is as follows:
 
 1. \<configuration\>
 
-\<configuration\> tab provides three configuration options:
+It provides three configuration options:
 
 - scan：true means that when the configuration file changes, the configuration file will be reloaded automatically, the default value is true.
 - scanPeriod：The time interval for scanning the configuration file for changes. The default time unit is milliseconds. You can set the unit to milliseconds, seconds, minutes, or hours.
-- debug：true means print Logback internal log information, the default value is false.
+- debug：true means to print Logback internal log information, the default value is false.
 
 ```xml
 <configuration scan="true" scanPeriod="30 seconds" debug="false"> 
@@ -675,7 +675,7 @@ The components responsible for writing log events. There are several common type
   </appender>
   ```
 
-- RollingFileAppender：You can first output the log to a specified file, and once a certain condition is met, then log to another file. (extends FileAppender)
+- RollingFileAppender: You can first output the log to a specified file, and once a certain condition is met, then log to another file. (extends FileAppender class)
 
   ```xml
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -696,7 +696,7 @@ The components responsible for writing log events. There are several common type
   </appender> 
   ```
 
-  In addition to the above time scrolling strategy, there is also a **FixedWindowRollingPolicy**。
+  In addition to the above time rolling strategy, there is also a **FixedWindowRollingPolicy**。
 
 5. \<logger\>
 
