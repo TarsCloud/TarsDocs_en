@@ -51,6 +51,7 @@ Tars.js provides differentiated operation solutions according to different busin
 
 Due to the limited space, I can't show all the capabilities. If you have more requirements (such as RPC calls, etc.), you can use the modules provided by Tars.js (as follows):
 
+* [@tars/nodetools-cli](nodetools-cli) : Scaffolding and automatic packaging and publishing tools for initializing Tars.js project,  and automatically packaging and publishing to the Tars platform.
 * [@ tars/stream](https://www.npmjs.com/package/@tars/stream): Tars (Tup) protocol codec module can be combined with [tars2node](https://github.com/tars-node).
 * [@ tars/rpc](https://www.npmjs.com/package/@tars/rpc): Tars RPC calling module.
 * [@ tars/logs](https://www.npmjs.com/package/@tars/logs): Log component, including rolling (by size, time) and remote logs.
