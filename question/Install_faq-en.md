@@ -12,43 +12,9 @@ The RPC framework supports C++ , Java, Go, Php, Nodejs. Each language has its re
 
 ## 4. The steps of deploying Tars must follow the specified order described in [Install.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/source.md)
 
-## 5. Mysql can be installed from source code or by yum. Be care that Tars will search mysql library at the path `/usr/local/mysql/` by default .
-If mysql is installed in different path, please modify the CMakeLists.txt (`framework/tarscpp/CMakeLists.txt`, `framework/CMakeLists.txt`) before compiling.
+## 5. After executing of tars_start.sh, please execute command `ps -ef|grep tars` to check that the core service processes of Tars are alive, ie, tarsregistry, tarsAdminRegistry, tarsnode, tarsconfig and tarspatch.
 
-## 6. After executing of tars_start.sh, please execute command `ps -ef|grep tars` to check that the core service processes of Tars are alive, ie, tarsregistry, tarsAdminRegistry, tarsnode, tarsconfig and tarspatch.
-
-## 7. If you haven't set sql_mode in file my.cnf which mysql used, then when deploy tars web management system, you'll see the tips `Deploy failed! Contact admin please.`.
-
-![tars](../assets/mysql_sqlmode_en.png)
-
-## 8. You should compile tars java framework at first, because web management system depends on some jar package offered by tars java framework.
-
-![tars](../assets/tars-java-jar.png)
-
-## 9. There are two kinds of framework services: core services(required), must be deployed and updated by yourself. The others are general services, can be update via management system.
-
-The core services: 
-
-    |-tarsAdminRegistry
-    |-tarsregistry
-    |-tarsnode
-    |-tarsconfig
-    |-tarspatch
-
-The general services:
-
-    |-tarsstat
-    |-tarsproperty
-    |-tarsnotify
-    |-tarslog
-    |-tarsquerystat
-    |-tarsqueryproperty
-
-The command `make framework-tar` pack core services, the core services can't be seen on management system except tarsconfig and tarspatch.
-
-When you deploy general services via web management platform, be care of selection of the name and protocol of the obj.
-
-## 10. The paths in which services deployed as below:
+## 6. The paths in which services deployed as below:
 Log file path: `/usr/local/app/tars/app_log/${Application}/${ServiceName}/`, such as 
 ```
 /usr/local/app/tars/app_log/Test/HelloServer/
@@ -69,74 +35,25 @@ Cache file path: `/usr/local/app/tars/tarsnode/data/${Application}.${ServiceName
 /usr/local/app/tars/tarsnode/data/Test.HelloServer/data/
 ```
 
-## 11. How to check logs
+## 7. How to check logs
 For example, there will be a log file named `Test.HelloServer.log` in directory `/usr/local/app/tars/app_log/Test/HelloServer/`. If something failed, please check it.
 
-## 12. When deploy java service, please select tars.tarsjava.default as template.
+## 8. When deploy java service, please select tars.tarsjava.default as template.
 
 ![tars](../assets/java_server_deploy_en.png)
 
-## 13. If you upload file which size is larger than 50MB, modify spring-context-mvc.xml as below:
-
-![tars](../assets/50MB.png)
-
-The source path is web/src/main/resources/conf-spring, deploy path is WEB-INF/classes.
-
-## 14. Check query conditon if you have problem with monitor data.
+## 9. Check query conditon if you have problem with monitor data.
 
 ![tars](../assets/stat_en.png)
 
-## 15. messy code in resin.
-
-No such problem in English environment.
-
-
-## 16. Can not find dependents when compile mvn.
-![tars](../assets/tars_not_resolve.png)
-
-Compile framework first.
-
-
-## 17. Failed because can't connect to registry.
-
-![tars](../assets/registry_not_founded_en.png)
-
-Check the core services are alive, ie, tarsregistry、tarsAdminRegistry、tarsnode、tarsconfig、tarspatch. Such as use the command to check:
-```sh
-ps -ef|grep tars
-```
-If any of them is not exist, check the db configuration.
-
-Then check whether rsync process exists.
-
-Finally check error logs of tarsnode.
-
-![tars](../assets/registry_not_invoker_en.png)
-
-**Check section 4.3 of Install.md about web management system installation, the correct configuration is as following:**
-
-![tars](../assets/registry_web_endpoint_en.png)
-
-**one of the error configurations is as following:**
-
-![tars](../assets/registry_web_empty_en.png)
-
-## 18. Failed and find the size of tars java war is different
-
-check if the machine installed unzip 
-
-## 19. No response when publish tgz package with large size
-
-change the `的maxUploadSize` in `src/main/resources/conf-spring/spring-context-mvc.xml` and restart resein
-
-## 20. Update old version to support IPv6 (v1.6.0 or later), database update script
+## 10. Update old version to support IPv6 (v1.6.0 or later), database update script
 
 Execute the following update script，and make sure that the password od database is right
 ```
 TarsFramework/sql/upgrade2IPv6.sh
 ```
 
-## 21. tarsnode can not run java server: cannot execute java
+## 11. tarsnode can not run java server: cannot execute java
 
 Please restart tarsnode after install jdk
 
