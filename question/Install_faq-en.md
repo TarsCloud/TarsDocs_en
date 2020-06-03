@@ -6,11 +6,7 @@
 
 ## 2. Tars consists of RPC framework, basic services, web management system, etc.
 
-The RPC framework supports C++ and Java. Each language has its related baselib, idl generate-code tools, and implementation of client's and server's code.
-
-The C++ stuff only supports run on linux, the Java's supports run on linux & windows.
-
-The basic framework is developed by C++, on linux.
+The RPC framework supports C++ , Java, Go, Php, Nodejs. Each language has its related baselib, idl generate-code tools, and implementation of client's and server's code, all can run on linux/mac/windows.
 
 ## 3. The software and tools that Tars depends must be prepared before deploy Tars, see [Install.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/installation/source.md).
 
