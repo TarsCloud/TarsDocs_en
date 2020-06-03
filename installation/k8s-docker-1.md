@@ -42,9 +42,14 @@ kubectl create namespace tars-test
 
 #Deploy tars (two main framework and five node machines)
 helm install tars-stable/tars --name tars-test --namespace tars-test \
-    --set tars.namespace=tars-test,tars.replicas=2,tarsnode.replicas=5,tars.host=domain.com,tars.port=6080
+    --set tars.namespace=tars-test,tars.replicas=2,tarsnode.replicas=5,tars.host=domain.com,tars.port=6080,tars.data=/data/shared/tars-data,mysql.data=/data/shared/mysql-data,mysql.rebuild=false
 
 
 ```
 
 Access url of web is ```http://$namespace.$host.$port```, this example is ```http://tars-test.domain.com:6080```
+
+Note:
+- tars.data & mysql.data It needs to be on a shared disk (such as NFS), otherwise the pod drift data will be lost 
+- mysql.rebuild set false, Otherwise, the pod drift of MySQL will cause the data to be cleared 
+- mysql, tars, tars-node All the pods of are in the form of statefullset
