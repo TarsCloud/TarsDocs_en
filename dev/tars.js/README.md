@@ -51,16 +51,16 @@ Tars.js provides differentiated operation solutions according to different busin
 
 Due to the limited space, I can't show all the capabilities. If you have more requirements (such as RPC calls, etc.), you can use the modules provided by Tars.js (as follows):
 
-* [@tars/nodetools-cli](nodetools-cli) : Scaffolding and automatic packaging and publishing tools for initializing Tars.js project,  and automatically packaging and publishing to the Tars platform.
-* [@ tars/stream](https://www.npmjs.com/package/@tars/stream): Tars (Tup) protocol codec module can be combined with [tars2node](https://github.com/tars-node).
-* [@ tars/rpc](https://www.npmjs.com/package/@tars/rpc): Tars RPC calling module.
-* [@ tars/logs](https://www.npmjs.com/package/@tars/logs): Log component, including rolling (by size, time) and remote logs.
-* [@ tars/config](https://www.npmjs.com/package/@tars/config): Used to obtain service configuration files online.
-* [@ tars/monitor](https://www.npmjs.com/package/@tars/monitor): Provides support for service monitoring, feature monitoring, and PP monitoring reporting.
-* [@ tars/notify](https://www.npmjs.com/package/@tars/notify): Used to report service (alarm) messages.
-* [@ tars/utils](https://www.npmjs.com/package/@tars/utils): A collection of auxiliary tools, including Tars configuration files and Tars RPC Endpoint parser.
-* [@ tars/dyeing](https://www.npmjs.com/package/@tars/dyeing): Tars RPC dyeing definition module.
-* [@ tars/registry](https://www.npmjs.com/package/@tars/registry): Used for Tars name service query (Servant ===> Endpoint).
+* [@tars/nodetools-cli](nodetools-cli.md) : Scaffolding and automatic packaging and publishing tools for initializing Tars.js project,  and automatically packaging and publishing to the Tars platform.
+* [@ tars/stream](tars-stream.md): Tars (Tup) protocol codec module can be combined with [tars2node](https://github.com/tars-node).
+* [@ tars/rpc](tars-rpc.md): Tars RPC calling module.
+* [@ tars/logs](tars-logs.md): Log component, including rolling (by size, time) and remote logs.
+* [@ tars/config](tars-config.md): Used to obtain service configuration files online.
+* [@ tars/monitor](tars-monitor.md): Provides support for service monitoring, feature monitoring, and PP monitoring reporting.
+* [@ tars/notify](tars-notify.md): Used to report service (alarm) messages.
+* [@ tars/utils](tars-utils.md): A collection of auxiliary tools, including Tars configuration files and Tars RPC Endpoint parser.
+* [@ tars/dyeing](tars-dyeing.md): Tars RPC dyeing definition module.
+* [@ tars/registry]: Used for Tars name service query (Servant ===> Endpoint).
 
 Each module (click the name to jump) has extremely detailed documentation (README) for you to consult at any time.
 
