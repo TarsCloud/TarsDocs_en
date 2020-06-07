@@ -24,15 +24,51 @@
 
 ## Install
 - Install [Tars](https://github.com/TarsCloud/TarsDocs_en/tree/master/installation)
-- Requires Go 1.9.x or above (see https://golang.org/doc/install for help installing Go)
 - go get -u github.com/TarsCloud/TarsGo/tars
 
+Install go 1.13.x or above (for example go install path: /usr/local/go), set GOROOT, GOPATH, for example: in Linux:
+```
+export GOROOT=/usr/local/go  
+export GOPATH=/root/gocode   
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+```
+
+If you in china, you can set go proxy:  
+```
+go env -w GOPROXY=https://goproxy.cn   
+```
+
+Please set go mod:
+```
+go env -w GO111MODULE=auto
+```
+
+cd $GOPATH
+```
+go get -u github.com/TarsCloud/TarsGo/tars
+```
+
+now tarsgo downloaded to path:
+```
+$GOPATH/src/github.com/TarsCloud/TarsGo/
+```
+
+After tarsgo src be downloaded, please install tars2go:
+```
+go install $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go
+```
+
+## cmake spec
+
+In linux, It is recommended that you use cmake to manage your code , [spec](spec.md)
+
+Of course, you cooperate with GoLand and other IDE to develop
 
 ## Quickstart
-- For quickstart, see [tars_go_quickstart_en.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tarsgo/tars_go_quickstart_en.md)
+- For quickstart, see [tars_go_quickstart.md](../../hello-world/tarsgo.md)
 
 ## Performance
-- For performance, see [tars_go_performance.md](https://github.com/TarsCloud/TarsDocs_en/blob/master/dev/tarsgo/xing-neng-ce-shi.md)
+- For performance, see [tars_go_performance.md](performance.md)
 
 ## Usage
 ### 1 server
