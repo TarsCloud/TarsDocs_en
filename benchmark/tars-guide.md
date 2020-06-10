@@ -51,8 +51,8 @@ echo.case  echo.desc  test.case  test.desc
 ##### 1.2.2. Case file modification
 
   After the use case file is automatically generated according to the tars2json tool, the Json content can be modified as needed, in which the structural data of vector and map also can be increased up and down, and the content in vector<byte> type can be input in both string and array. Using string, it needs to be converted into bin2hex. In addition, in order to avoid the hot key effect in the benchmark process and prevent the back-end server from falling on the same single machine, tb supports the generation of random content in Number and string in the tars structure in the following two random ways (Value must be string).
-  1. **Range Random Value** is expressed as [1-100], which means that it occurs randomly within 1-100 and must be a number.
-  2. **Limit Random Value** is expressed as [369pr aarem BBB], which means that it appears randomly in 369pr aaarech BBB.
+  1. **range random value** expressed as [1-100], which means that it occurs randomly within 1-100 and must be a number.
+  2. **limit random value** expressed as [369pr aarem BBB], which means that it appears randomly in 369pr aaarech BBB.
 
  **Case Content**: eg, echo interface
 ```json
@@ -100,8 +100,8 @@ The case file is divided into upper and lower parts, which are divided by the fi
 
 - **Parameter value description**：
  1. <strong>basic type</strong>support random value setting：
-    <strong>range random value</strong>expressed with [1-100]，indicates random occurrence within 1-100, must be a number
-    <strong>limited random value</strong>expressed with [1,123,100]，indicates random occurrence in 1,123,100, can be a string
+    <strong>range random value</strong> expressed with [1-100]，indicates random occurrence within 1-100, must be a number
+    <strong>limited random value</strong> expressed with [1,123,100]，indicates random occurrence in 1,123,100, can be a string
  2. Enter each line of the input parameter,
  3. The method of struct like: <field value 1, field value 2, field value 3 ...>
  4. The method of vector like: <value 1, value 2, value 3 ...>
