@@ -51,8 +51,8 @@ echo.case  echo.desc  test.case  test.desc
 ##### 1.2.2. Case file modification
 
   After the use case file is automatically generated according to the tars2json tool, the Json content can be modified as needed, in which the structural data of vector and map also can be increased up and down, and the content in vector<byte> type can be input in both string and array. Using string, it needs to be converted into bin2hex. In addition, in order to avoid the hot key effect in the benchmark process and prevent the back-end server from falling on the same single machine, tb supports the generation of random content in Number and string in the tars structure in the following two random ways (Value must be string).
- 1. <Range Random Value> is expressed as [1-100], which means that it occurs randomly within 1-100 and must be a number.
- 2. <Limit Random Value> is expressed as [369pr aarem BBB], which means that it appears randomly in 369pr aaarech BBB.
+  1. **Range Random Value** is expressed as [1-100], which means that it occurs randomly within 1-100 and must be a number.
+  2. **Limit Random Value** is expressed as [369pr aarem BBB], which means that it appears randomly in 369pr aaarech BBB.
 
  **Case Content**: eg, echo interface
 ```json
