@@ -71,13 +71,3 @@ If you find any bugs or get any new ideas, please submit PR!
 
 **Note: Before you submit PR, please check whether you signed [CLA](cla.md)!!**
 
-## Contacts
-
-qq group code-1: 579079160 
-
-qq group code-2: 669339903
-
-WeChat: TARS01
-
-Twitter: https://twitter.com/TarsCloud
-
