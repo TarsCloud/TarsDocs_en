@@ -255,7 +255,7 @@ view the modules of the tar Web:
 pm2 list
 ```
 
-Output:
+### Output(web < v2.4.7):
 ```
 [root@8a17fab70409 data]# pm2 list
 ┌────┬─────────────────────────┬─────────┬─────────┬──────────┬────────┬──────┬──────────┬──────────┬──────────┬──────────┬──────────┐
@@ -276,6 +276,7 @@ Both web and demo are implemented by nodejs + Vue. If the viewing module in PM2 
 
 **The web is implemented by nodejs + Vue. The final installation and operation directory is as follows:**
 
+
 ```
 c:\tars-install\web
 ```
@@ -287,9 +288,39 @@ cd c:\tars-install\web\demo; npm run start
 cd c:\tars-install\web; npm run start
 ```
 
+### Output(web < >=2.4.7):
+```
+[root@8a17fab70409 data]# pm2 list
+┌────┬─────────────────────────┬─────────┬─────────┬──────────┬────────┬──────┬──────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                    │ version │ mode    │ pid      │ uptime │ ↺    │ status   │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────────┼─────────┼─────────┼──────────┼────────┼──────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ tars-node-web           │ 0.2.0   │ fork    │ 1602     │ 2m     │ 0    │ online   │ 0.1%     │ 65.1mb   │ root     │ disabled │
+└────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
+```
+
+- tars-node-web: Tar Web homepage service, default binding 3000 port, Source code corresponding web directory
+
+tars-node-web calls tars-user-system to complete the relevant permission verification
+
+Web is implemented by nodejs + Vue. If the viewing module in PM2 list fails to start, you can start it manually to locate the prompt:
+
+**web >= v2.4.7, only tars-node-web exists **
+
+**The web is implemented by nodejs + Vue. The final installation and operation directory is as follows:**
+
+```
+c:\tars-install\web
+```
+
+If pm2 list shows that tars-node-web and tars-user-system fail to start, you can enter the directory to locate the problem:
+
+```
+cd c:\tars-install\web; npm run start
+```
+
 npm run start starts the service. You can observe the output of the console. If there is a problem, you will be prompted
 
-**Suggestions for formal operation: pm2 start tars-node-web; pm2 start tars-user-system**
+**Suggestions for formal operation: pm2 start tars-node-web**
 
 If the web page cannot be opened after installation, please refer to [web](web.md), check the problem section and locate the problem.
 

@@ -1,5 +1,7 @@
 # Tars Web User System
 
+**Note that only the version < v2.4.7 of TARs web has this capability,  tars web >= version v2.4.7 includes LDAP, and will connect with the internal authentication system through LDAP in the future**
+
 Tars management platform provides the ability to interface with user system (including single sign on system and authority system). If the user does not have corresponding system, tars can provide a simple user system module for the user to choose. The user system module provides the function of single sign on and registration, as well as the authority control ability to the service level. Users can also choose to use only one of these functions
 
 ## User system module installation

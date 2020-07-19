@@ -298,7 +298,7 @@ docker run -d --net=host -e MYSQL_HOST=xxxxx -e MYSQL_ROOT_PASSWORD=xxxxx \
         -eREBUILD=false -eINET=enp3s0 -eSLAVE=false \
         -v/data/tars:/data/tars \
         -v/etc/localtime:/etc/localtime \
-        tarscloud/framework:v
+        tarscloud/framework
 ```
 
 **During the actual framework installation process, another user will be created and used to connect DB. Please refer to the tars-install.sh script**
@@ -345,7 +345,7 @@ view the modules of the tars Web:
 pm2 list
 ```
 
-Output:
+Output (web < v2.4.7):
 ```
 [root@8a17fab70409 data]# pm2 list
 ┌────┬─────────────────────────┬─────────┬─────────┬──────────┬────────┬──────┬──────────┬──────────┬──────────┬──────────┬──────────┐
@@ -353,6 +353,16 @@ Output:
 ├────┼─────────────────────────┼─────────┼─────────┼──────────┼────────┼──────┼──────────┼──────────┼──────────┼──────────┼──────────┤
 │ 0  │ tars-node-web           │ 0.2.0   │ fork    │ 1602     │ 2m     │ 0    │ online   │ 0.1%     │ 65.1mb   │ root     │ disabled │
 │ 1  │ tars-user-system        │ 0.1.0   │ fork    │ 1641     │ 2m     │ 0    │ online   │ 0.1%     │ 60.1mb   │ root     │ disabled │
+└────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
+```
+
+Output (web >= v2.4.7):
+```
+[root@8a17fab70409 data]# pm2 list
+┌────┬─────────────────────────┬─────────┬─────────┬──────────┬────────┬──────┬──────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                    │ version │ mode    │ pid      │ uptime │ ↺    │ status   │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────────┼─────────┼─────────┼──────────┼────────┼──────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ tars-node-web           │ 2.4.7   │ fork    │ 1602     │ 2m     │ 0    │ online   │ 0.1%     │ 65.1mb   │ root     │ disabled │
 └────┴─────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
@@ -364,6 +374,8 @@ sudo -s source /etc/profile
 sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
 pm2 list
 ```
+
+### tars-web < v2.4.7
 
 **Tars web consists of two modules**
 
@@ -391,15 +403,41 @@ npm run start starts the service. You can observe the output of the console. If 
 
 **Suggestions for formal operation: pm2 start tars-node-web; pm2 start tars-user-system**
 
+
+### tars-web >= v2.4.7
+
+**Tars web one modules**
+
+- tars-node-web: Tars Web homepage service, default binding 3000 port, Source code corresponding web directory
+tars-node-web calls tars-user-system to complete the relevant permission verification
+
+Web are implemented by nodejs + Vue. If the viewing module in PM2 list fails to start, you can start it manually to locate the prompt:
+
+**The web is implemented by nodejs + Vue. The final installation and operation directory is as follows:**
+
+```
+/usr/local/app/web
+```
+
+If pm2 list shows that tars-node-web fail to start, you can enter the directory to locate the problem:
+
+```
+cd /usr/local/app/web; npm run start
+```
+
+npm run start starts the service. You can observe the output of the console. If there is a problem, you will be prompted
+
+**Suggestions for formal operation: pm2 start tars-node-web **
+
+### Auto Start Tars
+
 Note that after restarting the machine, PM2 module will be lost. Please add the following statement to startup
 (for example: /etc/rc.local):
 ```
 /usr/local/app/web/tars-start.sh
 ```
 
-
 If the web page cannot be opened after installation, please refer to [web](web.md), check the problem section and locate the problem.
-
 
 # 5. <a id="chapter-5"></a>Scripts
 
