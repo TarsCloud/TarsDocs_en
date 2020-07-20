@@ -156,6 +156,9 @@ docker run -d \
 - Ports 9000 to 9010 are for your applications. You can add more ports if necessary
 - Node will register itself to Tars framework `172.25.0.3`.You can find it in the node management part of your platform web.
 
+
+**Note that if you use --net=host on the same machine and start the framework and tars-node images at the same time, it is not possible because the framework also contains a tarsnode, which will cause port conflicts and fail to start**
+
 ## 4 <a id="chapter-4"></a>Trouble Shot
 
 If the docker still cannot open the management platform after running, you can check as follows:
