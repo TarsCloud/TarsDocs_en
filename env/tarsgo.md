@@ -12,7 +12,7 @@ To compile the tars protocol and transfer it to the golang tool:
 ```text
 cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build . 
 
-cp tars2go $GOPATH/bin
+cp tars2go $GOPATH/bin/
 ```
 
 Check whether the installation of Tars is successful under the path of GOPATH.
