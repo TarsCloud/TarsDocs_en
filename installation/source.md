@@ -160,8 +160,7 @@ drwxr-xr-x 12 root root    4096 Apr  3 21:07 web
 The framework can be deployed on a single machine or multiple machines. Multiple machines are in the mode of one master and many slaves. Generally, one master and one slave are enough:
 
 - There can only be one master node and multiple slave nodes
-- The master node will install by default: tarsadminregistry, tarspatch, tarsweb, and tarslog. These services will not be installed on the slave node
-- The tarsAdminRegistry can only be a single point because it has publishing status)
+- The master node will install by default: tarsadminregistry, tarspatch, tarsweb, tarstat, tarsproperty and tarslog. These services will not be installed on the slave node
 - The tarslog can only be a single point, otherwise the remote logs will be scattered on multiple machines
 - In principle, tarspatch and tarsweb can be multi-point. If they are deployed to multi-point, the /usr/local/app/patches directory needs to be shared among multiple computers (for example, through NFS). Otherwise, the service cannot be published normally
 - You can later deploy the tarslog to a large hard disk server
