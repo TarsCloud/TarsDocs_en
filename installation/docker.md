@@ -5,6 +5,7 @@
 > - [3. Deploy Tars Node by Docker](#chapter-3)
 > - [4. Trouble Shot](#chapter-4)
 > - [5. docker-compose](#chapter-5)
+> - [5. docker mirror version](#chapter-5)
 
 # 1 <a id="chapter-1"></a>Intro
 
@@ -258,3 +259,14 @@ networks:
       config:
         - subnet: 172.25.1.0/16
 ```
+
+
+## 7 <a id="chapter-7"></a>docker mirror version
+
+Notice:
+- docker mirror include : https://github.com/TarsCloud/TarsFramework and https://github.com/TarsCloud/TarsWeb.
+- TarsFramework and TarsWeb are submodule,  included by https://github.com/TarsCloud/Tars.
+- For better manage docker mirror version, docker mirror tag version is matching tags of https://github.com/TarsCloud/Tars 
+- when https://github.com/TarsCloud/Tars  build tag, it will build docker mirror and push to docker hub.
+
+The above execution mode is from the tarscloud/framework:v2.4.0
