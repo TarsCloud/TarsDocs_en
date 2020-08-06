@@ -4,9 +4,9 @@ Tars management platform provides the ability to interface with user system (inc
 
 ## tars-web >= v2.4.8
 
-tars-web可以直接对接到LDAP服务完成用户的登录鉴权, 你只需要在用户中心 => 设置中, 编辑LDAP参数, 设置好LDAP的地址, 并开启LDAP即可.
+Tar web can directly complete the login and authentication of users connecting the LDAP service. You only need to edit the LDAP parameters, set the LDAP address and open LDAP in the UserCenter => Settings
 
-这样, 如果你的公司和企业统一采用LDAP来完成鉴权, 你可以让tars web连接到你的LDAP完成统一的鉴权.
+In this way, if your company use LDAP to complete the authentication, you can make the tars web connect to your LDAP to complete the unified authentication
 
 ## tars-web < v2.4.7
 
