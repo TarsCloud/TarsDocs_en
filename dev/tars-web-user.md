@@ -1,10 +1,18 @@
 # Tars Web User System
 
-**Note that only the version < v2.4.7 of TARs web has this capability,  tars web >= version v2.4.7 includes LDAP, and will connect with the internal authentication system through LDAP in the future**
-
 Tars management platform provides the ability to interface with user system (including single sign on system and authority system). If the user does not have corresponding system, tars can provide a simple user system module for the user to choose. The user system module provides the function of single sign on and registration, as well as the authority control ability to the service level. Users can also choose to use only one of these functions
 
-## User system module installation
+## tars-web >= v2.4.8
+
+tars-web可以直接对接到LDAP服务完成用户的登录鉴权, 你只需要在用户中心 => 设置中, 编辑LDAP参数, 设置好LDAP的地址, 并开启LDAP即可.
+
+这样, 如果你的公司和企业统一采用LDAP来完成鉴权, 你可以让tars web连接到你的LDAP完成统一的鉴权.
+
+## tars-web < v2.4.7
+
+For the version of TARS web < v2.4.7, you can implement your own independent user authentication module, but the operation is relatively complicated. It is recommended to use the version >= v2.4.8, and directly connect to LDAP
+
+### User system module installation
 
 If users want to use the default user system module, they need to install the user system management platform module in the web first. Corresponding: Database Name: db\_user\_system 
 The installation steps are the same as those of the tars management platform, which will not be described in detail.
@@ -27,7 +35,7 @@ The permission module provides six interfaces, [detail](../installation/web.md)
 
 Note: the default permission module, in order to ensure the system security, the above six interfaces of the column must be accessed in the way of white list, and cannot be called by others at will. The management page auth.html needs to be used by the system administrator. Related configurations of whitelist and administrator can be configured in /config/authconf.js.
 
-## Tars login module capabilities
+### Tars login module capabilities
 
 Tars is associated with the third-party login system or the default user system login module through the configuration file /config/loginconf.js to provide the ability to allow users to log in. The login profile details are as follows:
 
