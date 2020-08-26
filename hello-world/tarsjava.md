@@ -50,7 +50,7 @@ Provide plugins to compile and generate java code, add and generate java file co
 </plugin>
 ```
 
-Execute mvn in the project root directory: tars:tars2java
+Execute ```mvn tars:tars2java``` in the project root directory. The HelloServant.java will be created and filled with the following lines of code automatically.
 
 ```text
 @Servant
