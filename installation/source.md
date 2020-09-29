@@ -19,7 +19,7 @@ gcc version: | 4.8.2 or later、glibc-devel（Dependent c++ framework tools）
 bison version: | 2.5 or later（Dependent c++ framework tools）  
 flex version: | 2.5 or later（Dependent c++ framework tools）  
 cmake version: | 3.2 or later（Dependent c++ framework tools）  
-mysql version: | 4.1.17 or later（dependency of framework running）  
+mysql version: | 5.6 or later（dependency of framework running）  
 nvm version: | 0.35.1 or later（Dependent web management system, auto install while deploying）  
 node version: | 12.13.0 or later（Dependent web management system, auto install while deploying）  
   

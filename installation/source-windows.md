@@ -14,7 +14,7 @@ Software | Software requirements
 ------|--------  
 windows: | >=win7  
 cmake version: | 3.2 or later（Dependent c++ framework tools）  
-mysql version: | 4.1.17 or later（dependency of framework running）  
+mysql version: | 5.6 or later（dependency of framework running）  
 nvm version: | 0.35.1 or later
 node version: | 12.13.0 or later
   
