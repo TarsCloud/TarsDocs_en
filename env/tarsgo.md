@@ -40,7 +40,7 @@ go get -u github.com/TarsCloud/TarsGo/tars
 
 And TarsGo is downloaded to path: `$GOPATH/src/github.com/TarsCloud/TarsGo/`.
 
-If you can find source code of TarsGo in this path, please check the above steps.
+If you cannot find source code of TarsGo in this path, please check the above steps.
 
 After TarsGo is downloaded, install `tars2go`:
 
