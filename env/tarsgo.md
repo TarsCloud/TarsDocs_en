@@ -1,20 +1,49 @@
-# TarsGo
-> * [Environmental preparation](#chapter-1)
+# TarsGo Development Environment Setup
 
-# 1 <a id="chapter-1"></a> Environmental preparation
+## Content
 
-Prepare for golang environment. Tarsgo requires golang version 1.9. X and above.
+> * [Environment Dependence](#Environment-Dependence)
+> * [Installation](#Installation)
 
-Install tars： `go get github.com/TarsCloud/TarsGo/tars`
+## Environment Dependence
 
-To compile the tars protocol and transfer it to the golang tool:
+Require Go `1.13.x` or above，see https://golang.org/doc/install
 
-```text
-cd $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go && go build . 
+## Installation
 
-cp tars2go $GOPATH/bin/
+Install go (for example go install path: `/usr/local/go`), and configure `GOROOT`, `GOPATH`. For example, in Linux:
+
+```sh
+export GOROOT=/usr/local/go
+export GOPATH=/root/gocode
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 ```
 
-Check whether the installation of Tars is successful under the path of GOPATH.
+If you are in China, you can set up go proxy:
 
+```sh
+go env -w GOPROXY=https://goproxy.cn   
+```
 
+Set Go Modules to `auto`:
+
+```sh
+go env -w GO111MODULE=auto
+```
+
+Enter `GOPATH` and get TarsGo
+
+```sh
+cd $GOPATH
+go get -u github.com/TarsCloud/TarsGo/tars
+```
+
+And TarsGo is downloaded to path: `$GOPATH/src/github.com/TarsCloud/TarsGo/`.
+
+If you cannot find source code of TarsGo in this path, please check the above steps.
+
+After TarsGo is downloaded, install `tars2go`:
+
+```sh
+go install $GOPATH/src/github.com/TarsCloud/TarsGo/tars/tools/tars2go
+```
