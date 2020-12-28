@@ -35,6 +35,7 @@
 - [Windows Compiler & Deploy](installation/source-windows.md)
 - [Deploy By Docker](installation/docker.md)
 - [Deploy In K8s](installation/k8s-docker-1.md)
+- [Alternative To Deploy In K8s](installation/k8s-docker-2.md)
 - [TarsNode Deploy](installation/node.md)
 - [Tars Upldate & Expand](installation/expand.md)
 - [TarsWeb](installation/web.md)
