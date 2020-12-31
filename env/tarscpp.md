@@ -17,8 +17,8 @@ This section mainly introduces the development environment required for the deve
 | gcc version:    | >=4.8、glibc-devel |
 | bison version:  | >=2.5|
 | flex version:   | >=2.5   |
-| cmake version： | >=2.8.8|
-| mysql version： | >=4.1.17|
+| cmake version： | >=3.2|
+| mysql version： | >=5.6|
 
 
 ## 2.1. Download and install build package dependency
@@ -55,4 +55,9 @@ close support:
 cmake .. -DTARS_SSL=OFF -DTARS_HTTP2=OFF
 make
 make install
+```
+
+Note that the demo services of examples are not compiled by default. If you want to compile these demo services, please:
+```
+cmake .. -DONLY_LIB=OFF
 ```
