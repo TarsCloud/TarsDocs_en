@@ -11,10 +11,10 @@
 
 This section mainly introduces the use of docker to complete the deployment of the framework. There are two types of docker available:
 
-- framework: The tars framework docker makes scripts, and the docker contains the framework core services and web management platform
-- tars: The tars framework docker makes scripts. Compared with the framework, it adds Java, nodejs and other runtime support, that is, it can publish Java, nodejs services to the docker (the docker is installed with JDK, node, PHP environment)
+- framework: The tars framework docker scripts contains the framework core services and the web management platform.
+- tars: It adds Java, nodejs and other runtime support. That is, it can publish Java and nodejs services to docker (the docker is installed with JDK, node, PHP environment)
 
-First, make sure you have installed the docker environment on your service. If not, please refer to [docker install](docker-install.md)
+First, make sure you have installed the docker environment on your machine. If not, please refer to [docker install](docker-install.md)
 
 ## 2 <a id="chapter-2"></a>Deploy Tars framework by Docker
 
@@ -24,7 +24,7 @@ First, make sure you have installed the docker environment on your service. If n
 
 ### 2.1 create a docker network
 
-First create a docker network to make sure this guide work properly on each OS platform. Tars will works exactly like it works in VM or cloud hosting machine.
+First, create a docker network to make sure this guide work properly on each OS platform. Tars will work exactly like it works on a VM or a cloud hosting machine.
 
 ```sh
 # Create a bridge virtual network and set the name, subnet and gateway.
@@ -33,18 +33,19 @@ docker network create -d bridge --subnet=172.25.0.0/16 --gateway=172.25.0.1 tars
 
 ### 2.2 Start MySQL
 
-- Provide MySQL service to platform. You can skip this if you have a running MySQL instance. We highly suggest you to separate framework DB with business DB.
+- Deploy MySQL service. You can skip this if you have a running MySQL instance. We highly suggest you to separate framework DB with business DB.
 
 ```
 docker run -d \
     --net=tars \
     -e MYSQL_ROOT_PASSWORD="123456" \
     --ip="172.25.0.2" \
-    -v /data/framework-mysql:/var/lib/mysql \
+    -v {PATH_ON_YOUR_COMPUTER}:/var/lib/mysql \
     -v /etc/localtime:/etc/localtime \
     --name=tars-mysql \
     mysql:5.6
 ```
+{PATH_ON_YOUR_COMPUTER}: it is a folder that you should create by yourself where tars database will be deployed.
 
 ### 2.3 run tarscloud/framework docker
 
@@ -53,7 +54,7 @@ docker run -d \
 ```sh
 docker pull tarscloud/framework:v2.4.0
 ```
-We highly recommended you to use a specific framework version tags to deploy your environment. Thus you won't be influenced by remote image update.
+We highly recommended you to use a specific framework version tag to deploy your environment. Thus, you won't be affected by a remote image update.
 
 2. Run docker image
 
@@ -72,14 +73,16 @@ docker run -d \
     -e INET=eth0 \
     -e SLAVE=false \
     --ip="172.25.0.3" \
-    -v /data/framework:/data/tars \
+    -v {PATH_ON_YOUR_COMPUTER}:/data/tars \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
     -p 3001:3001 \
     tarscloud/framework:v2.4.0
 ```
 
-You can access `http://${your_machine_ip}:3000` to enter Tars web management platform.
+{PATH_ON_YOUR_COMPUTER}: it is a folder that you should create by yourself where tars framework will be deployed.
+
+You can access `http://localhost:3000` to access the Tars web management platform.
 
 3. Directory
    During creation, the directory / data / tars of docker will be mapped to the host directory / data / tars. After starting docker, please check the host directory / data / tars. Normally, the following directories will be created:
