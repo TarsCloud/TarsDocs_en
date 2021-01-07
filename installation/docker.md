@@ -77,7 +77,7 @@ docker run -d \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
     -p 3001:3001 \
-    tarscloud/framework:v2.4.0
+    tarscloud/framework:v2.4.14
 ```
 
 {PATH_ON_YOUR_COMPUTER}: it is a folder that you should create by yourself where tars framework will be deployed.
@@ -129,7 +129,7 @@ docker run -d \
     --ip="172.25.0.4" \
     -v /data/framework-slave:/data/tars \
     -v /etc/localtime:/etc/localtime \
-    tarscloud/framework:v2.4.0
+    tarscloud/framework:v2.4.14
 ```
 
 **Attention: SLAVE environment is true**
@@ -151,7 +151,7 @@ docker run -d \
     -e INET=eth0 \
     -e WEB_HOST="http://172.25.0.3:3000" \
     --ip="172.25.0.5" \
-    -v /data/node:/data/app \
+    -v /data/node:/data/tars \
     -v /etc/localtime:/etc/localtime \
     -p 9000-9010:9000-9010 \
     tarscloud/tars-node:latest
@@ -184,8 +184,7 @@ docker --name=tars-framework \
     -v /data/framework:/data/tars \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
-    -p 3001:3001 \
-    tarscloud/framework:v2.4.0
+    tarscloud/framework:v2.4.14
 ```
 
 - Check whether there is obvious problem with docker output
@@ -216,11 +215,10 @@ services:
       internal:
         ipv4_address: 172.25.1.2
   framework:
-    image: tarscloud/framework:v2.4.0
+    image: tarscloud/framework:v2.4.14
     container_name: tars-framework
     ports:
       - "3000:3000"
-      - "3001:3001"
     restart: always
     networks:
       internal:
@@ -246,7 +244,7 @@ services:
       internal:
         ipv4_address: 172.25.1.5
     volumes:
-      - ./node/data:/data/app:rw
+      - ./node/data:/data/tars:rw
       - ./source/Shanghai:/etc/localtime
     environment:
       INET: eth0
