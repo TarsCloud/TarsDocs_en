@@ -139,6 +139,7 @@
 ## Tars.js <a id="Tars.js"></a>
 
 - [Guide for Use](dev/tars.js/README.md)
+* [@tars/nodetools-cli](dev/tars.js/nodetools-cli.md)
 - [@tars/stream](dev/tars.js/tars-stream.md)
 - [@tars/rpc](dev/tars.js/tars-rpc.md)
 - [@tars/logs](dev/tars.js/tars-logs.md)
