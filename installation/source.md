@@ -231,6 +231,14 @@ Note:
 
 Objective: make the framework into a docker, and start the docker
 
+
+First git clone TarsWeb in TarsFramework source directory, then execute:
+```
+git clone https://github.com/TarsCloud/TarsWeb.git web
+deploy/docker.sh v1 deploy/x64.build.Dockerfile
+```
+
+
 make docker:
 ```
 chmod a+x docker.sh
