@@ -235,14 +235,20 @@ Objective: make the framework into a docker, and start the docker
 First git clone TarsWeb in TarsFramework source directory, then execute:
 ```
 git clone https://github.com/TarsCloud/TarsWeb.git web
-deploy/docker.sh v1 deploy/x64.build.Dockerfile
+#x64
+sudo ./deploy/docker.sh v1 amd64
+#arm64
+sudo ./deploy/docker.sh v1 arm64
 ```
 
 
 make docker:
 ```
 chmod a+x docker.sh
-./docker.sh v1
+#x64
+sudo ./deploy/docker.sh v1 amd64
+#arm64
+sudo ./deploy/docker.sh v1 arm64
 ```
 docker finished, you can see the docker: tarscloud/framework:v1
 
