@@ -96,8 +96,7 @@
 
 - [Guide for Use](dev/tarsgo/README.md)
 - [pb2tarsgo](dev/tarsgo/pb2tarsgo.md)
-- [Performance](dev/tarsgo/xing-neng-ce-shi.md)
-- [Quick Start](dev/tarsgo/tars_go_quickstart_en.md)
+- [Performance](dev/tarsgo/performance.md)
 - [Example](demo/tarsgo.md)
 
 ## TarsPHP <a id="TarsPHP"></a>
