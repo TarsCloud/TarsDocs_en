@@ -2,7 +2,7 @@ name: update-git-book
 
 on:
   push:
-    tags:
+    branches:
       - master
 jobs:
   build:
