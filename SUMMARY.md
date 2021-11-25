@@ -4,21 +4,6 @@
 - [CLA](cla.md)
 - [LICENSE](LICENSE.md)
 
-# Directory
-
-> - [Intro](#intro)
-> - [Deploy](#deploy)
-> - [Dev Start](#enter)
-> - [Benchmark](#benchmark)
-> - [TarsCpp](#TarsCPP)
-> - [TarsJava](#TarsJava)
-> - [TarsGo](#TarsGo)
-> - [Tarsjs](#Tars.js)
-> - [TarsPhp](#TarsPHP)
-> - [Other Important Features](#important)
-> - [Open Source Cooperation](#cooperation)
-> - [FAQ](#question)
-
 ## Intro <a id="intro"></a>
 
 - [Introduction](base/tars-intro.md)
