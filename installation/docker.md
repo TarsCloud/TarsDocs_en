@@ -77,7 +77,7 @@ docker run -d \
     -v /etc/localtime:/etc/localtime \
     -p 3000:3000 \
     -p 3001:3001 \
-    tarscloud/framework:v2.4.14
+    tarscloud/framework:v2.4.0
 ```
 
 {PATH_ON_YOUR_COMPUTER}: it is a folder that you should create by yourself where tars framework will be deployed.
